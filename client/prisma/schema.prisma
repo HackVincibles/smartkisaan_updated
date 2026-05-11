@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+}
+
+enum UserRole {
+  FARMER
+  BUYER
+  TRANSPORT
+  ADMIN
+  FPO
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID_ESCROW
+  PICKUP_ASSIGNED
+  PICKED_UP
+  IN_TRANSIT
+  DELIVERED
+  COMPLETED
+  DISPUTED
+  REFUNDED
+  CANCELLED
+}
+
+model User {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  phone        String   @unique
+  fullName     String
+  role         UserRole
+  aadhaarHash  String
+  isVerified   Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  farmerProfile    Farmer?
+  buyerProfile     Buyer?
+  transportProfile TransportAgency?
+  fpoProfile       FPO?
+}
+
+model FPO {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @unique @db.ObjectId
+  name           String
+  registrationNo String   @unique
+  memberCount    Int      @default(0)
+  location       Json     // {lat, lng, address}
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user    User     @relation(fields: [userId], references: [id])
+  farmers Farmer[]
+}
+
+model Farmer {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String   @unique @db.ObjectId
+  fpoId        String?  @db.ObjectId
+  farmLocation Json
+  farmSize     Float?
+  cropsGrown   Json
+  bankAccount  Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id])
+  fpo      FPO?      @relation(fields: [fpoId], references: [id])
+  listings Listing[]
+}
+
+model Buyer {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String   @unique @db.ObjectId
+  businessType    String?
+  gst             String?
+  deliveryAddress Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id])
+  orders Order[]
+  bids   Bid[]
+}
+
+model TransportAgency {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String   @unique @db.ObjectId
+  name         String
+  vehicleCount Int
+  routes       Json
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Listing {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  farmerId     String   @db.ObjectId
+  product      String
+  quantity     Float
+  unit         String   @default("kg")
+  pricePerUnit Float
+  images       Json
+  aiGrade      String?
+  aiScore      Float?
+  shelfLife    Int?
+  description  String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  farmer Farmer @relation(fields: [farmerId], references: [id])
+  bids   Bid[]
+}
+
+model Bid {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  listingId String   @db.ObjectId
+  buyerId   String   @db.ObjectId
+  amount    Float
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  listing Listing @relation(fields: [listingId], references: [id])
+  buyer   Buyer   @relation(fields: [buyerId], references: [id])
+}
+
+model Order {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  listingId     String      @db.ObjectId
+  buyerId       String      @db.ObjectId
+  farmerId      String      @db.ObjectId
+  transportId   String?     @db.ObjectId
+  status        OrderStatus @default(PENDING_PAYMENT)
+  totalAmount   Float
+  escrowId      String?     @unique
+  qrCodeHash    String?
+  trackingData  Json?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  buyer    Buyer     @relation(fields: [buyerId], references: [id])
+  payments Payment[]
+  scans    AIScan[]
+}
+
+model AIScan {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId      String   @db.ObjectId
+  stage        String   
+  imageCID     String?
+  score        Float?
+  blockchainTx String?
+  createdAt    DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id])
+}
+
+model Payment {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId           String   @db.ObjectId
+  razorpayOrderId   String   @unique
+  razorpayPaymentId String?
+  amount            Float
+  status            String
+  createdAt         DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id])
+}
