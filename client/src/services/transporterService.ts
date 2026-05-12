@@ -13,6 +13,11 @@ const transporterService = {
     return response;
   },
 
+  getAvailableLoads: async (params?: any) => {
+    const response = await api.get('/logistics/available-loads', { params });
+    return response;
+  },
+
   acceptOrder: async (orderId: string) => {
     const response = await api.post(`/logistics/orders/${orderId}/accept`);
     return response;

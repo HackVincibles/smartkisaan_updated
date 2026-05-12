@@ -33,7 +33,7 @@ import ProductDetailBidPage from './pages/buyer/ProductDetailBidPage';
 import MyOrdersPage from './pages/buyer/MyOrdersPage';
 import OrderTrackingPage from './pages/buyer/OrderTrackingPage';
 import DisputesPage from './pages/buyer/DisputesPage';
-import CreateDemandPage from './pages/buyer/CreateDemandPage';
+import CreateDemand from './pages/buyer/CreateDemand';
 import BuyerProfilePage from './pages/buyer/BuyerProfilePage';
 
 // Transporter Pages
@@ -145,7 +145,7 @@ function App() {
                 <Route path="orders" element={<MyOrdersPage />} />
                 <Route path="orders/:id/track" element={<OrderTrackingPage />} />
                 <Route path="disputes" element={<DisputesPage />} />
-                <Route path="demand/create" element={<CreateDemandPage />} />
+                <Route path="demand/create" element={<CreateDemand />} />
                 <Route path="profile" element={<BuyerProfilePage />} />
               </Route>
               
