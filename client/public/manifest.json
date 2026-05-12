@@ -1,0 +1,13 @@
+﻿{
+  "name": "SmartKisan",
+  "short_name": "SmartKisan",
+  "description": "AI-powered agricultural supply chain platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#16a34a",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
