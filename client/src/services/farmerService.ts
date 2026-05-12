@@ -65,9 +65,27 @@ const farmerService = {
     return response;
   },
 
+  predictPrice: async (crop: string, days: number, currentPrice: number) => {
+    const response = await api.get('/farmer/predict-price', { 
+      params: { crop, days, currentPrice } 
+    });
+    return response;
+  },
+
   // ── Analytics & Dashboard ─────────────────────────────────
   getDashboardStats: async () => {
     const response = await api.get('/farmer/dashboard/stats');
+    return response;
+  },
+
+  // ── New Features ──────────────────────────────────────────
+  getClusters: async () => {
+    const response = await api.get('/farmer/clusters');
+    return response;
+  },
+
+  checkInsurance: async () => {
+    const response = await api.get('/farmer/insurance-check');
     return response;
   },
 

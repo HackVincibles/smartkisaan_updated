@@ -2,79 +2,111 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --primary: #006e2f;
+  --on-primary: #ffffff;
+  --primary-container: #22c55e;
+  --secondary: #0058be;
+  --tertiary: #9e4036;
+  --surface: #f3fcef;
+  --on-surface: #161d16;
+  --outline: #6d7b6c;
+  
+  --role-farmer: #16a34a;
+  --role-buyer: #3b82f6;
+  --role-transporter: #f97316;
+  --role-admin: #8b5cf6;
+}
+
 @layer base {
   body {
-    @apply bg-gray-50 dark:bg-dark-100 text-gray-900 dark:text-gray-100 antialiased;
+    @apply bg-surface text-gray-900 antialiased;
     font-family: 'Inter', sans-serif;
   }
 
-  /* Custom Scrollbar */
+  h1, .h1 { @apply text-4xl font-bold tracking-tight mb-4; }
+  h2, .h2 { @apply text-2xl font-semibold tracking-tight mb-3; }
+  h3, .h3 { @apply text-xl font-semibold mb-2; }
+  
+  /* Premium Scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-gray-100 dark:bg-dark-200;
+    @apply bg-transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-400 dark:bg-dark-400 rounded-full;
+    @apply bg-gray-200 rounded-full hover:bg-gray-300 transition-colors;
   }
 
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-500 dark:bg-gray-500;
+  /* Selection Aesthetics */
+  ::selection {
+    @apply bg-primary-100 text-primary-900;
   }
 }
 
 @layer components {
   .container-custom {
-    @apply w-full px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl;
+    @apply w-full px-4 md:px-8 mx-auto max-w-[1440px];
   }
 
-  .card {
-    @apply bg-white dark:bg-dark-200 rounded-xl shadow-sm border border-gray-200 dark:border-dark-300 overflow-hidden;
+  /* Stitch UI Premium Card */
+  .stitch-card {
+    @apply bg-white rounded-xl border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-md;
   }
 
-  .input {
-    @apply w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-dark-300 bg-white dark:bg-dark-100 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all;
+  /* Role Badges */
+  .badge {
+    @apply px-2 py-1 rounded-full text-xs font-medium uppercase tracking-wider;
   }
+  .badge-farmer { @apply bg-green-100 text-green-800 border border-green-200; }
+  .badge-buyer { @apply bg-blue-100 text-blue-800 border border-blue-200; }
+  .badge-transporter { @apply bg-orange-100 text-orange-800 border border-orange-200; }
+  .badge-admin { @apply bg-purple-100 text-purple-800 border border-purple-200; }
 
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
   .btn-primary {
-    @apply flex items-center justify-center px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-dark-200 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-primary text-white hover:bg-primary-600 active:scale-[0.98];
   }
-
   .btn-secondary {
-    @apply flex items-center justify-center px-6 py-2 bg-gray-200 dark:bg-dark-300 hover:bg-gray-300 dark:hover:bg-dark-400 text-gray-900 dark:text-gray-100 font-medium rounded-lg transition-all duration-200;
+    @apply bg-secondary text-white hover:bg-secondary-600 active:scale-[0.98];
   }
-
-  .bg-grid-pattern {
-    background-image: radial-gradient(circle, #000 1px, transparent 1px);
-    background-size: 30px 30px;
+  .btn-outline {
+    @apply border border-gray-200 text-gray-700 hover:bg-gray-50 active:scale-[0.98];
   }
-
-  .dark .bg-grid-pattern {
-    background-image: radial-gradient(circle, #fff 1px, transparent 1px);
+  .btn-ghost {
+    @apply text-gray-600 hover:bg-gray-100 active:scale-[0.98];
   }
 }
 
 /* Animations */
+.fade-in { animation: fadeIn 0.3s ease-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.slide-up { animation: slideUp 0.3s ease-out; }
+@keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* Shimmer Effect for Loading States */
 @keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
-.skeleton {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 1000px 100%;
-  animation: shimmer 2s infinite;
+.shimmer {
+  @apply relative overflow-hidden bg-gray-100;
 }
 
-.dark .skeleton {
-  background: linear-gradient(90deg, #2d2d3a 25%, #3a3a4a 50%, #2d2d3a 75%);
-  background-size: 1000px 100%;
+.shimmer::after {
+  content: "";
+  @apply absolute inset-0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 1.5s infinite;
 }

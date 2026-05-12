@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ShieldCheck, ArrowRight, RefreshCw, Smartphone } from 'lucide-react';
 
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '../../stores/authStore';
 
 const OTPScreen = () => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);

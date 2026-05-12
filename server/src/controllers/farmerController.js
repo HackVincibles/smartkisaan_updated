@@ -389,6 +389,23 @@ const checkInsurance = async (req, res) => {
   }
 };
 
+const getPricePrediction = async (req, res) => {
+  try {
+    const { crop, days, currentPrice } = req.query;
+    if (!crop || !days || !currentPrice) {
+      return sendError(res, 'Crop, days, and currentPrice are required', 'MISSING_PARAMS', 400);
+    }
+
+    const { predictFuturePrice } = require('../services/pricePredictor');
+    const prediction = predictFuturePrice(crop, parseInt(days), parseFloat(currentPrice));
+    
+    return sendSuccess(res, prediction, 'Price prediction generated');
+  } catch (error) {
+    console.error('[getPricePrediction]', error);
+    return sendError(res, 'Failed to generate price prediction', 'PREDICTION_ERR', 500);
+  }
+};
+
 module.exports = {
   getDashboard,
   createListing,
@@ -400,5 +417,6 @@ module.exports = {
   getOrders,
   getMandiRates,
   getClusters,
-  checkInsurance
+  checkInsurance,
+  getPricePrediction
 };

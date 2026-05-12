@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, Smartphone, Shield, Truck, TrendingUp, Scale } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, Lock, Eye, EyeOff, Smartphone, Shield, Truck, TrendingUp, Scale, Zap, Globe, ArrowRight, CheckCircle2, ChevronRight, Activity } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 
@@ -29,17 +29,18 @@ const LoginPage = () => {
     
     try {
       const user = await login(formData.email, formData.password);
-      toast.success('Login successful!');
+      toast.success('Access Granted. Synchronizing Workspace...');
       
-      // Redirect based on role
-      const role = user?.role;
-      if (role === 'farmer') navigate('/farmer');
-      else if (role === 'buyer') navigate('/buyer');
-      else if (role === 'transport') navigate('/transporter');
-      else if (role === 'admin') navigate('/admin');
-      else navigate('/');
+      const role = user?.role?.toLowerCase();
+      setTimeout(() => {
+        if (role === 'farmer') navigate('/farmer');
+        else if (role === 'buyer') navigate('/buyer');
+        else if (role === 'transport' || role === 'transporter') navigate('/transporter');
+        else if (role === 'admin') navigate('/admin');
+        else navigate('/');
+      }, 800);
     } catch (error: any) {
-      const msg = error.response?.data?.error || error.response?.data?.message || 'Login failed. Check your credentials.';
+      const msg = error.response?.data?.error || error.response?.data?.message || 'Authentication failed. Verify credentials.';
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -47,138 +48,180 @@ const LoginPage = () => {
   };
   
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-primary-50 dark:from-dark-200 dark:via-dark-100 dark:to-dark-200 py-12 px-4 sm:px-6 lg:px-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full space-y-8"
-      >
-        <div className="text-center">
-          <div className="flex justify-center mb-4">
-            <Smartphone className="w-12 h-12 text-primary-600" />
-          </div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Welcome Back!
-          </h2>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Enter your credentials to access your account
-          </p>
+    <div className="min-h-screen flex bg-white font-sans selection:bg-emerald-100 selection:text-emerald-900">
+      {/* Left Column: Premium Visual & Trust Signal */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gray-900 relative overflow-hidden flex-col justify-between p-20">
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#10b981_0%,transparent_50%)] blur-[120px]"></div>
+          <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_80%,#3b82f6_0%,transparent_40%)] blur-[100px]"></div>
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
         </div>
-        
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="input pl-10"
-                  placeholder="Enter your email"
-                />
-              </div>
+
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="relative z-10"
+        >
+          <div className="flex items-center gap-3 mb-12">
+            <div className="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-2xl shadow-emerald-500/20">
+              <Zap size={24} fill="white" />
             </div>
-            
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="input pl-10 pr-10"
-                  placeholder="Enter your password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5 text-gray-400" />
-                  ) : (
-                    <Eye className="w-5 h-5 text-gray-400" />
-                  )}
-                </button>
-              </div>
-            </div>
+            <h1 className="text-3xl font-black text-white italic tracking-tighter">Smart<span className="text-emerald-500 not-italic">Kissan</span></h1>
           </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                Remember me
-              </label>
-            </div>
-            
-            <Link to="/forgot-password" className="text-sm text-primary-600 hover:text-primary-500">
-              Forgot Password?
-            </Link>
-          </div>
-          
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary w-full py-3 relative"
-          >
-            {loading ? (
-              <div className="flex items-center justify-center">
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                Logging in...
-              </div>
-            ) : (
-              'Login'
-            )}
-          </button>
-          
-          <div className="text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Don't have an account?{' '}
-              <Link to="/register" className="text-primary-600 hover:text-primary-500 font-medium">
-                Register
-              </Link>
+
+          <div className="space-y-6 max-w-lg">
+            <h2 className="text-6xl font-black text-white leading-tight tracking-tighter italic">
+              Digital <span className="not-italic text-emerald-500 underline decoration-emerald-500/30 underline-offset-8">Sovereignty</span> for Agriculture.
+            </h2>
+            <p className="text-gray-400 text-xl font-medium leading-relaxed">
+              Access the Pan-India agricultural blockchain grid. Secured by cryptographic custody and real-time IoT intelligence.
             </p>
           </div>
-        </form>
-        
-        <div className="grid grid-cols-4 gap-3 text-center text-xs text-gray-500 dark:text-gray-400">
-          <div className="flex flex-col items-center gap-1">
-            <Shield className="w-4 h-4" />
-            <span>Secure</span>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="relative z-10 grid grid-cols-2 gap-10"
+        >
+          <div className="space-y-4 p-8 bg-white/5 backdrop-blur-xl rounded-[2.5rem] border border-white/10">
+            <div className="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 border border-blue-500/20">
+              <Shield size={24} />
+            </div>
+            <h4 className="text-white font-black text-lg italic">Proof of Custody</h4>
+            <p className="text-gray-500 text-xs font-black uppercase tracking-widest leading-loose">Automated escrow and dispute resolution via smart contracts.</p>
           </div>
-          <div className="flex flex-col items-center gap-1">
-            <Truck className="w-4 h-4" />
-            <span>Live Tracking</span>
+          <div className="space-y-4 p-8 bg-white/5 backdrop-blur-xl rounded-[2.5rem] border border-white/10">
+            <div className="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center text-emerald-400 border border-emerald-500/20">
+              <TrendingUp size={24} />
+            </div>
+            <h4 className="text-white font-black text-lg italic">Market Pulse</h4>
+            <p className="text-gray-500 text-xs font-black uppercase tracking-widest leading-loose">Live mandi analytics and AI-driven yield prediction models.</p>
           </div>
-          <div className="flex flex-col items-center gap-1">
-            <TrendingUp className="w-4 h-4" />
-            <span>AI Price</span>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <Scale className="w-4 h-4" />
-            <span>Fair & Transparent</span>
-          </div>
+        </motion.div>
+
+        <div className="absolute -bottom-20 -left-20 opacity-5">
+            <Globe size={600} strokeWidth={0.5} className="text-white animate-[spin_60s_linear_infinite]" />
         </div>
-      </motion.div>
+      </div>
+
+      {/* Right Column: Auth Interface */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 md:p-20 bg-gray-50/50">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-lg space-y-12"
+        >
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600 mb-2">
+              <Activity size={14} />
+              Protocol Node Access
+            </div>
+            <h3 className="text-5xl font-black text-gray-900 tracking-tighter italic leading-none">Authentication <span className="not-italic">Vault</span></h3>
+            <p className="text-gray-400 font-medium text-lg">Secure entry to your professional agricultural dashboard.</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4">Terminal Identifier (Email)</label>
+                <div className="relative group">
+                  <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-emerald-500 transition-colors" size={20} />
+                  <input 
+                    name="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="operator@smartkissan.in"
+                    className="w-full bg-white border border-gray-100 rounded-[2rem] py-6 pl-16 pr-8 text-gray-900 font-bold placeholder:text-gray-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all shadow-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between items-center px-4">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Cryptographic Key (Password)</label>
+                  <Link to="/forgot-password" size={14} className="text-[10px] font-black uppercase tracking-widest text-emerald-600 hover:text-emerald-700 transition-colors">Recover Key</Link>
+                </div>
+                <div className="relative group">
+                  <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-emerald-500 transition-colors" size={20} />
+                  <input 
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="••••••••"
+                    className="w-full bg-white border border-gray-100 rounded-[2rem] py-6 pl-16 pr-16 text-gray-900 font-bold placeholder:text-gray-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all shadow-sm"
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-300 hover:text-emerald-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 px-4">
+              <input type="checkbox" className="w-5 h-5 rounded-lg border-gray-200 text-emerald-500 focus:ring-emerald-500/20 transition-all cursor-pointer" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Maintain Session on this Node</span>
+            </div>
+
+            <button 
+              type="submit"
+              disabled={loading}
+              className="w-full py-8 bg-gray-900 text-white rounded-[2.5rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-emerald-600 shadow-2xl shadow-gray-200 hover:shadow-emerald-900/20 transition-all flex items-center justify-center gap-4 group relative overflow-hidden"
+            >
+              <AnimatePresence mode="wait">
+                {loading ? (
+                  <motion.div 
+                    key="loading"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="flex items-center gap-3"
+                  >
+                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                    Authenticating Node...
+                  </motion.div>
+                ) : (
+                  <motion.div 
+                    key="idle"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="flex items-center gap-3"
+                  >
+                    Authorize Access <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
+          </form>
+
+          <div className="pt-12 border-t border-gray-100 text-center">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
+              New Participant? <Link to="/register" className="text-emerald-600 hover:text-emerald-700 transition-colors ml-2">Initialize Registration</Link>
+            </p>
+          </div>
+          
+          <div className="flex justify-center gap-8 opacity-40 grayscale group-hover:grayscale-0 transition-all">
+            <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-gray-400">
+              <CheckCircle2 size={12} className="text-emerald-500" />
+              SOC2 Certified
+            </div>
+            <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-gray-400">
+              <CheckCircle2 size={12} className="text-emerald-500" />
+              AES-256 Encrypted
+            </div>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 };

@@ -20,9 +20,6 @@ const buyerNavItems = [
   { path: '/buyer/orders', label: 'My Orders', icon: ShoppingBag },
   { path: '/buyer/demand/create', label: 'Create Demand', icon: FileText },
   { path: '/buyer/disputes', label: 'Disputes', icon: HelpCircle },
-  { path: '/buyer/messages', label: 'Messages', icon: MessageCircle },
-  { path: '/buyer/wishlist', label: 'Wishlist', icon: Heart },
-  { path: '/buyer/payments', label: 'Payments', icon: CreditCard },
   { path: '/buyer/profile', label: 'Settings', icon: Settings },
 ];
 

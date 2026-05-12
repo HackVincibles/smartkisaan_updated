@@ -13,6 +13,7 @@ const {
   getMandiRates,
   getClusters,
   checkInsurance,
+  getPricePrediction,
 } = require('../controllers/farmerController');
 
 const { protect } = require('../middleware/auth');
@@ -45,6 +46,7 @@ router.get('/orders',                                                 getOrders)
 // ── Market Data ───────────────────────────────────────────
 router.get('/mandi-rates',                                            getMandiRates);
 router.get('/mandi-prices',                                           getMandiRates); // alias for frontend
+router.get('/predict-price',                                          getPricePrediction);
 
 // ── New Features ──────────────────────────────────────────
 router.get('/clusters',                                               getClusters);

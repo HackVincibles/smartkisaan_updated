@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { 
   Dialog, DialogContent, DialogHeader, DialogTitle, 
   DialogFooter, DialogDescription 
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+} from '../ui/dialog';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 import { IndianRupee, Gavel, AlertCircle } from 'lucide-react';
 
 interface BidModalProps {

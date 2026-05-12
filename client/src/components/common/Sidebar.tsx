@@ -42,10 +42,14 @@ const Sidebar = ({ navItems, isOpen, setIsOpen, role }: SidebarProps) => {
                   className={({ isActive }) => `
                     flex items-center gap-3 px-4 py-3 mx-2 rounded-lg transition-all duration-200
                     ${isActive 
-                      ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400' 
+                      ? `bg-opacity-10 text-opacity-100` 
                       : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-300'
                     }
                   `}
+                  style={({ isActive }) => isActive ? { 
+                    backgroundColor: `var(--role-${role})1a`, 
+                    color: `var(--role-${role})` 
+                  } : {}}
                 >
                   <item.icon className="w-5 h-5 flex-shrink-0" />
                   {isOpen && (

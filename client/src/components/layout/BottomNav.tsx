@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Home, PlusCircle, LayoutGrid, ShoppingBag, PieChart, Truck, User } from 'lucide-react';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '../../stores/authStore';
 
 const BottomNav = () => {
   const { user } = useAuthStore();

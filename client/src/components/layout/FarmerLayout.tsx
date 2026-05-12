@@ -8,9 +8,7 @@ import {
   TrendingUp, 
   Bot, 
   Scale, 
-  MessageCircle, 
-  CreditCard,
-  HelpCircle,
+  Truck,
   Settings,
   Bell
 } from 'lucide-react';
@@ -18,13 +16,11 @@ import {
 const farmerNavItems = [
   { path: '/farmer', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/farmer/listings', label: 'My Listings', icon: Package },
+  { path: '/farmer/orders', label: 'Orders & Sales', icon: Truck },
   { path: '/farmer/bids', label: 'Bids & Offers', icon: Gavel },
   { path: '/farmer/insights', label: 'Demand & Mandi', icon: TrendingUp },
   { path: '/farmer/advisor', label: 'AI Crop Advisor', icon: Bot },
   { path: '/farmer/disputes', label: 'Disputes & Ratings', icon: Scale },
-  { path: '/farmer/messages', label: 'Messages', icon: MessageCircle },
-  { path: '/farmer/payments', label: 'Payments', icon: CreditCard },
-  { path: '/farmer/support', label: 'Support', icon: HelpCircle },
   { path: '/farmer/profile', label: 'Settings', icon: Settings },
 ];
 

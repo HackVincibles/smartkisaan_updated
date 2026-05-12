@@ -3,7 +3,7 @@ import {
   Gavel, Search, Filter, AlertCircle,
   CheckCircle2, Clock, MessageSquare,
   ChevronRight, ArrowUpRight, ShieldAlert,
-  Scales
+  Scale
 } from 'lucide-react';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 // @ts-ignore
@@ -52,7 +52,7 @@ const DisputesManagementPage = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-3xl font-black text-gray-900 tracking-tight flex items-center gap-3">
-              <Scales className="text-primary-600" />
+              <Scale className="text-primary-600" />
               Arbiter Dashboard
             </h1>
             <p className="text-gray-500 mt-1">Resolve platform disputes and ensure trust</p>

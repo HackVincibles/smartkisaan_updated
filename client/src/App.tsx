@@ -35,6 +35,7 @@ import OrderTrackingPage from './pages/buyer/OrderTrackingPage';
 import DisputesPage from './pages/buyer/DisputesPage';
 import CreateDemand from './pages/buyer/CreateDemand';
 import BuyerProfilePage from './pages/buyer/BuyerProfilePage';
+import FarmerOrdersPage from './pages/farmer/Orders';
 
 // Transporter Pages
 import TransporterDashboard from './pages/transporter/TransporterDashboard';
@@ -71,8 +72,12 @@ const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode,
     return <Navigate to="/login" replace />;
   }
   
-  if (allowedRoles && user && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/" replace />;
+  if (allowedRoles && user) {
+    const userRoleLower = user.role.toLowerCase();
+    const allowedRolesLower = allowedRoles.map(r => r.toLowerCase());
+    if (!allowedRolesLower.includes(userRoleLower)) {
+      return <Navigate to="/" replace />;
+    }
   }
   
   return <>{children}</>;
@@ -130,6 +135,7 @@ function App() {
                 <Route path="insights" element={<DemandMandiInsights />} />
                 <Route path="advisor" element={<ChatbotAdvisor />} />
                 <Route path="disputes" element={<DisputesRatingsPage />} />
+                <Route path="orders" element={<FarmerOrdersPage />} />
                 <Route path="profile" element={<FarmerProfilePage />} />
               </Route>
               
