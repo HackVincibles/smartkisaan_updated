@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, MapPin, Shield, ShoppingBag, ArrowRight, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import apiClient from '@/api/client';
+import DashboardLayout from '../../components/layout/DashboardLayout';
+import apiClient from '../../services/api';
 
 const Marketplace = () => {
   const [listings, setListings] = useState([]);

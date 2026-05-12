@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ClipboardList, Clock, CheckCircle2, Truck, MapPin, CreditCard } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import api from '@/api/client';
-import DashboardLayout from '@/components/layout/DashboardLayout';
+import api from '../../services/api';
+import DashboardLayout from '../../components/layout/DashboardLayout';
 
 const statusColors: Record<string, string> = {
   PENDING: 'bg-amber-50 text-amber-700 border-amber-200',

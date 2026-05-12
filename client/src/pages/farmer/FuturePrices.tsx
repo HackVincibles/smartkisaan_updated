@@ -1,7 +1,7 @@
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { TrendingUp, ArrowUpRight, ArrowDownRight, Info, Calendar, Zap } from 'lucide-react';
-import DashboardLayout from '@/components/layout/DashboardLayout';
+import DashboardLayout from '../../components/layout/DashboardLayout';
 
 const data = [
   { month: 'May', current: 2400, predicted: 2400 },

@@ -3,8 +3,8 @@ import {
   Sprout, Scale, MapPin, IndianRupee, 
   ArrowRight, CheckCircle2, ClipboardList
 } from 'lucide-react';
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import apiClient from '@/api/client';
+import DashboardLayout from '../../components/layout/DashboardLayout';
+import apiClient from '../../services/api';
 import { toast } from 'sonner';
 
 const CreateDemand = () => {

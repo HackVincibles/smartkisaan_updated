@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   getDashboard,
   getAssignedOrders,
+  getAvailableLoads,
   acceptOrder,
   confirmPickup,
   confirmDelivery,

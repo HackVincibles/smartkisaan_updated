@@ -6,7 +6,7 @@ import {
   ArrowRight, Image as ImageIcon 
 } from 'lucide-react';
 
-import DashboardLayout from '@/components/layout/DashboardLayout';
+import DashboardLayout from '../../components/layout/DashboardLayout';
 
 const CreateListing = () => {
   const [step, setStep] = useState(1);

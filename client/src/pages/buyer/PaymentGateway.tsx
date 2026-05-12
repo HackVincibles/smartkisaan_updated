@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShieldCheck, IndianRupee, Loader2, CheckCircle2 } from 'lucide-react';
-import DashboardLayout from '@/components/layout/DashboardLayout';
+import DashboardLayout from '../../components/layout/DashboardLayout';
 import { toast } from 'sonner';
 
 const PaymentGateway = () => {

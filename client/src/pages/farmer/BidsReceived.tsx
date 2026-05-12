@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag, Search, Filter, Gavel } from 'lucide-react';
 import BidCard from '@/components/farmer/BidCard';
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import apiClient from '@/api/client';
+import DashboardLayout from '../../components/layout/DashboardLayout';
+import apiClient from '../../services/api';
 import { toast } from 'sonner';
 
 const BidsReceived = () => {

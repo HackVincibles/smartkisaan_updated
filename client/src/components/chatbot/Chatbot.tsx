@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Bot, User, Sparkles, Loader2, Mic } from 'lucide-react';
-import apiClient from '@/api/client';
+import apiClient from '../../services/api';
 
 interface Message {
   id: string;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ShoppingBag, Trash2, ArrowRight, ShieldCheck, Truck, CreditCard } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import DashboardLayout from '@/components/layout/DashboardLayout';
+import DashboardLayout from '../../components/layout/DashboardLayout';
 
 const Cart = () => {
   // Mock cart items (In real app, this would come from a context or store)

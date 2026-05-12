@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Package, Truck, CheckCircle2, AlertCircle, Search, Clock } from 'lucide-react';
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import apiClient from '@/api/client';
+import DashboardLayout from '../../components/layout/DashboardLayout';
+import apiClient from '../../services/api';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);

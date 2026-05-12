@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Wallet as WalletIcon, ArrowUpRight, ArrowDownLeft, Plus, ShieldCheck, History, CreditCard, TrendingUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import DashboardLayout from '@/components/layout/DashboardLayout';
+import DashboardLayout from '../layout/DashboardLayout';
 import WithdrawalModal from '@/components/wallet/WithdrawalModal';
-import api from '@/api/client';
+import api from '../services/api';
 
 const DigitalWallet = () => {
   const [balance, setBalance] = useState(124500);

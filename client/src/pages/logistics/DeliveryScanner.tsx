@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QRScanner from '@/components/common/QRScanner';
-import DashboardLayout from '@/components/layout/DashboardLayout';
+import DashboardLayout from '../../components/layout/DashboardLayout';
 import { Home, ArrowLeft, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 

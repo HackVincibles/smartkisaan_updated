@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Package, Truck, MapPin, Phone, ShieldCheck } from 'lucide-react';
-import DashboardLayout from '@/components/layout/DashboardLayout';
+import DashboardLayout from '../layout/DashboardLayout';
 import LiveMap from '@/components/logistics/LiveMap';
 import StatusTimeline from '@/components/common/StatusTimeline';
 

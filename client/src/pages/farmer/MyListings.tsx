@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Package, Search, Filter, Sprout } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ListingCard from '@/components/farmer/ListingCard';
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import apiClient from '@/api/client';
+import DashboardLayout from '../../components/layout/DashboardLayout';
+import apiClient from '../../services/api';
 
 const MyListings = () => {
   const [listings, setListings] = useState([]);

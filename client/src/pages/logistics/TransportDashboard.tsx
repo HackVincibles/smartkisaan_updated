@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Truck, MapPin, Navigation, Package, CheckCircle2, TrendingUp, Wallet, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import DashboardLayout from '@/components/layout/DashboardLayout';
+import DashboardLayout from '../../components/layout/DashboardLayout';
 
 const TransportDashboard = () => {
   const [activeJobs, setActiveJobs] = useState([

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Users, ShoppingBag, ArrowRight, ShieldCheck, Zap, Info } from 'lucide-react';
-import DashboardLayout from '@/components/layout/DashboardLayout';
+import DashboardLayout from '../../components/layout/DashboardLayout';
 
 const groups = [
   { id: '1', item: 'NPK Fertilizer (50kg)', price: 'INR 1,200', original: 'INR 1,600', savings: '25%', members: 18, target: 25, daysLeft: 2 },
