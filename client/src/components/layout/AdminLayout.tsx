@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, NavLink } from 'react-router-dom';
 import Sidebar from '../common/Sidebar';
 import { 
   LayoutDashboard, 
@@ -12,72 +12,107 @@ import {
   Bell,
   Database,
   BarChart3,
-  FileText
+  FileText,
+  Activity,
+  Cpu,
+  Search,
+  Command,
+  Plus,
+  User as UserIcon,
+  Globe
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const adminNavItems = [
-  { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/admin/users', label: 'User Management', icon: Users },
-  { path: '/admin/orders', label: 'Global Orders', icon: ShoppingBag },
-  { path: '/admin/logistics', label: 'Logistics Control', icon: Truck },
-  { path: '/admin/escrow', label: 'Escrow & Finance', icon: Shield },
-  { path: '/admin/disputes', label: 'Dispute Resolution', icon: Scale },
-  { path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
-  { path: '/admin/logs', label: 'Audit Logs', icon: Database },
-  { path: '/admin/settings', label: 'System Settings', icon: Settings },
+  { path: '/admin', label: 'DASHBOARD', icon: LayoutDashboard },
+  { path: '/admin/users', label: 'NODE_REGISTRY', icon: Users },
+  { path: '/admin/orders', label: 'GLOBAL_LEDGER', icon: ShoppingBag },
+  { path: '/admin/logistics', label: 'LOGISTICS_GRID', icon: Truck },
+  { path: '/admin/escrow', label: 'FINANCIAL_VAULT', icon: Shield },
+  { path: '/admin/disputes', label: 'ARBITER_NEXUS', icon: Scale },
+  { path: '/admin/settings', label: 'SYSTEM_CONFIG', icon: Settings },
+  { path: '/admin/profile', label: 'ROOT_IDENTITY', icon: UserIcon },
 ];
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-dark-100 text-gray-900 dark:text-gray-100">
-      <div className="flex">
-        <Sidebar 
-          navItems={adminNavItems}
-          isOpen={sidebarOpen}
-          setIsOpen={setSidebarOpen}
-          role="admin"
-        />
-        <div className={`flex-1 transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-20'}`}>
-          {/* Top Bar */}
-          <div className="sticky top-0 z-10 bg-white dark:bg-dark-200 border-b border-gray-200 dark:border-dark-300 px-6 py-3">
-            <div className="flex justify-between items-center">
-              <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-300 transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-              
-              <div className="flex items-center gap-4">
-                <div className="px-2 py-0.5 bg-red-100 text-red-600 rounded text-[10px] font-black uppercase tracking-widest">
-                  Live Admin Mode
-                </div>
-                <button className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-300">
-                  <Bell className="w-5 h-5" />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
-                <div className="flex items-center gap-3">
-                  <div className="text-right hidden sm:block">
-                    <p className="text-sm font-black text-gray-900 dark:text-white">Admin Console</p>
-                    <p className="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-tighter">Root Access</p>
-                  </div>
-                  <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-black shadow-lg shadow-red-100 dark:shadow-none">
-                    AD
-                  </div>
-                </div>
-              </div>
+    <div className="min-h-screen bg-[#fafafa] selection:bg-error selection:text-white">
+      <Sidebar 
+        navItems={adminNavItems}
+        isOpen={sidebarOpen}
+        setIsOpen={setSidebarOpen}
+        role="admin"
+      />
+      
+      <main className={`transition-all duration-[0.8s] ease-[0.16,1,0.3,1] ${sidebarOpen ? 'pl-[320px]' : 'pl-[100px]'}`}>
+        {/* Institutional Top Bar */}
+        <header className="h-28 flex items-center justify-between px-12 border-b border-gray-100 bg-white/80 backdrop-blur-xl sticky top-0 z-[40]">
+          <div className="flex items-center gap-8">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-gray-950 hover:bg-white hover:shadow-2xl transition-all group"
+            >
+              <Command size={22} className="group-hover:rotate-12 transition-transform" />
+            </button>
+            <div className="hidden md:flex items-center gap-4 px-6 py-3 bg-gray-50 rounded-2xl border border-gray-100 group focus-within:bg-white focus-within:shadow-2xl focus-within:border-gray-200 transition-all">
+              <Search size={18} className="text-gray-400" />
+              <input 
+                type="text" 
+                placeholder="SEARCH_NODES_OR_CONTRACTS..." 
+                className="bg-transparent border-none outline-none text-[11px] font-black uppercase tracking-[0.2em] italic w-64 placeholder:text-gray-300"
+              />
+              <span className="text-[9px] font-black text-gray-300 bg-white px-2 py-1 rounded-md border border-gray-100 shadow-sm group-focus-within:opacity-0 transition-opacity">⌘K</span>
             </div>
           </div>
-          
-          <div className="p-6">
-            <Outlet />
+
+          <div className="flex items-center gap-10">
+            <div className="hidden lg:flex items-center gap-3">
+              <div className="w-2 h-2 bg-error rounded-full animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.8)]"></div>
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] italic leading-none">SYS_LEVEL::ROOT</span>
+            </div>
+
+            <div className="flex items-center gap-6">
+              <button className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-error hover:bg-white hover:shadow-2xl transition-all relative group">
+                <Bell size={22} />
+                <span className="absolute top-4 right-4 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+              </button>
+              
+              <NavLink to="/admin/profile" className="flex items-center gap-5 group cursor-pointer">
+                <div className="text-right hidden sm:block">
+                  <p className="text-[12px] font-black text-gray-950 uppercase tracking-tighter italic leading-none">ADMIN_NODE_01</p>
+                  <p className="text-[9px] text-gray-400 font-black uppercase tracking-[0.3em] italic leading-none mt-1">SUPER_USER</p>
+                </div>
+                <div className="w-14 h-14 rounded-2xl bg-gray-950 flex items-center justify-center text-white font-black shadow-2xl group-hover:rotate-12 transition-all duration-700 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-error/40 to-transparent"></div>
+                  <span className="relative z-10 text-[12px] tracking-widest italic">AD</span>
+                </div>
+              </NavLink>
+            </div>
+          </div>
+        </header>
+
+        {/* Content Area */}
+        <div className="p-12 min-h-[calc(100vh-112px)] relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={window.location.pathname}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Decorative Elements */}
+          <div className="fixed bottom-12 right-12 opacity-[0.03] pointer-events-none select-none">
+            <Globe size={300} className="text-gray-950" />
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

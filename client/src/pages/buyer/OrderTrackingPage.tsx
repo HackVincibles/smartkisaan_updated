@@ -18,20 +18,31 @@ import {
   Zap,
   Activity,
   Box,
-  LocateFixed
+  LocateFixed,
+  Workflow,
+  Cpu,
+  Globe,
+  Database,
+  Target,
+  MoreHorizontal,
+  ChevronDown,
+  ExternalLink,
+  Scan,
+  Compass,
+  Radar
 } from 'lucide-react';
 // @ts-ignore
 import buyerService from '../../services/buyerService';
 import { formatCurrency, formatDateTime } from '../../lib/utils';
 import StatusBadge from '../../components/common/StatusBadge';
-import toast from 'react-hot-toast';
-import { motion } from 'framer-motion';
+import { toast } from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const steps = [
-  { key: 'ordered', label: 'Order Signed', icon: Package },
-  { key: 'packed', label: 'Sealed & Ready', icon: ShoppingBag },
-  { key: 'in-transit', label: 'Logistics Rail', icon: Truck },
-  { key: 'delivered', label: 'Vault Delivery', icon: CheckCircle }
+  { key: 'ordered', label: 'CONTRACT_SIGNED', icon: Package },
+  { key: 'packed', label: 'ASSET_SEALED', icon: ShoppingBag },
+  { key: 'in-transit', label: 'LOGISTICS_RAIL', icon: Truck },
+  { key: 'delivered', label: 'VAULT_DELIVERY', icon: CheckCircle }
 ];
 
 const OrderTrackingPage = () => {
@@ -58,20 +69,20 @@ const OrderTrackingPage = () => {
         currentLocation: {
           lat: 19.0760,
           lng: 72.8777,
-          address: 'Vashi Logistic Hub, Mumbai'
+          address: 'VASHI_LOGISTIC_HUB_NODE_7, MUMBAI'
         },
         lastUpdate: new Date()
       });
     } catch (error) {
       console.error('Failed to fetch order details:', error);
-      // Mock for demo
+      // Mock for high-fidelity demo
       setOrder({
         id: 'ORD-5521',
-        productName: 'Premium Basmati Rice',
+        productName: 'PREMIUM BASMATI RICE',
         status: 'IN_TRANSIT',
-        transporter: { name: 'Raj Cargo Express' },
+        transporter: { name: 'RAJ CARGO EXPRESS' },
         vehicleNumber: 'MH-43-BE-1234',
-        deliveryAddress: { name: 'Global Foods Ltd', address: 'Plot 42, Sector 15, Vashi', city: 'Navi Mumbai', state: 'Maharashtra' }
+        deliveryAddress: { name: 'GLOBAL FOODS LTD', address: 'PLOT 42, SECTOR 15, VASHI', city: 'NAVI MUMBAI', state: 'MAHARASHTRA' }
       });
     } finally {
       setLoading(false);
@@ -84,56 +95,75 @@ const OrderTrackingPage = () => {
   };
 
   if (loading) return (
-    <div className="flex items-center justify-center h-[60vh] fade-in">
-      <div className="text-center space-y-4">
-        <div className="w-20 h-20 border-4 border-secondary-100 border-t-secondary-600 rounded-full animate-spin mx-auto shadow-2xl"></div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 italic">Connecting Logistics Rail...</p>
+    <div className="flex items-center justify-center h-[80vh] fade-in">
+      <div className="text-center space-y-10">
+        <div className="w-24 h-24 bg-secondary/10 rounded-[2.5rem] border border-secondary/20 flex items-center justify-center shadow-2xl relative">
+            <div className="absolute inset-0 border-4 border-secondary/20 border-t-secondary rounded-[2.5rem] animate-spin"></div>
+            <Radar size={40} className="text-secondary animate-pulse" />
+        </div>
+        <div className="space-y-3">
+          <p className="text-[10px] font-black uppercase tracking-[0.5em] text-secondary italic leading-none">Connecting Logistics Rail...</p>
+          <p className="text-xs text-gray-400 font-medium italic leading-none">Establishing Live Telemetry Stream...</p>
+        </div>
       </div>
     </div>
   );
 
-  if (!order) return <div className="p-20 text-center italic text-gray-400">Order context not found.</div>;
+  if (!order) return <div className="p-40 text-center italic text-gray-400 text-2xl font-black uppercase tracking-widest">Order context not found.</div>;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-10 pb-20 fade-in">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-10">
-        <div className="space-y-4">
-          <Link to="/buyer/orders" className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-secondary transition-colors mb-2 group">
-            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Back to Vault
+    <div className="max-w-7xl mx-auto space-y-16 pb-32 fade-in">
+      {/* Premium Telemetry Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 relative overflow-hidden p-4">
+        <div className="space-y-6 relative z-10">
+          <Link to="/buyer/orders" className="inline-flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 hover:text-secondary transition-all group italic">
+            <ArrowLeft size={16} className="group-hover:-translate-x-2 transition-transform" /> EXIT TERMINAL
           </Link>
-          <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-secondary">
-            <Activity size={14} /> <span>Live Telemetry</span>
-            <ChevronRight size={10} className="text-gray-300" />
-            <span className="text-gray-400">Shipment #{id?.substring(0, 8)}</span>
+          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-secondary italic">
+            <Activity size={16} /> <span>LIVE_TELEMETRY_PROTOCOL</span>
+            <ChevronRight size={12} className="text-gray-200" />
+            <span className="text-gray-400">SHIPMENT_ID::{id?.substring(0, 12).toUpperCase()}</span>
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 tracking-tight italic leading-none">
+          <h1 className="text-6xl md:text-8xl font-black text-gray-950 tracking-tighter italic leading-none">
             Track <span className="not-italic text-secondary">Shipment.</span>
           </h1>
         </div>
-        <StatusBadge status={order.status} variant={order.status === 'delivered' ? 'success' : 'primary'} />
+        
+        <div className="relative z-10">
+          <StatusBadge status={order.status} variant={order.status === 'delivered' ? 'success' : 'primary'} />
+        </div>
+
+        {/* Decorative Background Text */}
+        <div className="absolute top-0 right-0 opacity-[0.02] pointer-events-none select-none -mr-40 -mt-10">
+            <h1 className="text-[20rem] font-black italic tracking-tighter uppercase">ACTIVE</h1>
+        </div>
       </div>
 
-      {/* Pipeline Visualizer */}
-      <div className="stitch-card p-12 bg-white relative overflow-hidden">
+      {/* Pipeline Visualizer Terminal */}
+      <div className="stitch-card p-12 md:p-16 bg-white shadow-2xl shadow-gray-200/50 relative overflow-hidden group">
         <div className="relative z-10">
-          <div className="flex justify-between items-center mb-16">
-            <div className="space-y-1">
-              <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sourcing Pipeline</h3>
-              <p className="text-2xl font-bold text-gray-900 italic">Movement Protocol</p>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-10 mb-20">
+            <div className="flex items-center gap-6">
+                <div className="p-4 bg-gray-950 rounded-2xl text-secondary shadow-2xl group-hover:rotate-6 transition-transform duration-700">
+                    <Workflow size={28} />
+                </div>
+                <div className="space-y-1">
+                    <h3 className="text-3xl font-bold text-gray-950 italic tracking-tight uppercase leading-none">Movement <span className="not-italic text-secondary">Registry.</span></h3>
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.4em] italic leading-none">Real-time sourcing pipeline active</p>
+                </div>
             </div>
-            <div className="px-4 py-2 bg-secondary-50 text-secondary text-[10px] font-bold uppercase tracking-widest rounded-xl border border-secondary-100 animate-pulse">
-              Estimated Delivery: Tomorrow, 16:00
+            <div className="px-8 py-5 bg-secondary/10 text-secondary text-[11px] font-black uppercase tracking-[0.4em] italic rounded-2xl border border-secondary/20 shadow-2xl shadow-secondary/5 flex items-center gap-4 animate-pulse">
+              <Clock size={18} /> ESTIMATED_ARRIVAL: TOMORROW, 16:00
             </div>
           </div>
 
-          <div className="relative">
-            <div className="absolute top-7 left-0 right-0 h-1.5 bg-gray-50 rounded-full overflow-hidden border border-gray-100">
+          <div className="relative px-10">
+            <div className="absolute top-9 left-0 right-0 h-2 bg-gray-50 rounded-full overflow-hidden border border-gray-50">
               <motion.div 
                 initial={{ width: 0 }}
                 animate={{ width: `${(getCurrentStep() / (steps.length - 1)) * 100}%` }}
-                className="h-full bg-secondary shadow-[0_0_20px_rgba(37,99,235,0.4)]"
-                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="h-full bg-secondary shadow-[0_0_30px_rgba(59,130,246,0.6)]"
+                transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
               />
             </div>
             
@@ -144,23 +174,29 @@ const OrderTrackingPage = () => {
                 const StepIcon = step.icon;
                 
                 return (
-                  <div key={step.key} className="flex flex-col items-center group">
+                  <div key={step.key} className="flex flex-col items-center group/step">
                     <div className={`
-                      w-16 h-16 rounded-[1.5rem] flex items-center justify-center mb-4 relative z-10 transition-all duration-500
-                      ${isCompleted ? 'bg-secondary text-white shadow-xl shadow-secondary-200' : 'bg-white text-gray-300 border border-gray-100 shadow-inner'}
-                      ${isCurrent ? 'ring-8 ring-secondary-50 scale-110' : ''}
+                      w-20 h-20 rounded-[2rem] flex items-center justify-center mb-6 relative z-10 transition-all duration-1000
+                      ${isCompleted ? 'bg-secondary text-white shadow-2xl shadow-secondary/30' : 'bg-white text-gray-300 border border-gray-100 shadow-inner'}
+                      ${isCurrent ? 'ring-[12px] ring-secondary/5 scale-110' : ''}
                     `}>
-                      <StepIcon size={28} />
+                      <StepIcon size={32} className="group-hover/step:scale-110 transition-transform" />
                     </div>
-                    <div className="text-center space-y-1">
-                      <p className={`text-[10px] font-bold uppercase tracking-widest ${isCompleted ? 'text-gray-900' : 'text-gray-400'}`}>
+                    <div className="text-center space-y-2">
+                      <p className={`text-[10px] font-black uppercase tracking-[0.4em] italic ${isCompleted ? 'text-gray-950' : 'text-gray-300'}`}>
                         {step.label}
                       </p>
-                      {tracking?.timeline?.[step.key] && (
-                        <p className="text-[9px] font-bold text-gray-400 italic">
-                          {new Date(tracking.timeline[step.key]).toLocaleDateString([], { day: 'numeric', month: 'short' })}
-                        </p>
-                      )}
+                      <AnimatePresence>
+                        {tracking?.timeline?.[step.key] && (
+                          <motion.p 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="text-[9px] font-black text-gray-400 uppercase tracking-widest italic leading-none"
+                          >
+                            {new Date(tracking.timeline[step.key]).toLocaleDateString([], { day: 'numeric', month: 'short' }).toUpperCase()}
+                          </motion.p>
+                        )}
+                      </AnimatePresence>
                     </div>
                   </div>
                 );
@@ -168,162 +204,214 @@ const OrderTrackingPage = () => {
             </div>
           </div>
         </div>
-        <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+        {/* Background Decor */}
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 left-0 p-12 text-gray-50 opacity-[0.03] pointer-events-none">
+            <Layers size={200} />
+        </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-10">
-        {/* Live Map / Location */}
-        <div className="lg:col-span-2 space-y-10">
-          <div className="stitch-card overflow-hidden bg-white border-none shadow-2xl shadow-gray-200/50">
-            <div className="p-8 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center text-white shadow-lg">
-                  <LocateFixed size={20} />
+      <div className="grid lg:grid-cols-3 gap-16 px-4">
+        {/* Live Geospatial Data (Left) */}
+        <div className="lg:col-span-2 space-y-16">
+          <div className="stitch-card overflow-hidden bg-white border-none shadow-2xl shadow-gray-200/50 group/map">
+            <div className="p-10 border-b border-gray-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 bg-gray-50/50">
+              <div className="flex items-center gap-6">
+                <div className="w-14 h-14 bg-gray-950 rounded-[1.5rem] flex items-center justify-center text-secondary shadow-2xl group-hover/map:rotate-12 transition-transform duration-700">
+                  <LocateFixed size={28} />
                 </div>
-                <div>
-                  <h3 className="text-sm font-bold text-gray-900 italic tracking-tight">Geospatial Telemetry</h3>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Active GPS Link</p>
+                <div className="space-y-1">
+                  <h3 className="text-2xl font-bold text-gray-950 italic tracking-tight uppercase leading-none">Geospatial Telemetry</h3>
+                  <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.4em] italic leading-none">Satellite node synchronization active</p>
                 </div>
               </div>
-              <span className="px-4 py-2 bg-success/10 text-success text-[9px] font-bold uppercase tracking-widest rounded-lg flex items-center gap-2 border border-success/20">
-                <div className="w-1.5 h-1.5 bg-success rounded-full animate-ping"></div>
-                Real-Time Node
-              </span>
+              <div className="px-6 py-3 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.4em] italic rounded-2xl flex items-center gap-4 border border-primary/20 shadow-2xl shadow-primary/5">
+                <div className="w-2 h-2 bg-primary rounded-full animate-ping"></div>
+                LIVE_NODE_UPLINK
+              </div>
             </div>
             
-            <div className="h-[450px] relative bg-gray-100 group">
-               <div className="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/72.8777,19.0760,11/1200x600?access_token=YOUR_TOKEN')] bg-cover">
-                  <div className="absolute inset-0 bg-secondary/5"></div>
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className="h-[550px] relative bg-gray-100 overflow-hidden">
+               {/* High-Fidelity Static Map Placeholder with Scanners */}
+               <div className="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/72.8777,19.0760,11/1200x600?access_token=YOUR_TOKEN')] bg-cover grayscale opacity-90 transition-transform duration-[10000ms] group-hover/map:scale-110">
+                  <div className="absolute inset-0 bg-secondary/5 mix-blend-overlay"></div>
+                  
+                  {/* Digital Grid Overlay */}
+                  <div className="absolute inset-0 bg-scanline opacity-[0.03]"></div>
+                  
+                  {/* Central Node Marker */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
                     <motion.div 
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ repeat: Infinity, duration: 2 }}
-                      className="w-24 h-24 bg-secondary/20 rounded-full flex items-center justify-center backdrop-blur-sm"
-                    >
-                      <div className="w-12 h-12 bg-secondary rounded-[1.2rem] flex items-center justify-center text-white shadow-2xl shadow-secondary-500">
-                        <Truck size={24} />
-                      </div>
-                    </motion.div>
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 px-6 py-3 bg-white rounded-xl shadow-2xl border border-gray-100 whitespace-nowrap text-[10px] font-bold uppercase tracking-widest text-gray-900 z-20">
-                      Currently at {tracking?.currentLocation?.address}
+                      animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
+                      transition={{ repeat: Infinity, duration: 3 }}
+                      className="w-48 h-48 bg-secondary/20 rounded-full flex items-center justify-center backdrop-blur-3xl"
+                    />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                        <div className="w-16 h-16 bg-gray-950 rounded-[2rem] flex items-center justify-center text-secondary shadow-[0_0_40px_rgba(59,130,246,0.6)] border border-white/10 group-hover/map:scale-110 transition-transform duration-700">
+                          <Truck size={32} />
+                        </div>
                     </div>
+                    
+                    {/* Location Label Card */}
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="absolute top-full left-1/2 -translate-x-1/2 mt-10 px-8 py-5 bg-gray-950/90 backdrop-blur-3xl rounded-2xl shadow-2xl border border-white/10 whitespace-nowrap text-[11px] font-black uppercase tracking-[0.4em] text-white z-30 italic shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]"
+                    >
+                      CURRENT_POSITION::{tracking?.currentLocation?.address || 'CALCULATING...'}
+                    </motion.div>
+                  </div>
+                  
+                  {/* Compass / Orientation */}
+                  <div className="absolute top-12 left-12 p-4 bg-gray-950/50 backdrop-blur-3xl rounded-2xl border border-white/10 text-white/40">
+                      <Compass size={32} className="animate-spin-slow" />
                   </div>
                </div>
                
-               {/* Overlay Widgets */}
-               <div className="absolute bottom-8 left-8 right-8 flex justify-between gap-4">
-                  <div className="bg-gray-900/90 backdrop-blur-xl p-6 rounded-2xl border border-white/10 text-white flex items-center gap-5 shadow-2xl">
-                    <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-secondary">
-                      <Navigation size={24} />
+               {/* Telemetry Widgets Overlay */}
+               <div className="absolute bottom-12 left-12 right-12 flex flex-wrap gap-8 z-30">
+                  <div className="flex-1 min-w-[200px] bg-gray-950/80 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-white/10 text-white flex items-center gap-8 shadow-2xl group/widget hover:bg-gray-950 transition-all duration-500">
+                    <div className="w-16 h-16 bg-white/5 rounded-[1.5rem] flex items-center justify-center text-secondary shadow-inner group-hover/widget:rotate-12 transition-transform">
+                      <Navigation size={32} />
                     </div>
-                    <div>
-                      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Next Transit Node</p>
-                      <p className="text-sm font-bold tracking-tight italic">JNPT Port Terminal</p>
+                    <div className="space-y-1.5">
+                      <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] italic leading-none">NEXT_LOG_NODE</p>
+                      <p className="text-xl font-black tracking-tighter italic leading-none uppercase">JNPT PORT TERMINAL</p>
                     </div>
                   </div>
                   
-                  <div className="bg-gray-900/90 backdrop-blur-xl p-6 rounded-2xl border border-white/10 text-white flex items-center gap-5 shadow-2xl">
-                    <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-secondary">
-                      <Zap size={24} />
+                  <div className="flex-1 min-w-[200px] bg-gray-950/80 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-white/10 text-white flex items-center gap-8 shadow-2xl group/widget hover:bg-gray-950 transition-all duration-500">
+                    <div className="w-16 h-16 bg-white/5 rounded-[1.5rem] flex items-center justify-center text-secondary shadow-inner group-hover/widget:rotate-12 transition-transform">
+                      <Activity size={32} />
                     </div>
-                    <div>
-                      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Avg Velocity</p>
-                      <p className="text-sm font-bold tracking-tight italic">42 km/h</p>
+                    <div className="space-y-1.5">
+                      <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] italic leading-none">AVG_VELOCITY</p>
+                      <p className="text-xl font-black tracking-tighter italic leading-none uppercase">42 KM/H [NOMINAL]</p>
                     </div>
                   </div>
                </div>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-10">
-            <div className="stitch-card p-10 bg-white">
-              <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-8">Shipment Logistics</h3>
-              <div className="space-y-6">
-                <div className="flex justify-between items-center border-b border-gray-50 pb-4">
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest italic">Carrier Entity</span>
-                  <span className="text-sm font-bold text-gray-900 tracking-tight italic">{order.transporter?.name}</span>
+          {/* Institutional Data Matrix */}
+          <div className="grid md:grid-cols-2 gap-12">
+            <div className="stitch-card p-12 bg-white shadow-2xl shadow-gray-200/50 group/logistics">
+              <div className="flex items-center gap-4 mb-12">
+                <div className="w-1.5 h-6 bg-secondary rounded-full"></div>
+                <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.5em] italic leading-none">Shipment_Logistics_Core</h3>
+              </div>
+              <div className="space-y-10">
+                <div className="flex justify-between items-end border-b border-gray-50 pb-6 group/item">
+                  <div className="space-y-1">
+                    <p className="text-[9px] font-black text-gray-300 uppercase tracking-[0.4em] italic leading-none">CARRIER_ENTITY</p>
+                    <p className="text-2xl font-black text-gray-950 tracking-tighter italic leading-none uppercase group-hover/item:text-secondary transition-colors">{order.transporter?.name}</p>
+                  </div>
+                  <ExternalLink size={18} className="text-gray-100 group-hover/item:text-secondary transition-colors" />
                 </div>
-                <div className="flex justify-between items-center border-b border-gray-50 pb-4">
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest italic">Asset Signature</span>
-                  <span className="text-sm font-bold text-gray-900 tracking-tight">{order.vehicleNumber}</span>
+                <div className="flex justify-between items-end border-b border-gray-50 pb-6 group/item">
+                  <div className="space-y-1">
+                    <p className="text-[9px] font-black text-gray-300 uppercase tracking-[0.4em] italic leading-none">ASSET_SIGNATURE</p>
+                    <p className="text-2xl font-black text-gray-950 tracking-tighter italic leading-none uppercase group-hover/item:text-secondary transition-colors">{order.vehicleNumber}</p>
+                  </div>
+                  <Cpu size={18} className="text-gray-100 group-hover/item:text-secondary transition-colors" />
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest italic">Tele-Update</span>
-                  <span className="text-xs font-bold text-secondary">{new Date(tracking?.lastUpdate).toLocaleTimeString()}</span>
+                <div className="flex justify-between items-end group/item">
+                  <div className="space-y-1">
+                    <p className="text-[9px] font-black text-gray-300 uppercase tracking-[0.4em] italic leading-none">TELEMETRY_SYNC</p>
+                    <p className="text-2xl font-black text-secondary tracking-tighter italic leading-none uppercase">{new Date(tracking?.lastUpdate).toLocaleTimeString().toUpperCase()}</p>
+                  </div>
+                  <div className="w-2 h-2 bg-secondary rounded-full animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.6)]"></div>
                 </div>
               </div>
             </div>
 
-            <div className="stitch-card p-10 bg-white">
-              <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-8">Delivery Terminal</h3>
-              <div className="space-y-4">
-                <p className="text-sm font-bold text-gray-900 italic tracking-tight">{order.deliveryAddress?.name}</p>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-400 font-medium leading-relaxed">{order.deliveryAddress?.address}</p>
-                  <p className="text-xs text-gray-400 font-medium">{order.deliveryAddress?.city}, {order.deliveryAddress?.state}</p>
+            <div className="stitch-card p-12 bg-white shadow-2xl shadow-gray-200/50 group/terminal">
+              <div className="flex items-center gap-4 mb-12">
+                <div className="w-1.5 h-6 bg-warning rounded-full"></div>
+                <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.5em] italic leading-none">Delivery_Terminal_Node</h3>
+              </div>
+              <div className="space-y-8">
+                <div className="space-y-2">
+                    <p className="text-3xl font-black text-gray-950 italic tracking-tighter leading-none uppercase group-hover/terminal:text-warning transition-colors">{order.deliveryAddress?.name}</p>
+                    <div className="w-10 h-1 bg-warning/20 rounded-full group-hover/terminal:w-20 transition-all duration-700"></div>
                 </div>
-                <div className="pt-4 flex items-center gap-2 text-secondary text-[10px] font-bold uppercase italic">
-                  <Shield size={12} /> Verified Hub Signature
+                <div className="space-y-3 pl-6 border-l-2 border-gray-50 group-hover/terminal:border-warning transition-colors">
+                  <p className="text-lg font-bold text-gray-400 italic leading-relaxed uppercase">{order.deliveryAddress?.address}</p>
+                  <p className="text-lg font-bold text-gray-400 italic uppercase">{order.deliveryAddress?.city}, {order.deliveryAddress?.state}</p>
+                </div>
+                <div className="pt-6 flex items-center gap-4 text-warning font-black text-[11px] uppercase tracking-[0.4em] italic">
+                  <ShieldCheck size={20} className="group-hover/terminal:rotate-12 transition-transform" /> VERIFIED_HUB_SIGNATURE
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Handover Security */}
-        <div className="space-y-10">
-          <div className="stitch-card p-10 bg-gray-900 text-white relative overflow-hidden group shadow-2xl">
-            <div className="relative z-10 flex flex-col items-center text-center space-y-8">
-              <div className="space-y-2">
-                <h3 className="text-2xl font-bold tracking-tight italic leading-none">Handover <span className="not-italic text-secondary">Token.</span></h3>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Handover Security Hash</p>
+        {/* Handover & Security Terminal (Right) */}
+        <div className="lg:col-span-1 space-y-12">
+          <div className="stitch-card p-12 bg-gray-950 text-white relative overflow-hidden group/handover shadow-2xl shadow-gray-950/40">
+            <div className="relative z-10 flex flex-col items-center text-center space-y-10">
+              <div className="space-y-3">
+                <h3 className="text-3xl font-black tracking-tight italic leading-none uppercase">Handover <span className="text-secondary not-italic">Token.</span></h3>
+                <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.5em] italic leading-none">Cryptographic Settlement Key</p>
               </div>
               
-              <div className="p-6 bg-white rounded-[2.5rem] shadow-2xl shadow-secondary-900/50 group-hover:scale-105 transition-transform duration-700">
-                <div className="w-48 h-48 bg-[url('https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=SECURE-ORD-5521')] bg-cover"></div>
+              <div className="p-8 bg-white rounded-[4rem] shadow-[0_40px_80px_-15px_rgba(59,130,246,0.3)] group-hover/handover:scale-105 transition-transform duration-1000 relative">
+                <div className="w-56 h-56 bg-[url('https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=SECURE-ORD-5521')] bg-cover opacity-90 group-hover/handover:opacity-100 transition-opacity"></div>
+                {/* Scanner Beam Effect */}
+                <div className="absolute left-0 right-0 top-0 h-1 bg-secondary animate-scan pointer-events-none opacity-40"></div>
               </div>
               
-              <p className="text-xs text-gray-400 font-medium leading-relaxed italic max-w-[200px]">
-                Transporter must scan this cryptographic token to unlock final payment from escrow.
+              <p className="text-sm text-white/40 font-medium leading-relaxed italic max-w-xs">
+                Present this cryptographic <span className="text-white font-black underline decoration-secondary/20 underline-offset-8 uppercase">Handover Node</span> to the transporter to authorize institutional settlement from the platform vault.
               </p>
               
-              <div className="flex gap-4 w-full">
-                <button className="flex-1 py-5 bg-white/10 rounded-xl flex items-center justify-center hover:bg-white/20 transition-all border border-white/5">
-                  <Download size={20} />
+              <div className="flex gap-6 w-full">
+                <button className="flex-1 py-6 bg-white/5 rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all border border-white/5 shadow-inner">
+                  <Download size={24} />
                 </button>
-                <button className="flex-1 py-5 bg-secondary text-white rounded-xl flex items-center justify-center hover:bg-secondary-600 transition-all shadow-xl shadow-secondary-900/20">
-                  <Share2 size={20} />
+                <button className="flex-1 py-6 bg-secondary text-white rounded-2xl flex items-center justify-center hover:bg-secondary-600 transition-all shadow-2xl shadow-secondary/20 group/btn relative overflow-hidden">
+                  <span className="relative z-10"><Share2 size={24} /></span>
+                  <div className="absolute inset-0 bg-white opacity-0 group-hover/btn:opacity-10 transition-opacity"></div>
                 </button>
               </div>
             </div>
-            <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-secondary rounded-full blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity"></div>
+            
+            {/* Background Decor */}
+            <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-secondary rounded-full blur-[120px] opacity-10 group-hover/handover:opacity-30 transition-opacity duration-1000"></div>
+            <div className="absolute top-0 right-0 p-12 text-white/5 pointer-events-none group-hover/handover:rotate-12 transition-transform">
+                <Scan size={150} />
+            </div>
           </div>
 
-          {/* Support / Contact */}
-          <div className="stitch-card p-10 bg-white">
-            <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-8">Logistics Support</h3>
+          {/* Logistics Relay Support */}
+          <div className="stitch-card p-12 bg-white shadow-2xl shadow-gray-200/50 group/support">
+            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.5em] italic leading-none mb-12">Logistics_Relay_Support</h3>
             <div className="space-y-6">
-              <button className="w-full py-5 bg-gray-50 rounded-2xl flex items-center justify-center gap-4 text-[10px] font-bold uppercase tracking-widest text-gray-600 hover:bg-secondary hover:text-white transition-all group">
-                <MessageCircle size={20} className="text-secondary group-hover:text-white" />
-                Contact Transporter
+              <button className="w-full py-8 bg-gray-950 text-white rounded-3xl flex items-center justify-center gap-5 text-[11px] font-black uppercase tracking-[0.4em] italic hover:bg-secondary transition-all group/btn shadow-2xl relative overflow-hidden">
+                <span className="relative z-10 flex items-center gap-5 uppercase">Contact Transporter <MessageCircle size={22} className="text-secondary group-hover/btn:text-white transition-colors" /></span>
+                <div className="absolute inset-0 bg-secondary opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
               </button>
-              <button className="w-full py-5 border border-gray-100 rounded-2xl flex items-center justify-center gap-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-gray-900 hover:border-gray-300 transition-all">
-                <AlertCircle size={20} />
+              <button className="w-full py-8 border border-gray-100 rounded-3xl flex items-center justify-center gap-5 text-[11px] font-black uppercase tracking-[0.4em] italic text-gray-400 hover:text-error hover:border-error/20 hover:bg-error/5 transition-all shadow-sm">
+                <ShieldAlert size={22} />
                 Raise Discrepancy
               </button>
             </div>
           </div>
 
-          <div className="bg-secondary-50 p-10 rounded-[2.5rem] border border-secondary-100">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center text-white">
-                <Shield size={20} />
+          <div className="bg-secondary-50 p-12 rounded-[3.5rem] border border-secondary-100 shadow-2xl shadow-secondary-100/50 relative overflow-hidden group/shield">
+            <div className="flex items-center gap-6 mb-8 relative z-10">
+              <div className="w-14 h-14 bg-secondary rounded-2xl flex items-center justify-center text-white shadow-2xl group-hover/shield:scale-110 transition-transform duration-700">
+                <Shield size={28} className="stroke-[1.5]" />
               </div>
-              <p className="text-xs font-bold text-secondary uppercase tracking-widest">Escrow Locked</p>
+              <p className="text-xs font-black text-secondary uppercase tracking-[0.5em] italic leading-none">Escrow_Locked</p>
             </div>
-            <p className="text-[11px] font-medium text-secondary-900/60 leading-relaxed italic">
-              Settlement funds are securely locked in the <span className="font-bold text-secondary">SmartKissan Vault</span> and will be released only upon verified digital handover at the destination hub.
+            <p className="text-[13px] font-medium text-secondary-900/60 leading-relaxed italic relative z-10">
+              Settlement assets are securely locked in the <span className="font-black text-secondary uppercase">SmartKissan Vault node</span>. Atomic release occurs only upon verified digital handover at the destination terminal.
             </p>
+            <div className="absolute top-0 right-0 p-12 text-secondary/5 opacity-[0.03] group-hover/shield:rotate-12 transition-transform duration-1000">
+                <Lock size={150} />
+            </div>
           </div>
         </div>
       </div>

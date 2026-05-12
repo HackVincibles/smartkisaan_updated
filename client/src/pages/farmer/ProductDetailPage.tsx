@@ -16,15 +16,29 @@ import {
   ChevronRight,
   Target,
   Package,
-  Shield
+  Workflow,
+  Cpu,
+  Globe,
+  MoreHorizontal,
+  Edit,
+  Trash2,
+  CheckCircle,
+  Activity,
+  Layers,
+  ArrowUpRight,
+  Handshake,
+  ShieldCheck,
+  Zap,
+  Info
 } from 'lucide-react';
 // @ts-ignore
 import farmerService from '../../services/farmerService';
 import { formatCurrency, formatDateTime } from '../../lib/utils';
 import AIGradeCard from '../../components/farmer/AIGradeCard';
 import SBTBadge from '../../components/farmer/SBTBadge';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import DOMPurify from 'dompurify';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -47,8 +61,11 @@ const ProductDetailPage = () => {
 
   const fetchListingDetails = async () => {
     try {
+      setLoading(true);
       const response = await farmerService.getListingById(id);
-      setListing(response.data.listing);
+      const data = response.data.listing || response.data;
+      setListing(data);
+      
       // Simulating bids for now - in production this comes from the backend
       setBids([
         { id: '1', buyerName: 'AgriCorp Pvt Ltd', amount: 2100, quantity: 50, status: 'pending', date: new Date().toISOString() },
@@ -56,7 +73,7 @@ const ProductDetailPage = () => {
       ]);
     } catch (error) {
       console.error('Failed to fetch listing details:', error);
-      toast.error('Failed to load listing details');
+      toast.error('Asset Pulse Lost');
     } finally {
       setLoading(false);
     }
@@ -65,156 +82,238 @@ const ProductDetailPage = () => {
   const handleAcceptBid = async (bidId: string) => {
     try {
       await farmerService.acceptBid(bidId);
-      toast.success('Bid accepted successfully!');
+      toast.success('Protocol Executed: Bid Accepted');
       fetchListingDetails();
     } catch (error) {
-      toast.error('Failed to accept bid');
+      toast.error('Authorization Failed: Accept Protocol Error');
     }
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <div className="text-center space-y-4">
-          <div className="w-12 h-12 border-4 border-primary-100 border-t-primary rounded-full animate-spin mx-auto"></div>
-          <p className="text-xs font-bold uppercase tracking-widest text-gray-400 shimmer">Analyzing Quality Tokens...</p>
+      <div className="flex items-center justify-center h-[70vh] fade-in">
+        <div className="text-center space-y-8">
+            <div className="w-24 h-24 bg-primary/10 rounded-[2.5rem] border border-primary/20 flex items-center justify-center mx-auto shadow-2xl">
+                <Workflow className="text-primary animate-spin" size={40} />
+            </div>
+            <div className="space-y-3">
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary italic leading-none">Syncing Asset Node Alpha...</p>
+                <p className="text-xs text-gray-400 font-medium italic leading-none">Scanning Quality Metadata...</p>
+            </div>
         </div>
       </div>
     );
   }
 
-  if (!listing) return <div className="p-8 text-center italic text-gray-500">Listing not found</div>;
+  if (!listing) return (
+    <div className="flex items-center justify-center h-[60vh] fade-in">
+        <div className="text-center space-y-6">
+            <div className="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center mx-auto text-gray-200">
+                <Package size={40} />
+            </div>
+            <p className="text-xl font-bold italic text-gray-400">Node Not Found in Registry</p>
+            <button onClick={() => navigate(-1)} className="px-8 py-4 bg-gray-950 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] italic">RETURN TO HUB</button>
+        </div>
+    </div>
+  );
 
   return (
-    <div className="max-w-7xl mx-auto space-y-10 pb-20 fade-in">
-      <div className="flex items-center justify-between">
-        <button onClick={() => navigate(-1)} className="btn btn-ghost gap-2 text-xs font-bold uppercase tracking-widest">
-          <ArrowLeft className="w-4 h-4" /> Back to Inventory
+    <div className="max-w-7xl mx-auto space-y-16 pb-32 fade-in">
+      {/* Navigation Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 px-4">
+        <button 
+            onClick={() => navigate(-1)} 
+            className="group flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] italic text-gray-400 hover:text-gray-950 transition-colors"
+        >
+          <ArrowLeft size={18} className="group-hover:-translate-x-2 transition-transform" /> BACK TO INVENTORY
         </button>
-        <div className="flex gap-4">
-          <Link to={`/farmer/listings/edit/${id}`} className="btn btn-outline text-xs uppercase tracking-widest px-6">Edit Listing</Link>
-          <button className="btn bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 text-xs uppercase tracking-widest px-6">Deactivate</button>
+        <div className="flex gap-6 w-full md:w-auto">
+          <Link 
+            to={`/farmer/listings/edit/${id}`} 
+            className="flex-1 md:flex-none px-10 py-5 bg-white border border-gray-100 text-gray-950 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] italic shadow-sm hover:shadow-xl hover:border-primary/20 transition-all text-center"
+          >
+            EDIT PARAMS
+          </Link>
+          <button className="flex-1 md:flex-none px-10 py-5 bg-gray-950 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] italic shadow-2xl shadow-gray-200 hover:bg-error transition-all">
+            DECOMMISSION NODE
+          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* Main Content Column */}
-        <div className="lg:col-span-8 space-y-10">
-          <div className="stitch-card overflow-hidden">
-            <div className="aspect-[21/9] bg-gray-900 relative">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 px-4">
+        {/* Main Intelligence Cluster */}
+        <div className="lg:col-span-8 space-y-12">
+          <div className="stitch-card overflow-hidden bg-white shadow-2xl shadow-gray-200/50">
+            <div className="aspect-[21/10] bg-gray-950 relative overflow-hidden group/hero">
               {listing.images?.[0] ? (
-                <img src={sanitizeUrl(listing.images[0])} alt={listing.product} className="w-full h-full object-cover opacity-80" />
+                <img src={sanitizeUrl(listing.images[0])} alt={listing.productName} className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-1000" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-700 bg-gray-100">
-                  <Package size={64} className="opacity-20" />
+                <div className="w-full h-full flex items-center justify-center text-gray-800 bg-gray-900">
+                  <Package size={80} className="opacity-10" />
                 </div>
               )}
-              <div className="absolute top-6 left-6">
-                <SBTBadge badge={{ name: 'Certified', type: 'quality', description: 'AI Verified' }} size="md" />
+              
+              <div className="absolute top-8 left-8">
+                <SBTBadge badge={{ name: 'CERTIFIED', type: 'quality', description: 'AI VERIFIED' }} size="md" />
               </div>
-              <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-gray-900 to-transparent">
-                <div className="flex justify-between items-end">
-                  <div className="space-y-2">
-                    <div className="badge badge-farmer">Active Listing</div>
-                    <h1 className="text-4xl font-bold text-white tracking-tight italic">{listing.product}</h1>
-                    <p className="flex items-center gap-2 text-primary-100/60 font-medium">
-                      <MapPin className="w-4 h-4" /> {listing.location || 'Regional Cluster'}
-                    </p>
+
+              <div className="absolute bottom-0 left-0 right-0 p-10 bg-gradient-to-t from-gray-950 via-gray-950/80 to-transparent">
+                <div className="flex flex-col md:flex-row justify-between items-end gap-8 relative z-10">
+                  <div className="space-y-4">
+                    <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-primary/20 text-primary rounded-xl text-[9px] font-black uppercase tracking-widest italic border border-primary/20">
+                        <Activity size={14} className="animate-pulse" /> ACTIVE PULSE
+                    </div>
+                    <h1 className="text-5xl md:text-6xl font-black text-white tracking-tighter italic leading-none">{listing.productName}</h1>
+                    <div className="flex items-center gap-4 text-white/60 font-black italic text-xs uppercase tracking-[0.2em]">
+                      <MapPin className="w-4 h-4 text-primary" /> {listing.location || 'REGIONAL CLUSTER ALPHA'}
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-primary-400">Asking Price</p>
-                    <p className="text-4xl font-bold text-white italic">{formatCurrency(listing.pricePerUnit)}<span className="text-lg not-italic text-white/40">/{listing.unit}</span></p>
+                  <div className="text-right space-y-2">
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary italic leading-none">ASKING PRICE</p>
+                    <div className="flex items-end justify-end gap-2">
+                        <span className="text-5xl font-black text-white italic tracking-tighter leading-none">{formatCurrency(listing.expectedPrice)}</span>
+                        <span className="text-xl font-black text-white/40 italic leading-none">/{listing.unit || 'Qtl'}</span>
+                    </div>
                   </div>
                 </div>
               </div>
+              
+              {/* Scanline Effect */}
+              <div className="absolute inset-0 pointer-events-none bg-scanline opacity-5"></div>
             </div>
             
-            <div className="p-10 space-y-10">
-              <div className="grid grid-cols-3 gap-6">
-                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 space-y-2">
-                  <Scale className="w-5 h-5 text-primary" />
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none">Net Quantity</p>
-                  <p className="text-xl font-bold text-gray-900">{listing.quantity} {listing.unit}</p>
+            <div className="p-12 space-y-12">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+                <div className="p-8 bg-gray-50 rounded-[2rem] border border-gray-100 space-y-4 group/stat hover:bg-white hover:shadow-2xl transition-all duration-500">
+                  <div className="w-12 h-12 bg-gray-950 text-primary rounded-xl flex items-center justify-center shadow-2xl group-hover/stat:rotate-6 transition-transform">
+                    <Scale size={24} />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] italic leading-none mb-2">NET PAYLOAD</p>
+                    <p className="text-2xl font-black text-gray-950 italic leading-none">{listing.quantity} {listing.unit || 'Qtl'}</p>
+                  </div>
                 </div>
-                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 space-y-2">
-                  <TrendingUp className="w-5 h-5 text-secondary" />
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none">Market Demand</p>
-                  <p className="text-xl font-bold text-gray-900">High</p>
+                <div className="p-8 bg-gray-50 rounded-[2rem] border border-gray-100 space-y-4 group/stat hover:bg-white hover:shadow-2xl transition-all duration-500">
+                  <div className="w-12 h-12 bg-gray-950 text-secondary rounded-xl flex items-center justify-center shadow-2xl group-hover/stat:rotate-6 transition-transform">
+                    <TrendingUp size={24} />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] italic leading-none mb-2">MARKET INTENSITY</p>
+                    <p className="text-2xl font-black text-gray-950 italic leading-none">HIGH DELTA</p>
+                  </div>
                 </div>
-                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 space-y-2">
-                  <Clock className="w-5 h-5 text-tertiary" />
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none">Listed On</p>
-                  <p className="text-xl font-bold text-gray-900">{formatDateTime(listing.createdAt).split(',')[0]}</p>
+                <div className="p-8 bg-gray-50 rounded-[2rem] border border-gray-100 space-y-4 group/stat hover:bg-white hover:shadow-2xl transition-all duration-500 hidden md:block">
+                  <div className="w-12 h-12 bg-gray-950 text-tertiary rounded-xl flex items-center justify-center shadow-2xl group-hover/stat:rotate-6 transition-transform">
+                    <Clock size={24} />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] italic leading-none mb-2">REGISTRY DATE</p>
+                    <p className="text-2xl font-black text-gray-950 italic leading-none">{formatDateTime(listing.createdAt).split(',')[0].toUpperCase()}</p>
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <FileText className="text-gray-400" size={20} />
-                  <h3 className="text-xl font-bold text-gray-900 tracking-tight italic">Product <span className="not-italic">Specs</span></h3>
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400 border border-gray-100">
+                    <FileText size={20} />
+                  </div>
+                  <h3 className="text-3xl font-black text-gray-950 tracking-tight italic leading-none">Asset <span className="not-italic text-primary">Specifications.</span></h3>
                 </div>
                 <div 
-                  className="text-gray-600 leading-relaxed prose prose-sm max-w-none"
-                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(listing.description || 'No description provided.') }}
+                  className="text-gray-500 leading-relaxed font-medium text-lg italic bg-gray-50/50 p-10 rounded-[2.5rem] border border-dashed border-gray-200"
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(listing.description || 'NODE METADATA NOT PROVIDED.') }}
                 />
               </div>
             </div>
           </div>
 
-          <section className="stitch-card p-10 space-y-8">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <Gavel className="text-gray-400" />
-                <h3 className="text-2xl font-bold text-gray-900 tracking-tight italic">Live <span className="not-italic">Bids</span></h3>
+          {/* Bidding Nexus Surface */}
+          <section className="stitch-card p-12 bg-white shadow-2xl shadow-gray-200/50 space-y-10 relative overflow-hidden">
+            <div className="flex justify-between items-center relative z-10">
+              <div className="flex items-center gap-6">
+                <div className="w-14 h-14 bg-gray-950 text-white rounded-2xl flex items-center justify-center shadow-2xl">
+                    <Gavel size={28} />
+                </div>
+                <div className="space-y-1">
+                    <h3 className="text-3xl font-black text-gray-950 tracking-tight italic leading-none">Negotiation <span className="not-italic text-primary">Nexus.</span></h3>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] italic leading-none">Inbound Liquidity Channels</p>
+                </div>
               </div>
-              <span className="badge badge-farmer">{bids.length} Active</span>
+              <div className="px-6 py-2 bg-primary/10 text-primary rounded-xl text-[10px] font-black uppercase tracking-widest italic border border-primary/10 shadow-sm">
+                {bids.length} ACTIVE BIDS
+              </div>
             </div>
             
-            {bids.length === 0 ? (
-              <div className="text-center py-10 space-y-4">
-                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto text-gray-200">
-                  <Gavel size={32} />
+            <div className="relative z-10">
+                {bids.length === 0 ? (
+                <div className="text-center py-20 space-y-6">
+                    <div className="w-24 h-24 bg-gray-50 rounded-[2rem] flex items-center justify-center mx-auto text-gray-200 border border-gray-100">
+                    <Gavel size={48} />
+                    </div>
+                    <p className="text-xl font-bold text-gray-400 italic">No inbound offers detected for this node registry yet.</p>
                 </div>
-                <p className="text-sm text-gray-400 italic">No bids received for this listing yet.</p>
-              </div>
-            ) : (
-              <div className="divide-y divide-gray-100">
-                {bids.map((bid) => (
-                  <div key={bid.id} className="py-6 flex items-center justify-between group">
-                    <div className="space-y-1">
-                      <p className="font-bold text-gray-900 text-lg">{bid.buyerName}</p>
-                      <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{bid.quantity} {listing.unit}</span>
-                        <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{formatDateTime(bid.date)}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-8">
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-primary italic leading-none">{formatCurrency(bid.amount)}<span className="text-sm not-italic text-gray-300">/{listing.unit}</span></p>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Value: {formatCurrency(bid.amount * bid.quantity)}</p>
-                      </div>
-                      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-primary-50 hover:text-primary border border-transparent hover:border-primary-100 transition-all">
-                          <MessageCircle size={18} />
-                        </button>
-                        <button 
-                          onClick={() => handleAcceptBid(bid.id)}
-                          className="btn btn-primary py-2 px-6 rounded-xl text-[10px] uppercase tracking-widest"
-                        >
-                          Accept
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                ) : (
+                <div className="space-y-6">
+                    {bids.map((bid, idx) => (
+                    <motion.div 
+                        key={bid.id} 
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.1 }}
+                        className="p-8 rounded-[2.5rem] bg-gray-50/50 border border-transparent hover:border-primary/10 hover:bg-white hover:shadow-2xl transition-all group/bid"
+                    >
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                            <div className="flex items-center gap-8 flex-1">
+                                <div className="w-16 h-16 bg-gray-950 text-primary rounded-2xl flex items-center justify-center font-black text-2xl italic shadow-2xl group-hover/bid:rotate-6 transition-all duration-500">
+                                    {bid.buyerName?.charAt(0)}
+                                </div>
+                                <div className="space-y-3">
+                                    <p className="font-black text-gray-950 text-2xl italic tracking-tight leading-none group-hover/bid:text-primary transition-colors">{bid.buyerName}</p>
+                                    <div className="flex flex-wrap items-center gap-6">
+                                        <div className="flex items-center gap-3 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] italic leading-none">
+                                            <Scale size={14} className="text-secondary" /> {bid.quantity} {listing.unit || 'Qtl'}
+                                        </div>
+                                        <div className="flex items-center gap-3 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] italic leading-none">
+                                            <Clock size={14} /> {formatDateTime(bid.date).toUpperCase()}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-10">
+                                <div className="text-right space-y-2">
+                                    <p className="text-3xl font-black text-primary italic tracking-tighter leading-none">{formatCurrency(bid.amount)}<span className="text-sm not-italic text-gray-300 ml-1">/{listing.unit || 'Qtl'}</span></p>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] italic leading-none">TOTAL VALUE: {formatCurrency(bid.amount * bid.quantity)}</p>
+                                </div>
+                                <div className="flex gap-4 opacity-0 group-hover/bid:opacity-100 transition-all">
+                                    <button className="w-14 h-14 rounded-2xl bg-white text-gray-400 flex items-center justify-center hover:bg-gray-950 hover:text-white border border-gray-100 shadow-sm transition-all">
+                                        <MessageCircle size={24} />
+                                    </button>
+                                    <button 
+                                        onClick={() => handleAcceptBid(bid.id)}
+                                        className="px-8 py-4 bg-gray-950 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] italic hover:bg-primary transition-all shadow-2xl shadow-gray-200"
+                                    >
+                                        AUTHORIZE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                    ))}
+                </div>
+                )}
+            </div>
+
+            {/* Background Decor */}
+            <div className="absolute top-0 right-0 p-10 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
+                <Handshake size={200} className="-rotate-12" />
+            </div>
           </section>
         </div>
 
-        {/* Sidebar Column */}
-        <div className="lg:col-span-4 space-y-10">
+        {/* Intelligence Sidebar */}
+        <div className="lg:col-span-4 space-y-12">
           <AIGradeCard 
             grade={listing.aiGrade || 'A'}
             qualityMetrics={{
@@ -224,65 +323,92 @@ const ProductDetailPage = () => {
               size: '8.5mm'
             }}
             pricePrediction={{
-              estimatedPrice: listing.pricePerUnit,
-              minPrice: listing.pricePerUnit * 0.95,
-              maxPrice: listing.pricePerUnit * 1.05,
+              estimatedPrice: listing.expectedPrice,
+              minPrice: listing.expectedPrice * 0.95,
+              maxPrice: listing.expectedPrice * 1.05,
               confidence: 92,
-              bestTimeframe: 'Apply for Bidding'
+              bestTimeframe: 'NOW'
             }}
           />
 
-          <div className="stitch-card p-8 space-y-8">
-            <h3 className="text-xl font-bold text-gray-900 italic tracking-tight">Market <span className="not-italic">Performance</span></h3>
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 text-gray-500">
-                  <Eye size={18} />
-                  <span className="text-xs font-medium">Platform Views</span>
+          <div className="stitch-card p-10 space-y-10 bg-white shadow-2xl shadow-gray-200/50 group overflow-hidden">
+            <div className="flex items-center gap-5">
+                <div className="w-14 h-14 bg-gray-950 text-white rounded-2xl flex items-center justify-center shadow-2xl group-hover:rotate-6 transition-all duration-700">
+                    <BarChart3 size={28} />
                 </div>
-                <span className="font-bold text-gray-900">{listing.views || 142}</span>
+                <div className="space-y-1">
+                    <h3 className="text-2xl font-bold text-gray-950 italic tracking-tight leading-none">Market <span className="not-italic text-primary">Performance.</span></h3>
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest italic leading-none">Real-time engagement telemetry</p>
+                </div>
+            </div>
+
+            <div className="space-y-8">
+              <div className="flex items-center justify-between group/perf">
+                <div className="flex items-center gap-4 text-gray-500">
+                  <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center group-hover/perf:bg-primary/10 group-hover/perf:text-primary transition-colors">
+                    <Eye size={20} />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-widest italic">Platform Views</span>
+                </div>
+                <span className="text-xl font-black text-gray-950 italic tracking-tighter">{listing.views || 142}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 text-gray-500">
-                  <Gavel size={18} />
-                  <span className="text-xs font-medium">Bids Placed</span>
+              <div className="flex items-center justify-between group/perf">
+                <div className="flex items-center gap-4 text-gray-500">
+                  <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center group-hover/perf:bg-primary/10 group-hover/perf:text-primary transition-colors">
+                    <Gavel size={20} />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-widest italic">Bids Synchronized</span>
                 </div>
-                <span className="font-bold text-gray-900">{bids.length}</span>
+                <span className="text-xl font-black text-gray-950 italic tracking-tighter">{bids.length}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 text-gray-500">
-                  <TrendingUp size={18} />
-                  <span className="text-xs font-medium">Conversion Rate</span>
+              <div className="flex items-center justify-between group/perf">
+                <div className="flex items-center gap-4 text-gray-500">
+                  <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center group-hover/perf:bg-primary/10 group-hover/perf:text-primary transition-colors">
+                    <TrendingUp size={20} />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-widest italic">Node Velocity</span>
                 </div>
-                <span className="font-bold text-primary">8.4%</span>
+                <span className="text-xl font-black text-primary italic tracking-tighter">8.4%</span>
               </div>
             </div>
             
-            <div className="pt-6 border-t border-gray-100">
-              <div className="bg-primary-50 rounded-2xl p-6 flex items-center gap-4">
-                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shrink-0">
-                  <Target size={20} className="text-white" />
+            <div className="pt-8 border-t border-gray-50">
+              <div className="bg-primary/5 rounded-[1.8rem] p-8 flex items-start gap-5 group/ai border border-primary/10 relative overflow-hidden">
+                <div className="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center shrink-0 shadow-2xl relative z-10">
+                  <Target size={24} />
                 </div>
-                <div className="space-y-1">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary leading-none">AI Insight</p>
-                  <p className="text-xs text-primary-900/80 font-medium">High demand for {listing.product} in nearby clusters.</p>
+                <div className="space-y-2 relative z-10">
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary italic leading-none">AI INSIGHT</p>
+                  <p className="text-sm text-gray-600 font-bold italic leading-relaxed">High-intensity demand detected for <span className="text-gray-950">{listing.productName}</span> in nearby hub clusters.</p>
+                </div>
+                <div className="absolute top-0 right-0 p-6 opacity-[0.05] group-hover/ai:opacity-[0.15] transition-opacity">
+                    <Zap size={60} />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="stitch-card p-8 bg-gray-900 text-white space-y-6 relative overflow-hidden">
-            <div className="relative z-10 space-y-4">
-              <div className="flex items-center gap-2 text-primary-400">
-                <Shield size={18} />
-                <h4 className="text-[10px] font-bold uppercase tracking-widest">Escrow Protected</h4>
+          <div className="stitch-card p-12 bg-gray-950 text-white space-y-8 relative overflow-hidden group">
+            <div className="relative z-10 space-y-6">
+              <div className="flex items-center gap-4 text-primary">
+                <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center border border-primary/20 shadow-2xl">
+                    <ShieldCheck size={24} />
+                </div>
+                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] italic">ESCROW PROTECTED</h4>
               </div>
-              <p className="text-xs text-white/60 leading-relaxed font-medium">
-                All bids on SmartKissan are backed by blockchain-verified escrow deposits. 
-                Payment is guaranteed upon successful delivery verification.
+              <p className="text-sm text-gray-400 leading-relaxed font-medium italic">
+                All bids on <span className="text-white font-black">Smart-Kissan</span> are backed by blockchain-verified sovereign deposits. Payment is guaranteed upon successful logistical verification.
               </p>
+              <div className="pt-4">
+                <button className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-primary italic hover:text-white transition-colors group/btn">
+                    PROTOCOL DETAILS <ChevronRight size={14} className="group-hover/btn:translate-x-2 transition-transform" />
+                </button>
+              </div>
             </div>
-            <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-primary-500/10 rounded-full blur-3xl"></div>
+            <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-primary/10 rounded-full blur-[100px] group-hover:opacity-30 transition-opacity duration-1000"></div>
+            <div className="absolute top-0 left-0 p-8 opacity-[0.02]">
+                <Globe size={120} />
+            </div>
           </div>
         </div>
       </div>

@@ -16,7 +16,17 @@ import {
   Award,
   MoreVertical,
   Activity,
-  History
+  History,
+  Fingerprint,
+  Sparkles,
+  Shield,
+  Workflow,
+  Cpu,
+  MoreHorizontal,
+  ArrowRight,
+  TrendingUp,
+  MessageCircle,
+  CheckCircle
 } from 'lucide-react';
 import disputeService from '../../services/disputeService';
 import ratingService from '../../services/ratingService';
@@ -51,11 +61,12 @@ const DisputesRatingsPage = () => {
       }
       
       // Mock data if empty for demo
-      if (activeTab === 'disputes' && disputes.length === 0) {
+      if (activeTab === 'disputes' && (disputes.length === 0 || !disputes)) {
         setDisputes([
           { _id: 'D-101', orderId: 'ORD-9988', reason: 'Logistics Delay (Non-Farmer Error)', status: 'IN_REVIEW', createdAt: new Date() }
         ]);
-      } else if (activeTab === 'reviews' && reviews.length === 0) {
+      } 
+      if (activeTab === 'reviews' && (reviews.length === 0 || !reviews)) {
         setReviews([
           { _id: 'R-1', reviewerName: 'Rahul Kumar', score: 5, comment: 'Premium grade Basmati. Packaging was exceptional.', createdAt: new Date() },
           { _id: 'R-2', reviewerName: 'Mandi Trader', score: 4, comment: 'Good consistency. Verified weight matched perfectly.', createdAt: new Date(Date.now() - 172800000) }
@@ -63,6 +74,7 @@ const DisputesRatingsPage = () => {
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
+      toast.error('Trust Nexus Uplink Failed');
     } finally {
       setLoading(false);
     }
@@ -70,218 +82,271 @@ const DisputesRatingsPage = () => {
 
   const getStatusVariant = (status: string) => {
     switch (status.toUpperCase()) {
-      case 'PENDING': return 'bg-orange-50 text-orange-600 border-orange-100';
-      case 'RESOLVED': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
-      case 'IN_REVIEW': return 'bg-blue-50 text-blue-600 border-blue-100';
-      default: return 'bg-gray-50 text-gray-600 border-gray-100';
+      case 'PENDING': return 'warning';
+      case 'RESOLVED': return 'success';
+      case 'IN_REVIEW': return 'secondary';
+      default: return 'primary';
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-10 pb-20">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">
-            <span>Identity</span>
-            <ChevronRight size={10} />
-            <span className="text-gray-900">Trust Center</span>
+    <div className="max-w-7xl mx-auto space-y-16 pb-32 fade-in">
+      {/* Premium Trust Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 relative overflow-hidden p-4">
+        <div className="space-y-6 relative z-10">
+          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-primary italic">
+            <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></div>
+            Reputation & Protection Protocol v5.0.2
           </div>
-          <h1 className="text-3xl font-black text-gray-900">Reputation & Protection</h1>
+          <h1 className="text-6xl md:text-7xl font-bold text-gray-950 tracking-tighter italic leading-none">
+            Trust <span className="not-italic text-primary">Nexus.</span>
+          </h1>
+          <p className="text-gray-400 font-medium max-w-xl text-xl leading-relaxed italic">
+            Managing <span className="text-gray-900 font-black italic">institutional reputation score</span>. Real-time sovereign trust synchronization active.
+          </p>
         </div>
         
-        <div className="flex gap-2 p-1 bg-gray-50 rounded-2xl w-fit border border-gray-100 shadow-inner">
-          {[
-            { label: 'Active Disputes', value: 'disputes' },
-            { label: 'Buyer Feedback', value: 'reviews' }
-          ].map((tab) => (
-            <button 
-              key={tab.value}
-              onClick={() => setActiveTab(tab.value as any)}
-              className={`px-8 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                activeTab === tab.value 
-                  ? 'bg-white text-emerald-600 shadow-md' 
-                  : 'text-gray-400 hover:text-gray-600'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className="flex items-center gap-4 p-2 bg-gray-50/50 backdrop-blur-xl rounded-[2.5rem] border border-gray-100 relative z-10">
+            {[
+                { label: 'ACTIVE DISPUTES', value: 'disputes' },
+                { label: 'BUYER REVIEWS', value: 'reviews' }
+            ].map((tab) => (
+                <button
+                    key={tab.value}
+                    onClick={() => setActiveTab(tab.value as any)}
+                    className={`px-8 py-4 rounded-[2rem] text-[10px] font-black uppercase tracking-[0.2em] italic transition-all ${
+                        activeTab === tab.value 
+                        ? 'bg-white text-primary shadow-xl border border-primary/10' 
+                        : 'text-gray-400 hover:text-gray-600'
+                    }`}
+                >
+                    {tab.label}
+                </button>
+            ))}
+        </div>
+
+        {/* Decorative Background Text */}
+        <div className="absolute top-0 right-0 opacity-[0.02] pointer-events-none select-none -mr-20">
+            <h1 className="text-[15rem] font-black italic tracking-tighter">REPUTE</h1>
         </div>
       </div>
 
-      {/* Trust KPI Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="bg-emerald-900 rounded-[3rem] p-10 text-white relative overflow-hidden group col-span-1 md:col-span-2">
-          <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
-            <div className="w-24 h-24 bg-white/10 backdrop-blur-xl rounded-[2rem] border border-white/20 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
-              <ShieldCheck size={48} className="text-emerald-400" />
+      {/* Trust Intelligence Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 px-4">
+        <div className="lg:col-span-8 stitch-card p-12 bg-gray-950 text-white relative overflow-hidden group shadow-2xl shadow-gray-950/20">
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
+            <div className="w-28 h-28 bg-white/10 backdrop-blur-3xl rounded-[2.5rem] border border-white/10 flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-1000">
+              <ShieldCheck size={56} className="text-primary" />
             </div>
-            <div className="flex-1 text-center md:text-left space-y-2">
-              <h3 className="text-3xl font-black italic">Elite Status</h3>
-              <p className="text-emerald-50/70 font-medium leading-relaxed max-w-md">
-                Your account is in the <span className="text-white font-black">Top 15%</span> of verified farmers. You qualify for Instant Escrow Payouts and 0% Dispute Surcharge.
+            <div className="flex-1 text-center md:text-left space-y-4">
+              <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-primary/20 text-primary rounded-xl text-[9px] font-black uppercase tracking-widest italic border border-primary/20">
+                <Award size={14} /> Platinum Tier Asset
+              </div>
+              <h3 className="text-4xl font-bold italic tracking-tighter leading-none">Sovereign Elite Status</h3>
+              <p className="text-gray-400 font-medium italic text-lg leading-relaxed max-w-lg">
+                Your node is in the <span className="text-white font-black italic">Top 15%</span> of verified farmers. Global priority routing enabled.
               </p>
-              <div className="pt-4 flex flex-wrap justify-center md:justify-start gap-4">
-                <div className="px-4 py-2 bg-white/10 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
-                  <Award size={14} className="text-orange-400" /> Platinum Tier
+              <div className="pt-4 flex flex-wrap justify-center md:justify-start gap-6">
+                <div className="px-6 py-3 bg-white/5 rounded-2xl text-[10px] font-black uppercase tracking-widest italic flex items-center gap-3 border border-white/5 group-hover:border-primary/20 transition-colors">
+                  <Fingerprint size={16} className="text-primary" /> Biometric Verified
                 </div>
-                <div className="px-4 py-2 bg-white/10 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
-                  <Zap size={14} className="text-emerald-400" /> Verified Seller
+                <div className="px-6 py-3 bg-white/5 rounded-2xl text-[10px] font-black uppercase tracking-widest italic flex items-center gap-3 border border-white/5 group-hover:border-primary/20 transition-colors">
+                  <Zap size={16} className="text-primary" /> Instant Liquidity
                 </div>
               </div>
             </div>
             
-            <div className="shrink-0 flex gap-8 border-l border-white/10 pl-10 hidden lg:flex">
-              <div className="text-center">
-                <p className="text-5xl font-black text-emerald-400">{user?.trustScore || 100}</p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-emerald-50/50 mt-2">Trust Score</p>
+            <div className="shrink-0 flex gap-12 border-l border-white/5 pl-12 hidden xl:flex">
+              <div className="text-center space-y-2">
+                <p className="text-6xl font-black text-primary italic tracking-tighter leading-none">{user?.trustScore || 100}</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-white/20 italic leading-none">TRUST INDEX</p>
               </div>
-              <div className="text-center">
-                <p className="text-5xl font-black text-emerald-400">4.8</p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-emerald-50/50 mt-2">Avg Rating</p>
+              <div className="text-center space-y-2">
+                <p className="text-6xl font-black text-primary italic tracking-tighter leading-none">4.8</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-white/20 italic leading-none">HUB RATING</p>
               </div>
             </div>
           </div>
-          <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500 rounded-full blur-[120px] opacity-20 -mr-40 -mt-40 group-hover:opacity-30 transition-opacity duration-1000"></div>
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[150px] -mr-64 -mt-64 group-hover:opacity-40 transition-opacity duration-1000"></div>
         </div>
 
-        <div className="bg-white rounded-[3rem] border border-gray-100 p-10 shadow-sm flex flex-col justify-center text-center space-y-4">
-          <div className="w-20 h-20 bg-gray-50 rounded-[1.5rem] flex items-center justify-center mx-auto text-emerald-600 border border-gray-100">
-            <Activity size={32} />
+        <div className="lg:col-span-4 stitch-card p-12 bg-white shadow-2xl shadow-gray-200/50 flex flex-col justify-center text-center space-y-8 group">
+          <div className="w-20 h-20 bg-gray-50 rounded-[1.8rem] flex items-center justify-center mx-auto text-primary border border-gray-100 group-hover:scale-110 group-hover:bg-gray-950 group-hover:text-white transition-all duration-700 shadow-inner">
+            <Activity size={36} />
           </div>
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Response Velocity</p>
-            <h4 className="text-2xl font-black text-gray-900">Excellent</h4>
-            <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mt-1">Avg: 1.2 Hours</p>
+          <div className="space-y-2">
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 italic leading-none">RESPONSE VELOCITY</p>
+            <h4 className="text-4xl font-bold text-gray-950 italic tracking-tighter">Excellent</h4>
+            <div className="inline-flex px-4 py-1.5 rounded-xl bg-success/10 text-[10px] font-black text-success uppercase tracking-widest italic border border-success/10">
+              AVG: 1.2 HOURS
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="space-y-6">
+      {/* content Surface */}
+      <div className="relative min-h-[400px] px-4">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {[1, 2].map(n => (
-              <div key={n} className="h-48 bg-white rounded-[3rem] animate-pulse border border-gray-50" />
+              <div key={n} className="h-60 bg-white rounded-[3.5rem] animate-pulse border border-gray-50 shadow-sm" />
             ))}
           </div>
         ) : activeTab === 'disputes' ? (
-          <div className="space-y-6">
+          <div className="space-y-12">
             {disputes.length === 0 ? (
-              <div className="bg-white rounded-[4rem] p-24 text-center space-y-6 border border-gray-50 shadow-sm">
-                <div className="w-32 h-32 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto shadow-inner">
-                  <CheckCircle2 size={64} />
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-white rounded-[4rem] p-40 text-center space-y-10 border border-gray-50 shadow-2xl shadow-gray-200/50 relative overflow-hidden"
+              >
+                <div className="relative z-10">
+                    <div className="w-32 h-32 bg-primary/5 text-primary rounded-[2.5rem] flex items-center justify-center mx-auto border border-primary/10 shadow-2xl shadow-primary/10 group-hover:scale-110 transition-transform">
+                        <CheckCircle2 size={72} />
+                    </div>
+                    <div className="space-y-4 pt-10">
+                        <h3 className="text-4xl font-bold text-gray-950 italic tracking-tight">Registry Absolute.</h3>
+                        <p className="text-gray-400 font-medium italic text-xl max-w-xl mx-auto">Your track record is flawless. All regional nodes operating within trust parameters.</p>
+                    </div>
                 </div>
-                <div className="space-y-2">
-                  <h3 className="text-3xl font-black text-gray-900">Zero Pending Disputes</h3>
-                  <p className="text-gray-500 font-medium max-w-sm mx-auto">Your track record is flawless. Keep up the high-quality fulfillment!</p>
+                {/* Background Decor */}
+                <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
+                    <svg viewBox="0 0 100 100" className="w-full h-full">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="0.5" />
+                    </svg>
                 </div>
-              </div>
+              </motion.div>
             ) : (
-              disputes.map((dispute) => (
-                <motion.div 
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  key={dispute._id} 
-                  className="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-emerald-100/30 transition-all group cursor-pointer relative overflow-hidden"
-                >
-                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-10">
-                    <div className="flex items-start gap-8 flex-1">
-                      <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center shrink-0 shadow-inner border border-transparent ${getStatusVariant(dispute.status)}`}>
-                        <AlertCircle size={32} />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <div className="flex flex-wrap items-center gap-3">
-                          <h4 className="text-2xl font-black text-gray-900 group-hover:text-emerald-600 transition-colors">Case #{dispute.orderId}</h4>
-                          <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${getStatusVariant(dispute.status)}`}>
-                            {dispute.status.replace('_', ' ')}
-                          </span>
-                        </div>
-                        <p className="text-lg font-bold text-gray-500 max-w-xl">{dispute.reason}</p>
-                        <div className="flex items-center gap-6 pt-2">
-                          <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest flex items-center gap-2">
-                            <History size={14} /> Reported: {new Date(dispute.createdAt).toLocaleDateString()}
-                          </p>
-                          <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest flex items-center gap-2">
-                            <ShieldCheck size={14} /> Kissan-Justice Mediation
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+              <div className="space-y-8">
+                {disputes.map((dispute, idx) => (
+                    <motion.div 
+                        key={dispute._id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.08 }}
+                        className="stitch-card p-12 bg-white shadow-2xl shadow-gray-200/50 group relative overflow-hidden"
+                    >
+                        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
+                            <div className="flex items-center gap-10 flex-1">
+                                <div className={`w-24 h-24 rounded-[2rem] flex items-center justify-center shrink-0 shadow-inner border border-transparent bg-${getStatusVariant(dispute.status)}/10 text-${getStatusVariant(dispute.status)} group-hover:scale-110 transition-transform duration-700`}>
+                                    <AlertCircle size={48} />
+                                </div>
+                                
+                                <div className="space-y-4">
+                                    <div className="flex flex-wrap items-center gap-6">
+                                        <h4 className="text-3xl font-bold text-gray-950 italic tracking-tight group-hover:text-primary transition-colors leading-none">CASE #{dispute.orderId}</h4>
+                                        <span className={`px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest italic bg-${getStatusVariant(dispute.status)}/10 text-${getStatusVariant(dispute.status)} border border-${getStatusVariant(dispute.status)}/10`}>
+                                            {dispute.status.replace('_', ' ')}
+                                        </span>
+                                    </div>
+                                    <p className="text-xl font-bold text-gray-400 italic max-w-xl leading-relaxed">{dispute.reason}</p>
+                                    <div className="flex flex-wrap items-center gap-10 pt-2">
+                                        <p className="text-[10px] text-gray-300 font-black uppercase tracking-[0.2em] italic flex items-center gap-3">
+                                            <History size={16} /> REPORTED: {new Date(dispute.createdAt).toLocaleDateString()}
+                                        </p>
+                                        <p className="text-[10px] text-primary font-black uppercase tracking-[0.2em] italic flex items-center gap-3">
+                                            <Shield size={16} /> KISSAN-JUSTICE MEDIATION ACTIVE
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
 
-                    <div className="flex items-center gap-4 w-full md:w-auto">
-                      <button className="flex-1 md:flex-none px-10 py-5 bg-gray-900 text-white rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-gray-100">
-                        View Case Logs
-                      </button>
-                      <button className="p-5 bg-gray-50 rounded-2xl text-gray-400 hover:text-gray-600 transition-all">
-                        <MoreVertical size={20} />
-                      </button>
-                    </div>
-                  </div>
-                  {/* Progress Line */}
-                  <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-50">
-                    <div className="h-full bg-emerald-500 w-1/3" />
-                  </div>
-                </motion.div>
-              ))
+                            <div className="flex items-center gap-6 w-full lg:w-auto">
+                                <button className="flex-1 lg:flex-none px-12 py-6 bg-gray-950 text-white rounded-[1.5rem] font-black text-[11px] uppercase tracking-[0.4em] italic hover:bg-primary transition-all shadow-2xl shadow-gray-200 group/btn relative overflow-hidden">
+                                    <span className="relative z-10 flex items-center justify-center gap-4">
+                                        ANALYZE CASE LOGS <ArrowRight size={20} className="group-hover/btn:translate-x-3 transition-transform" />
+                                    </span>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                </button>
+                                <button className="p-5 bg-gray-50 rounded-2xl text-gray-300 hover:text-gray-950 transition-all shadow-sm">
+                                    <MoreHorizontal size={28} />
+                                </button>
+                            </div>
+                        </div>
+                        {/* Status Progress Line */}
+                        <div className="absolute bottom-0 left-0 w-full h-1.5 bg-gray-50">
+                            <motion.div 
+                                initial={{ width: 0 }}
+                                animate={{ width: '33.33%' }}
+                                transition={{ duration: 1.5, ease: "easeOut" }}
+                                className={`h-full bg-${getStatusVariant(dispute.status)} shadow-2xl`} 
+                            />
+                        </div>
+                    </motion.div>
+                ))}
+              </div>
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {reviews.length === 0 ? (
-              <div className="col-span-full bg-white rounded-[4rem] p-24 text-center space-y-6 border border-gray-50 shadow-sm">
-                <Star size={64} className="text-gray-200 mx-auto" />
-                <h3 className="text-3xl font-black text-gray-900">Awaiting Feedback</h3>
-                <p className="text-gray-500 font-medium max-w-sm mx-auto">Complete more successful deliveries to start seeing buyer appraisals here.</p>
-              </div>
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="col-span-full bg-white rounded-[4rem] p-40 text-center space-y-10 border border-gray-50 shadow-2xl shadow-gray-200/50 relative overflow-hidden"
+              >
+                <div className="relative z-10">
+                    <div className="w-32 h-32 bg-gray-50 text-gray-200 rounded-[2.5rem] flex items-center justify-center mx-auto border border-gray-100 shadow-xl">
+                        <Star size={72} />
+                    </div>
+                    <div className="space-y-4 pt-10">
+                        <h3 className="text-4xl font-bold text-gray-950 italic tracking-tight">Signal Lost.</h3>
+                        <p className="text-gray-400 font-medium italic text-xl max-w-xl mx-auto">Awaiting buyer appraisal nodes. Complete more successful cycles to populate this grid.</p>
+                    </div>
+                </div>
+              </motion.div>
             ) : (
-              reviews.map((review) => (
+              reviews.map((review, idx) => (
                 <motion.div 
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  key={review._id} 
-                  className="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-emerald-100/30 transition-all group space-y-8"
+                    key={review._id}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: idx * 0.1 }}
+                    className="stitch-card p-12 bg-white shadow-2xl shadow-gray-200/50 group space-y-10 relative overflow-hidden"
                 >
-                  <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-[1.5rem] bg-gray-50 text-emerald-600 flex items-center justify-center font-black text-xl border border-gray-100 shadow-inner group-hover:scale-110 transition-transform">
-                        {review.reviewerName?.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="text-xl font-black text-gray-900">{review.reviewerName || 'Anonymous Buyer'}</p>
-                        <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-0.5">
-                          Verified Contract Partner
+                    <div className="flex justify-between items-start relative z-10">
+                        <div className="flex items-center gap-6">
+                            <div className="w-20 h-20 rounded-[1.8rem] bg-gray-950 text-primary flex items-center justify-center font-black text-3xl italic shadow-2xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-700">
+                                {review.reviewerName?.charAt(0)}
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-3xl font-black text-gray-950 italic tracking-tight leading-none truncate max-w-[200px]">{review.reviewerName || 'Anonymous Node'}</p>
+                                <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] italic leading-none">
+                                    VERIFIED CONTRACT PARTNER
+                                </p>
+                            </div>
+                        </div>
+                        <div className="bg-gray-950 px-6 py-3 rounded-[1.5rem] flex items-center gap-3 shadow-2xl border border-white/5 group-hover:bg-primary transition-colors">
+                            <Star size={20} className="fill-white text-white" />
+                            <span className="text-2xl font-black text-white italic leading-none">{review.score}.0</span>
+                        </div>
+                    </div>
+                    
+                    <div className="bg-gray-50/50 p-10 rounded-[2.5rem] border border-gray-50 relative group-hover:bg-white group-hover:shadow-2xl transition-all duration-700">
+                        <div className="absolute -top-3 left-8 px-3 bg-white text-[9px] font-black uppercase tracking-[0.3em] text-gray-300 italic border border-gray-50 rounded-lg">INSTITUTIONAL TESTIMONIAL</div>
+                        <p className="text-xl font-medium text-gray-700 italic leading-relaxed">
+                            "{review.comment}"
                         </p>
-                      </div>
                     </div>
-                    <div className="bg-gray-50 px-4 py-2 rounded-2xl flex items-center gap-1.5">
-                      <Star size={16} className="fill-orange-400 text-orange-400" />
-                      <span className="text-lg font-black text-gray-900">{review.score}.0</span>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gray-50/50 p-6 rounded-[2rem] border border-gray-50 relative">
-                    <div className="absolute -top-3 left-6 px-2 bg-white text-[10px] font-black uppercase text-gray-300">Testimonial</div>
-                    <p className="text-lg font-medium text-gray-700 italic leading-relaxed">
-                      "{review.comment}"
-                    </p>
-                  </div>
 
-                  <div className="flex items-center justify-between pt-2">
-                    <div className="flex items-center gap-4">
-                      <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-100 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-emerald-600 transition-all shadow-sm">
-                        <ThumbsUp size={14} /> Helpful
-                      </button>
-                      <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-100 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-red-500 transition-all shadow-sm">
-                        <MessageSquare size={14} /> Reply
-                      </button>
+                    <div className="flex items-center justify-between pt-4 relative z-10">
+                        <div className="flex items-center gap-6">
+                            <button className="flex items-center gap-3 px-6 py-3 bg-white border border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] italic text-gray-400 hover:text-primary transition-all shadow-sm">
+                                <ThumbsUp size={16} /> HELPFUL
+                            </button>
+                            <button className="flex items-center gap-3 px-6 py-3 bg-white border border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] italic text-gray-400 hover:text-secondary transition-all shadow-sm">
+                                <MessageCircle size={16} /> RESPOND
+                            </button>
+                        </div>
+                        <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.2em] italic leading-none">
+                            {new Date(review.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase()}
+                        </p>
                     </div>
-                    <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest">
-                      {new Date(review.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
-                    </p>
-                  </div>
+                    
+                    {/* Background Decor */}
+                    <div className="absolute top-0 right-0 p-8 text-primary/5 group-hover:text-primary/10 transition-colors">
+                        <Sparkles size={100} />
+                    </div>
                 </motion.div>
               ))
             )}
@@ -289,23 +354,34 @@ const DisputesRatingsPage = () => {
         )}
       </div>
 
-      {/* Advisory Section */}
-      <div className="bg-gray-50 rounded-[4rem] p-12 border border-gray-100 relative overflow-hidden group">
-        <div className="flex flex-col lg:flex-row items-center gap-12 relative z-10">
-          <div className="w-24 h-24 bg-white rounded-[2rem] flex items-center justify-center text-emerald-600 shadow-xl shadow-emerald-200/30 group-hover:scale-110 transition-transform">
-            <Gavel size={48} />
-          </div>
-          <div className="flex-1 text-center lg:text-left space-y-4">
-            <h3 className="text-3xl font-black text-gray-900">How we protect your reputation.</h3>
-            <p className="text-gray-500 font-medium max-w-3xl leading-relaxed text-lg">
-              Smart-Kissan uses AI-led meditation to resolve disputes without bias. We prioritize photographic evidence and IoT sensor data to ensure your hard work is always protected.
-            </p>
-          </div>
-          <button className="px-12 py-5 bg-white border border-gray-200 text-gray-900 rounded-[2rem] font-black text-[10px] uppercase tracking-widest hover:bg-gray-900 hover:text-white transition-all shadow-xl shadow-gray-100">
-            Read Policy
-          </button>
+      {/* Trust Infrastructure Advisory */}
+      <div className="stitch-card p-16 bg-gray-950 text-white relative overflow-hidden group shadow-2xl shadow-gray-950/20">
+        <div className="relative z-10 flex flex-col lg:flex-row items-center gap-16">
+            <div className="w-28 h-28 bg-white/10 backdrop-blur-3xl rounded-[2.5rem] flex items-center justify-center text-primary border border-white/10 shadow-2xl group-hover:rotate-12 transition-transform duration-1000">
+                <Gavel size={48} className="stroke-[1.5]" />
+            </div>
+            <div className="flex-1 text-center lg:text-left space-y-6">
+                <div className="inline-flex items-center gap-4 px-6 py-2 bg-primary/20 text-primary rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] italic border border-primary/20 shadow-2xl">
+                    <ShieldCheck size={18} /> REPUTATION SHIELD ACTIVE
+                </div>
+                <h3 className="text-4xl md:text-5xl font-bold italic tracking-tighter leading-tight">Institutional Trust Protection</h3>
+                <p className="text-gray-400 font-medium max-w-3xl leading-relaxed text-xl italic">
+                    Smart-Kissan uses <span className="text-primary font-black italic underline underline-offset-8 decoration-4 decoration-primary/20">AI-Meditation Protocols</span> to resolve disputes. Photographic evidence and IoT sensor telemetry ensure your hard work is always protected.
+                </p>
+            </div>
+            <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-16 py-8 bg-white text-gray-950 rounded-[2.5rem] text-[12px] font-black uppercase tracking-[0.5em] italic shadow-2xl shadow-black/20 hover:bg-primary hover:text-white transition-all"
+            >
+                READ POLICY DOCUMENT
+            </motion.button>
         </div>
-        <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-emerald-500 rounded-full blur-[120px] opacity-10 group-hover:opacity-20 transition-opacity"></div>
+        {/* Background Decor */}
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[150px] -mr-80 -mt-80 group-hover:opacity-40 transition-opacity duration-1000"></div>
+        <div className="absolute bottom-0 left-0 p-12 text-white/5 group-hover:text-white/10 transition-colors">
+            <Cpu size={160} />
+        </div>
       </div>
     </div>
   );

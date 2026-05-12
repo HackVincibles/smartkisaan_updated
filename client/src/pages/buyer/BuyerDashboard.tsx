@@ -23,7 +23,13 @@ import {
   Bot,
   Target,
   BarChart3,
-  CreditCard
+  CreditCard,
+  Settings,
+  MoreHorizontal,
+  ArrowUpRight,
+  Fingerprint,
+  Cpu,
+  Globe
 } from 'lucide-react';
 // @ts-ignore
 import buyerService from '../../services/buyerService';
@@ -70,7 +76,8 @@ const BuyerDashboard = () => {
       }
 
     } catch (error) {
-      console.error('Failed to fetch dashboard data:', error);
+      console.error('Market Nexus Uplink Failed:', error);
+      toast.error('Procurement Intelligence Offline');
     } finally {
       setLoading(false);
     }
@@ -78,192 +85,189 @@ const BuyerDashboard = () => {
 
   const getOrderStatusIcon = (status: string) => {
     switch(status) {
-      case 'COMPLETED': return <CheckCircle size={18} className="text-success" />;
+      case 'COMPLETED': return <CheckCircle size={24} className="text-success" />;
       case 'IN_TRANSIT':
-      case 'DELIVERED': return <Truck size={18} className="text-secondary" />;
+      case 'DELIVERED': return <Truck size={24} className="text-secondary" />;
       case 'BID_PLACED':
       case 'PENDING_PAYMENT':
-      case 'PAID_ESCROW': return <Clock size={18} className="text-warning" />;
-      default: return <Package size={18} className="text-gray-400" />;
+      case 'PAID_ESCROW': return <Clock size={24} className="text-warning" />;
+      default: return <Package size={24} className="text-gray-400" />;
     }
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <div className="text-center space-y-4">
-          <div className="w-12 h-12 border-4 border-secondary-100 border-t-secondary rounded-full animate-spin mx-auto"></div>
-          <p className="text-xs font-bold uppercase tracking-widest text-gray-400 shimmer">Syncing Market Intelligence...</p>
+      <div className="flex items-center justify-center h-[75vh] fade-in">
+        <div className="text-center space-y-8">
+          <div className="w-24 h-24 border-4 border-gray-100 border-t-secondary rounded-[2.5rem] animate-spin mx-auto shadow-2xl shadow-secondary-200"></div>
+          <div className="space-y-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 italic shimmer">Synchronizing Market Intelligence...</p>
+            <p className="text-xs text-gray-300 font-medium italic">Establishing Neural Procurement Protocol...</p>
+          </div>
         </div>
       </div>
     );
   }
 
-  const kpiCards = [
-    { label: 'Active Pipeline', value: stats.totalOrders, icon: ShoppingCart, color: 'secondary', sub: 'Orders in cycle' },
-    { label: 'Bidding Ops', value: stats.pendingOrders, icon: Target, color: 'warning', sub: 'Live negotiations' },
-    { label: 'Capital Flow', value: `₹${(stats.totalSpent / 1000).toFixed(1)}k`, icon: BarChart3, color: 'success', sub: 'Gross volume' },
-    { label: 'Trust Index', value: '4.8', icon: ShieldCheck, color: 'primary', sub: 'Verified rating' }
-  ];
-
   return (
-    <div className="max-w-7xl mx-auto space-y-10 pb-20 fade-in">
-      {/* Premium Hero Header */}
-      <div className="relative overflow-hidden bg-gray-900 rounded-[2.5rem] p-8 md:p-16 text-white shadow-2xl group">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_30%,_#3b82f6_0%,_transparent_50%)]"></div>
-          <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_70%,_#2563eb_0%,_transparent_50%)]"></div>
+    <div className="max-w-7xl mx-auto space-y-16 pb-32 fade-in">
+      {/* Premium Procurement Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 relative overflow-hidden p-4">
+        <div className="space-y-6 relative z-10">
+          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-secondary italic">
+            <div className="w-1.5 h-1.5 bg-secondary rounded-full animate-pulse"></div>
+            Sourcing Infrastructure Active
+          </div>
+          <h1 className="text-6xl md:text-7xl font-bold text-gray-950 tracking-tighter italic leading-none">
+            Sourcing <span className="not-italic text-secondary">Engine.</span>
+          </h1>
+          <p className="text-gray-400 font-medium max-w-xl text-xl leading-relaxed italic">
+            Aggregate premium inventory from verified farmer nodes. Secure your supply chain with <span className="text-gray-900 font-black italic">institutional-grade</span> protocols.
+          </p>
         </div>
         
-        <div className="relative z-10 grid lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-7 space-y-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-xl rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/10">
-              <Sparkles size={12} className="text-secondary-400" />
-              Verified Sourcing Network
+        <div className="flex flex-wrap items-center gap-6 relative z-10">
+            <Link to="/buyer/search" className="px-10 py-5 bg-secondary text-white rounded-[1.8rem] flex items-center gap-4 font-black text-[10px] uppercase tracking-[0.3em] italic shadow-2xl shadow-secondary/20 hover:bg-secondary-600 transition-all">
+                Explore Markets <SearchCode size={16} fill="white" />
+            </Link>
+            <div className="flex items-center gap-4 px-6 py-4 bg-white border border-gray-100 rounded-[1.8rem] shadow-xl shadow-gray-200/50">
+                <div className="w-10 h-10 bg-secondary/10 rounded-xl flex items-center justify-center text-secondary">
+                    <Fingerprint size={20} />
+                </div>
+                <div className="space-y-0.5">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest italic leading-none">Status</p>
+                    <p className="text-sm font-bold text-gray-950 italic tracking-tight leading-none">Verified Buyer</p>
+                </div>
             </div>
-            <h1 className="text-4xl md:text-7xl font-bold leading-tight tracking-tighter italic">
-              Procurement<br />
-              <span className="text-secondary-400 not-italic">Engine.</span>
-            </h1>
-            <p className="text-secondary-100/60 text-lg font-medium leading-relaxed max-w-xl">
-              Aggregate premium inventory from verified farmer clusters. Secure your entire supply chain with institutional-grade escrow protocols.
-            </p>
-            <div className="flex flex-wrap gap-4 pt-4">
-              <Link to="/buyer/search" className="btn btn-secondary px-10 py-5 rounded-2xl text-xs uppercase tracking-widest flex items-center gap-3 shadow-xl shadow-secondary-500/20">
-                Explore Markets
-                <SearchCode size={18} />
-              </Link>
-              <Link to="/buyer/demand/create" className="btn btn-outline border-white/10 text-white hover:bg-white hover:text-black px-10 py-5 rounded-2xl text-xs uppercase tracking-widest">
-                Post Demand
-              </Link>
-            </div>
-          </div>
+        </div>
 
-          <div className="lg:col-span-5 hidden lg:block">
-            <div className="bg-white/5 backdrop-blur-3xl rounded-[2rem] p-10 border border-white/10 shadow-2xl space-y-8 relative overflow-hidden group">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-secondary-400">System Liquidity</h4>
-                  <p className="text-3xl font-bold italic tracking-tighter">₹12.4M</p>
-                </div>
-                <div className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center shadow-lg">
-                  <Activity size={24} />
-                </div>
-              </div>
-              
-              <div className="space-y-4">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 group-hover:border-white/10 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-secondary/20 border border-secondary/20" />
-                      <div className="h-2 w-32 bg-white/10 rounded-full" />
-                    </div>
-                    <div className="h-2 w-12 bg-white/10 rounded-full" />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+        {/* Decorative Background Text */}
+        <div className="absolute top-0 right-0 opacity-[0.02] pointer-events-none select-none -mr-20">
+            <h1 className="text-[15rem] font-black italic tracking-tighter">PROCURE</h1>
         </div>
       </div>
 
-      {/* KPI Stream */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {kpiCards.map((stat, i) => (
-          <motion.div 
-            key={i}
-            whileHover={{ y: -5 }}
-            className="stitch-card p-8 relative overflow-hidden group"
-          >
-            <div className="relative z-10 flex flex-col justify-between h-full space-y-6">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white bg-${stat.color} shadow-lg shadow-${stat.color}-100`}>
-                <stat.icon size={24} />
+      {/* Market Telemetry Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {[
+          { label: 'Active Pipeline', value: stats.totalOrders, sub: 'Orders in cycle', icon: ShoppingCart, color: 'secondary' },
+          { label: 'Bidding Ops', value: stats.pendingOrders, sub: 'Live negotiations', icon: Target, color: 'warning' },
+          { label: 'Capital Flow', value: formatCurrency(stats.totalSpent), sub: 'Gross volume', icon: BarChart3, color: 'success' },
+          { label: 'Trust Index', value: '4.8', sub: 'Verified rating', icon: ShieldCheck, color: 'primary' }
+        ].map((stat, i) => (
+          <div key={i} className="stitch-card p-10 group bg-white hover:translate-y-[-5px] transition-all relative overflow-hidden">
+            <div className="relative z-10 space-y-8 h-full flex flex-col justify-between">
+              <div className="flex justify-between items-start">
+                <div className={`w-14 h-14 bg-${stat.color} rounded-2xl flex items-center justify-center text-white shadow-2xl group-hover:rotate-3 transition-transform`}>
+                  <stat.icon size={28} />
+                </div>
+                <span className="text-[9px] font-black tracking-widest uppercase italic text-gray-400">
+                  {stat.sub}
+                </span>
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">{stat.label}</p>
-                <h3 className="text-4xl font-bold text-gray-900 italic tracking-tighter">{stat.value}</h3>
+                <h3 className="text-4xl font-bold text-gray-950 italic tracking-tighter mb-1 leading-none">{stat.value}</h3>
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">{stat.label}</p>
               </div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-secondary-600">{stat.sub}</p>
             </div>
-          </motion.div>
+            <div className={`absolute -bottom-12 -right-12 w-32 h-32 bg-${stat.color}/5 rounded-full blur-[60px]`}></div>
+          </div>
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-12 gap-10">
-        {/* Marketplace - Best Deals */}
-        <div className="lg:col-span-8 space-y-10">
-          <div className="flex justify-between items-end px-2">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-secondary-600 mb-1">Intelligence Match</p>
-              <h2 className="text-3xl font-bold text-gray-900 tracking-tight italic">Recommended <span className="not-italic">Inventory</span></h2>
-            </div>
-            <Link to="/buyer/search" className="btn btn-outline text-[10px] uppercase tracking-widest">Global View</Link>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <AnimatePresence>
-              {recommendedProducts.length > 0 ? recommendedProducts.map((product, index) => (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  key={index}
-                >
-                  <ProductCard product={product} />
-                </motion.div>
-              )) : (
-                <div className="col-span-2 py-20 text-center stitch-card">
-                  <Package size={48} className="mx-auto text-gray-200 mb-4" />
-                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400 italic">No inventory matches found</p>
-                </div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* Sidebar Tracking */}
-        <div className="lg:col-span-4 space-y-8">
-          <div className="stitch-card p-10 space-y-10">
-            <div className="flex justify-between items-center">
+      <div className="grid lg:grid-cols-12 gap-12">
+        {/* Marketplace - Intelligence Match */}
+        <div className="lg:col-span-8 space-y-12">
+          <section className="space-y-8">
+            <div className="flex justify-between items-end px-4">
               <div className="space-y-1">
-                <h3 className="text-2xl font-bold text-gray-900 italic">Active <span className="not-italic">Logistics</span></h3>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Live supply tracking</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-secondary italic">Intelligence Match</p>
+                <h2 className="text-3xl font-bold text-gray-950 tracking-tight italic leading-none">Recommended <span className="not-italic text-secondary">Inventory.</span></h2>
               </div>
-              <Link to="/buyer/orders" className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400 hover:text-secondary hover:bg-secondary-50 transition-all border border-gray-100 shadow-sm">
-                <History size={20} />
+              <Link to="/buyer/search" className="text-[11px] font-black text-gray-400 hover:text-gray-900 uppercase tracking-[0.2em] italic flex items-center gap-2 transition-colors">
+                Global View <ArrowRight size={14} />
               </Link>
             </div>
             
-            <div className="space-y-8">
-              {recentOrders.length === 0 ? (
-                <div className="py-10 text-center space-y-4">
-                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto text-gray-200">
-                    <Package size={32} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <AnimatePresence>
+                {recommendedProducts.length > 0 ? recommendedProducts.map((product, index) => (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                    key={index}
+                    className="group"
+                  >
+                    <ProductCard product={product} />
+                  </motion.div>
+                )) : (
+                  <div className="col-span-2 p-24 text-center stitch-card bg-gray-50/50 border-dashed border-gray-200">
+                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto shadow-2xl mb-6">
+                        <Package size={36} className="text-gray-200" />
+                    </div>
+                    <p className="text-xl font-bold text-gray-400 italic tracking-tight">No inventory nodes found.</p>
+                    <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest mt-2 italic">Refine your procurement filters to discover new clusters.</p>
                   </div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Pipeline Empty</p>
+                )}
+              </AnimatePresence>
+            </div>
+          </section>
+        </div>
+
+        {/* Supply Chain Sidebar */}
+        <div className="lg:col-span-4 space-y-12">
+          {/* Active Logistics Terminal */}
+          <section className="stitch-card p-10 bg-white shadow-2xl shadow-gray-200/50 space-y-10 relative overflow-hidden">
+            <div className="flex justify-between items-center relative z-10">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-gray-950 rounded-xl text-white shadow-xl">
+                    <Truck size={24} />
+                </div>
+                <div>
+                    <h3 className="text-2xl font-bold text-gray-950 tracking-tight italic leading-none">Supply <span className="not-italic text-secondary">Chain.</span></h3>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest italic mt-1">Real-time Node Tracking</p>
+                </div>
+              </div>
+              <Link to="/buyer/orders" className="p-3 bg-gray-50 rounded-xl text-gray-400 hover:text-gray-900 transition-colors shadow-sm">
+                <History size={18} />
+              </Link>
+            </div>
+            
+            <div className="space-y-6 relative z-10">
+              {recentOrders.length === 0 ? (
+                <div className="text-center py-10 space-y-4">
+                    <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto">
+                        <Activity size={32} className="text-gray-200" />
+                    </div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-300 italic">No active payloads in transit.</p>
                 </div>
               ) : (
                 recentOrders.map((order, i) => (
-                  <Link key={i} to={`/buyer/orders/${order.id}/track`} className="flex items-start gap-5 group">
-                    <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center shrink-0 border border-gray-100 group-hover:scale-110 group-hover:bg-white group-hover:border-secondary-100 transition-all shadow-sm">
+                  <Link key={i} to={`/buyer/orders/${order.id}/track`} className="flex items-center gap-6 p-6 rounded-[2rem] bg-gray-50/50 hover:bg-white hover:shadow-xl hover:border-gray-100 border border-transparent transition-all group">
+                    <div className="w-16 h-16 rounded-[1.5rem] flex items-center justify-center shrink-0 bg-white border border-gray-100 text-gray-950 shadow-sm group-hover:scale-110 transition-transform">
                       {getOrderStatusIcon(order.escrowState)}
                     </div>
-                    <div className="flex-1 space-y-1.5 min-w-0">
+                    <div className="flex-1 space-y-2 min-w-0">
                       <div className="flex justify-between items-start">
-                        <h4 className="text-sm font-bold text-gray-900 truncate group-hover:text-secondary transition-colors">
+                        <h4 className="text-lg font-bold text-gray-950 truncate italic leading-none group-hover:text-secondary transition-colors">
                           {order.listingId?.productName || 'Order Batch'}
                         </h4>
-                        <span className="text-[10px] font-bold text-gray-900">{formatCurrency(order.totalAmount)}</span>
+                        <span className="text-[10px] font-black text-gray-950 italic">{formatCurrency(order.totalAmount)}</span>
                       </div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
-                        <MapPin size={12} className="text-secondary" /> 
-                        {order.listingId?.location || 'Regional Hub'}
-                      </p>
-                      <div className="w-full h-1.5 bg-gray-50 rounded-full mt-3 overflow-hidden">
+                      <div className="flex items-center gap-3">
+                        <MapPin size={12} className="text-secondary" />
+                        <p className="text-[9px] font-black uppercase tracking-widest text-gray-400 italic truncate">
+                            {order.listingId?.location || 'Regional Nexus Hub'}
+                        </p>
+                      </div>
+                      <div className="w-full h-1.5 bg-gray-100 rounded-full mt-3 overflow-hidden border border-gray-200/50">
                         <motion.div 
                           initial={{ width: 0 }}
-                          animate={{ width: '65%' }}
-                          className="h-full bg-secondary" 
+                          whileInView={{ width: '65%' }}
+                          transition={{ duration: 1, ease: 'easeOut' }}
+                          className="h-full bg-secondary shadow-[0_0_8px_rgba(59,130,246,0.5)]" 
                         />
                       </div>
                     </div>
@@ -271,45 +275,60 @@ const BuyerDashboard = () => {
                 ))
               )}
             </div>
-          </div>
+          </section>
 
-          {/* Procurement Advisor */}
-          <div className="bg-secondary-50 rounded-[2.5rem] p-10 border border-secondary-100 relative overflow-hidden group">
-            <div className="relative z-10 flex flex-col gap-6">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-secondary rounded-2xl flex items-center justify-center shadow-xl shadow-secondary-200">
-                  <Bot size={28} className="text-white" />
+          {/* Market Advisor Protocol */}
+          <div className="stitch-card p-10 bg-secondary-50 border border-secondary-100 rounded-[3.5rem] relative overflow-hidden group shadow-2xl shadow-secondary-100/50">
+            <div className="relative z-10 space-y-8">
+              <div className="flex gap-5">
+                <div className="w-16 h-16 bg-secondary rounded-[1.5rem] flex items-center justify-center shrink-0 shadow-2xl group-hover:scale-110 transition-transform duration-700">
+                    <Bot size={32} className="text-white" />
                 </div>
-                <div>
-                  <h4 className="text-xl font-bold italic leading-none text-gray-900">Market Advisor</h4>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-secondary-600">Proactive Analysis</p>
+                <div className="space-y-1">
+                    <h4 className="text-2xl font-bold italic tracking-tight leading-none text-gray-950">Market Advisor</h4>
+                    <p className="text-secondary-600 text-[9px] font-black uppercase tracking-[0.3em] italic">Active Sourcing Feed</p>
                 </div>
               </div>
-              <p className="text-sm text-gray-500 leading-relaxed font-medium">
-                Basmati Rice prices are projected to drop <span className="text-secondary-600 font-bold">5%</span> in the Nashik cluster next week. Wait for better margins?
+              <p className="text-sm font-medium leading-relaxed italic text-gray-500">
+                Basmati clusters are diverging by <span className="text-secondary font-black underline decoration-secondary/20">-5%</span> in the Nashik region. 
+                Execute bulk procurement to capture peak margin arbitrage?
               </p>
-              <button className="btn btn-secondary w-full py-4 rounded-xl text-[10px] uppercase tracking-widest shadow-lg shadow-secondary-100">
+              <button className="w-full py-5 bg-secondary text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.4em] italic shadow-2xl shadow-secondary/20 transition-all hover:bg-secondary-600">
                 Run Margin Audit
               </button>
             </div>
-            <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-secondary/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000" />
+            <div className="absolute top-0 right-0 w-48 h-48 bg-secondary/5 rounded-full blur-[60px] -mr-24 -mt-24 group-hover:opacity-40 transition-opacity"></div>
           </div>
 
-          {/* Infrastructure Sidebar (Trust Widgets) */}
-          <div className="bg-gray-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden group shadow-2xl">
-            <div className="relative z-10 space-y-8">
-              <div className="w-14 h-14 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/5 shadow-inner">
-                <ShieldCheck size={32} className="text-secondary-400" />
+          {/* Institutional Protection */}
+          <div className="stitch-card p-10 bg-gray-950 text-white relative overflow-hidden group shadow-2xl">
+            <div className="relative z-10 space-y-10">
+              <div className="flex justify-between items-start">
+                <div className="space-y-1">
+                    <h3 className="text-2xl font-bold italic tracking-tight">Escrow <span className="text-secondary">Shield.</span></h3>
+                    <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest italic">Institutional Trust Protocol</p>
+                </div>
+                <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-secondary shadow-2xl border border-white/5">
+                  <ShieldCheck size={24} />
+                </div>
               </div>
-              <div className="space-y-3">
-                <h3 className="text-2xl font-bold italic tracking-tight">Escrow <span className="text-secondary-400 not-italic">Shield.</span></h3>
-                <p className="text-white/40 text-sm font-medium leading-relaxed">
-                  Institutional-grade protection for every transaction. Payment release is governed by proof-of-delivery consensus.
-                </p>
-              </div>
-              <button className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-secondary-400 hover:text-white transition-colors group">
-                Protocol Specs <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              
+              <p className="text-sm font-medium leading-relaxed italic text-white/50">
+                Institutional-grade protection for every transaction. Payment release is governed by proof-of-delivery <span className="text-white font-bold underline decoration-white/20">blockchain consensus</span>.
+              </p>
+              
+              <button className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-secondary hover:text-white transition-all group/btn italic">
+                Protocol Specs <ArrowRight size={14} className="group-hover/btn:translate-x-2 transition-transform" />
               </button>
+            </div>
+            
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+                <svg viewBox="0 0 100 100" className="w-full h-full">
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="0.5" />
+                    <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" strokeWidth="0.5" />
+                    <circle cx="50" cy="50" r="20" fill="none" stroke="currentColor" strokeWidth="0.5" />
+                </svg>
             </div>
             <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-secondary rounded-full blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity duration-1000"></div>
           </div>

@@ -14,11 +14,21 @@ import {
   Scale,
   Calendar,
   ChevronRight,
-  Zap
+  Zap,
+  Activity,
+  Target,
+  Globe,
+  Layers,
+  ArrowUpRight,
+  Database,
+  Radar,
+  CheckCircle,
+  Signal
 } from 'lucide-react';
 // @ts-ignore
 import transporterService from '../../services/transporterService';
 import { toast } from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const AvailableLoadsPage = () => {
   const [loads, setLoads] = useState<any[]>([]);
@@ -36,7 +46,6 @@ const AvailableLoadsPage = () => {
       setLoads(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to fetch available loads:', error);
-      // Mock data for demo
       setLoads([
         { 
           _id: 'L-101', 
@@ -57,6 +66,16 @@ const AvailableLoadsPage = () => {
           distance: '165 km',
           deadline: 'Tomorrow, 9:00 AM',
           createdAt: new Date(Date.now() - 3600000)
+        },
+        { 
+          _id: 'L-103', 
+          listingId: { productName: 'Basmati Rice', quantity: 200, unit: 'Quintal' },
+          pickupAddress: 'Karnal, Haryana',
+          deliveryAddress: 'INA Market, Delhi',
+          freightCharge: 12000,
+          distance: '130 km',
+          deadline: 'Tomorrow, 2:00 PM',
+          createdAt: new Date(Date.now() - 7200000)
         }
       ]);
     } finally {
@@ -67,198 +86,228 @@ const AvailableLoadsPage = () => {
   const handleAccept = async (id: string) => {
     try {
       await transporterService.acceptOrder(id);
-      toast.success('Load accepted successfully!');
+      toast.success('Load accepted! Trip added to your registry.');
       fetchLoads();
     } catch (error) {
       toast.error('Failed to accept load');
     }
   };
 
+  const filtered = loads.filter(l =>
+    searchTerm === '' ||
+    l.listingId?.productName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    l.pickupAddress?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    l.deliveryAddress?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="max-w-7xl mx-auto space-y-10 pb-20">
-      {/* Header & Stats */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">
-            <span>Marketplace</span>
-            <ChevronRight size={10} />
-            <span className="text-gray-900">Freight Exchange</span>
+    <div className="max-w-7xl mx-auto space-y-20 pb-32 fade-in">
+      {/* Freight Exchange Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 relative overflow-hidden p-4">
+        <div className="space-y-6 relative z-10">
+          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-warning italic">
+            <div className="w-1.5 h-1.5 bg-warning rounded-full animate-pulse shadow-[0_0_10px_rgba(234,179,8,0.8)]"></div>
+            Freight_Exchange v5.0 [LIVE_BROADCAST]
           </div>
-          <h1 className="text-3xl font-black text-gray-900">Available Loads</h1>
+          <h1 className="text-6xl md:text-8xl font-black text-gray-950 tracking-tighter italic leading-none uppercase">
+            Load <span className="not-italic text-warning">Market.</span>
+          </h1>
+          <p className="text-gray-400 font-medium max-w-xl text-xl leading-relaxed italic">
+            Accessing <span className="text-gray-950 font-black italic">{loads.length} verified freight contracts</span> from the pan-India agricultural logistics rail.
+          </p>
         </div>
         
-        <div className="flex gap-4 p-4 bg-orange-50 rounded-[2rem] border border-orange-100 shadow-sm">
-          <div className="px-6 border-r border-orange-200">
-            <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mb-1">Active Leads</p>
-            <p className="text-2xl font-black text-orange-900">{loads.length}</p>
+        <div className="flex flex-wrap gap-8 relative z-10">
+          <div className="stitch-card p-8 bg-white shadow-2xl shadow-gray-200/50 flex items-center gap-6 group hover:-rotate-1 transition-transform">
+            <div className="w-14 h-14 bg-warning/10 text-warning rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+              <Signal size={28} className="animate-pulse" />
+            </div>
+            <div className="space-y-0.5">
+              <p className="text-[9px] font-black text-gray-300 uppercase tracking-[0.4em] italic leading-none">ACTIVE_LEADS</p>
+              <p className="text-3xl font-black text-gray-950 italic tracking-tighter leading-none">{loads.length} <span className="text-xs text-gray-400">CONTRACTS</span></p>
+            </div>
           </div>
-          <div className="px-6">
-            <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mb-1">Earnings Pot.</p>
-            <p className="text-2xl font-black text-orange-900">₹45.2k</p>
+          <div className="stitch-card p-8 bg-warning text-white shadow-2xl shadow-warning/20 flex items-center gap-6 group hover:rotate-1 transition-transform">
+            <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+              <IndianRupee size={28} />
+            </div>
+            <div className="space-y-0.5">
+              <p className="text-[9px] font-black text-white/40 uppercase tracking-[0.4em] italic leading-none">EARNINGS_POT</p>
+              <p className="text-3xl font-black italic tracking-tighter leading-none">₹{(loads.reduce((a, b) => a + (b.freightCharge || 0), 0) / 1000).toFixed(1)}k</p>
+            </div>
           </div>
+        </div>
+
+        <div className="absolute top-0 right-0 opacity-[0.02] pointer-events-none select-none -mr-40 -mt-10">
+          <h1 className="text-[20rem] font-black italic tracking-tighter uppercase leading-none">LOADS</h1>
         </div>
       </div>
 
       {/* Control Bar */}
-      <div className="bg-white p-4 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col lg:flex-row gap-8 px-4">
         <div className="relative flex-1 group">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-orange-500 transition-colors" size={20} />
+          <Search size={24} className="absolute left-8 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-warning transition-colors" />
           <input 
             type="text" 
-            placeholder="Search routes, cities or crop types..." 
+            placeholder="SCAN ROUTES, CROPS, OR MARKETS..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-14 pr-6 py-5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-orange-100 font-bold text-gray-900"
+            className="w-full pl-20 pr-10 py-10 bg-white border border-gray-100 rounded-[3rem] focus:ring-12 focus:ring-warning/5 focus:border-warning/20 outline-none font-black text-[11px] text-gray-950 uppercase tracking-[0.2em] italic placeholder:text-gray-200 shadow-2xl shadow-gray-200/50"
           />
         </div>
-        <div className="flex gap-3">
-          <button className="px-8 py-5 bg-white border border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-500 hover:bg-gray-50 transition-all flex items-center gap-3">
-            <Filter size={18} />
-            Filter Region
+        <div className="flex gap-6">
+          <button className="px-10 py-8 bg-white border border-gray-100 rounded-[2.5rem] text-[11px] font-black uppercase tracking-[0.4em] italic text-gray-400 flex items-center gap-4 hover:shadow-2xl transition-all shadow-sm">
+            <Filter size={22} /> FILTER_REGION
           </button>
-          <button className="px-8 py-5 bg-orange-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-700 transition-all shadow-xl shadow-orange-100 flex items-center gap-3">
-            <Navigation size={18} />
-            Nearby Only
+          <button className="px-10 py-8 bg-warning text-white rounded-[2.5rem] text-[11px] font-black uppercase tracking-[0.4em] italic flex items-center gap-4 shadow-2xl shadow-warning/20 hover:bg-gray-950 transition-all">
+            <Navigation size={22} /> NEARBY_ONLY
           </button>
         </div>
       </div>
 
-      {/* Grid of Loads */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {loading ? (
-          [...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white p-8 rounded-[3rem] border border-gray-50 space-y-6 animate-pulse shadow-sm">
-              <div className="flex justify-between items-start">
-                <div className="w-16 h-16 bg-gray-50 rounded-2xl" />
-                <div className="w-24 h-10 bg-gray-50 rounded-xl" />
-              </div>
-              <div className="space-y-3">
-                <div className="h-6 bg-gray-50 rounded-lg w-3/4" />
-                <div className="h-4 bg-gray-50 rounded-lg w-1/2" />
-              </div>
-              <div className="h-32 bg-gray-50 rounded-[2rem]" />
-              <div className="h-16 bg-gray-50 rounded-2xl" />
-            </div>
-          ))
-        ) : loads.length === 0 ? (
-          <div className="col-span-full bg-white rounded-[4rem] p-24 text-center space-y-8 border border-gray-50">
-            <div className="w-32 h-32 bg-gray-50 rounded-full flex items-center justify-center mx-auto">
-              <Package size={64} className="text-gray-200" />
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-3xl font-black text-gray-900">No available loads found</h3>
-              <p className="text-gray-500 font-medium max-w-sm mx-auto">New loads are posted every few minutes. Expand your search range to see more results.</p>
-            </div>
-            <button className="px-10 py-5 bg-gray-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-black transition-all">
-              Broaden Search Parameters
-            </button>
-          </div>
-        ) : (
-          loads.map((load) => (
-            <div key={load._id} className="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-orange-100/50 transition-all flex flex-col group relative overflow-hidden">
-              {/* Card Header */}
-              <div className="flex justify-between items-start mb-8">
-                <div className="p-4 bg-orange-50 text-orange-600 rounded-[1.5rem] shadow-inner">
-                  <Truck size={28} />
+      {/* Load Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12 px-4">
+        <AnimatePresence mode="popLayout">
+          {loading ? (
+            [...Array(3)].map((_, i) => (
+              <div key={i} className="stitch-card p-10 bg-white border-none shadow-2xl animate-pulse space-y-10">
+                <div className="flex justify-between items-start">
+                  <div className="w-20 h-20 bg-gray-50 rounded-[2rem]" />
+                  <div className="w-32 h-12 bg-gray-50 rounded-2xl" />
                 </div>
-                <div className="text-right">
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Fixed Freight</p>
-                  <p className="text-3xl font-black text-gray-900 tracking-tighter">
-                    ₹{load.freightCharge}
-                  </p>
+                <div className="space-y-4">
+                  <div className="h-8 bg-gray-50 rounded-xl w-3/4" />
+                  <div className="h-5 bg-gray-50 rounded-xl w-1/2" />
                 </div>
+                <div className="h-40 bg-gray-50 rounded-[2.5rem]" />
+                <div className="h-16 bg-gray-50 rounded-2xl" />
               </div>
-
-              {/* Load Info */}
-              <div className="mb-8">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-xl font-black text-gray-900 group-hover:text-orange-600 transition-colors">
-                    {load.listingId?.productName}
-                  </h3>
-                  <div className="px-2 py-1 bg-emerald-50 text-emerald-600 rounded-md text-[8px] font-black uppercase tracking-widest">
-                    Verified
+            ))
+          ) : filtered.length === 0 ? (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="col-span-full stitch-card py-48 text-center space-y-12 bg-white shadow-2xl relative overflow-hidden">
+              <div className="w-48 h-48 bg-gray-50 rounded-[4rem] flex items-center justify-center mx-auto shadow-inner">
+                <Package size={90} className="text-gray-200" />
+              </div>
+              <div className="space-y-6">
+                <h3 className="text-5xl font-black text-gray-950 italic uppercase">Registry <span className="text-warning not-italic">Empty.</span></h3>
+                <p className="text-gray-400 text-xl italic max-w-lg mx-auto">No loads match the current filter parameters. Broaden your search to access more freight contracts.</p>
+              </div>
+            </motion.div>
+          ) : (
+            filtered.map((load, index) => (
+              <motion.div
+                key={load._id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="group"
+              >
+                <div className="stitch-card p-10 bg-white border-none shadow-2xl shadow-gray-200/50 flex flex-col hover:translate-y-[-10px] transition-all duration-700 relative overflow-hidden h-full">
+                  {/* Card Header */}
+                  <div className="flex justify-between items-start mb-10">
+                    <div className="w-20 h-20 bg-warning/10 text-warning rounded-[2rem] flex items-center justify-center shadow-inner group-hover:rotate-12 transition-transform duration-700">
+                      <Truck size={36} strokeWidth={1.5} />
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[9px] font-black text-gray-300 uppercase tracking-[0.5em] italic leading-none mb-3">FIXED_FREIGHT</p>
+                      <p className="text-4xl font-black text-gray-950 tracking-tighter italic leading-none group-hover:text-warning transition-colors">
+                        ₹{load.freightCharge?.toLocaleString()}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex flex-wrap gap-4 text-[10px] font-black uppercase tracking-widest text-gray-400">
-                  <span className="flex items-center gap-1"><Scale size={12} className="text-orange-400" /> {load.listingId?.quantity} {load.listingId?.unit}</span>
-                  <span className="flex items-center gap-1"><Navigation size={12} className="text-orange-400" /> {load.distance || '420 km'}</span>
-                </div>
-              </div>
 
-              {/* Route Visualization */}
-              <div className="bg-gray-50 p-6 rounded-[2rem] space-y-6 relative mb-10">
-                <div className="absolute left-9 top-14 bottom-14 w-0.5 border-l-2 border-dashed border-gray-200" />
-                
-                <div className="flex items-start gap-4 relative z-10">
-                  <div className="w-6 h-6 rounded-full bg-emerald-500 border-4 border-white shadow-sm shrink-0 mt-1" />
-                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Pickup Point</p>
-                    <p className="text-sm font-black text-gray-800 leading-tight">{load.pickupAddress}</p>
+                  {/* Asset Info */}
+                  <div className="mb-10 space-y-5">
+                    <div className="flex items-center gap-4">
+                      <h3 className="text-3xl font-black text-gray-950 italic tracking-tighter leading-none uppercase group-hover:text-warning transition-colors">
+                        {load.listingId?.productName}
+                      </h3>
+                      <span className="px-4 py-2 bg-success/10 text-success rounded-xl text-[9px] font-black uppercase tracking-[0.3em] italic border border-success/10 shadow-sm">VERIFIED</span>
+                    </div>
+                    <div className="flex flex-wrap gap-6 text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 italic">
+                      <span className="flex items-center gap-2"><Scale size={14} className="text-warning" /> {load.listingId?.quantity} {load.listingId?.unit}</span>
+                      <span className="flex items-center gap-2"><Navigation size={14} className="text-warning" /> {load.distance || '—'}</span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex items-start gap-4 relative z-10">
-                  <div className="w-6 h-6 rounded-full bg-orange-600 border-4 border-white shadow-sm shrink-0 mt-1" />
-                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Delivery Destination</p>
-                    <p className="text-sm font-black text-gray-800 leading-tight">{load.deliveryAddress}</p>
+                  {/* Route Visualization */}
+                  <div className="bg-gray-50 p-8 rounded-[2.5rem] space-y-8 relative mb-10 border border-gray-100 shadow-inner">
+                    <div className="absolute left-12 top-16 bottom-16 w-px border-l-2 border-dashed border-gray-200" />
+                    
+                    <div className="flex items-start gap-6 relative z-10">
+                      <div className="w-8 h-8 rounded-full bg-success border-4 border-white shadow-md shrink-0 mt-1" />
+                      <div className="space-y-1.5">
+                        <p className="text-[9px] font-black uppercase tracking-[0.5em] text-gray-300 italic leading-none">PICKUP_NODE</p>
+                        <p className="text-lg font-black text-gray-950 italic uppercase leading-none">{load.pickupAddress}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-6 relative z-10">
+                      <div className="w-8 h-8 rounded-full bg-warning border-4 border-white shadow-md shrink-0 mt-1" />
+                      <div className="space-y-1.5">
+                        <p className="text-[9px] font-black uppercase tracking-[0.5em] text-gray-300 italic leading-none">DELIVERY_HUB</p>
+                        <p className="text-lg font-black text-gray-950 italic uppercase leading-none">{load.deliveryAddress}</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
 
-              {/* Timing & Action */}
-              <div className="mt-auto flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
-                    <Calendar size={12} />
-                    Pickup Deadline
-                  </p>
-                  <p className="text-xs font-black text-gray-900">{load.deadline || 'Today, 6:00 PM'}</p>
-                </div>
-                <button 
-                  onClick={() => handleAccept(load._id)}
-                  className="px-8 py-4 bg-gray-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3 hover:bg-orange-600 transition-all shadow-xl shadow-gray-100 group-hover:scale-105 active:scale-95"
-                >
-                  Accept Load <ArrowRight size={16} />
-                </button>
-              </div>
+                  {/* CTA Row */}
+                  <div className="mt-auto flex items-center justify-between pt-8 border-t border-gray-50">
+                    <div className="space-y-1.5">
+                      <p className="text-[9px] font-black text-gray-300 uppercase tracking-[0.5em] italic leading-none flex items-center gap-2"><Calendar size={12} /> PICKUP_EXPIRY</p>
+                      <p className="text-[13px] font-black text-gray-950 italic uppercase leading-none">{load.deadline || 'TODAY, 18:00'}</p>
+                    </div>
+                    <button 
+                      onClick={() => handleAccept(load._id)}
+                      className="px-10 py-6 bg-gray-950 text-white rounded-[2rem] font-black text-[11px] uppercase tracking-[0.4em] italic flex items-center gap-4 hover:bg-warning transition-all shadow-2xl shadow-gray-950/20 group/btn relative overflow-hidden"
+                    >
+                      <span className="relative z-10 flex items-center gap-4">ACCEPT <ArrowRight size={20} className="group-hover/btn:translate-x-2 transition-transform duration-500" /></span>
+                      <div className="absolute inset-0 bg-warning opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
+                    </button>
+                  </div>
 
-              {/* Subtle background element */}
-              <div className="absolute -right-10 -top-10 w-32 h-32 bg-orange-50 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            </div>
-          ))
-        )}
+                  <div className="absolute inset-0 pointer-events-none bg-scanline opacity-[0.01]"></div>
+                  <div className="absolute -right-16 -top-16 w-48 h-48 bg-warning/5 rounded-full blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                </div>
+              </motion.div>
+            ))
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* Promotion/Info Card */}
-      <div className="bg-gray-900 rounded-[3rem] p-12 md:p-16 text-white relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12">
-        <div className="relative z-10 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-[10px] font-black uppercase tracking-widest text-orange-400">
-            <Zap size={14} />
-            Verified Transporter Network
+      {/* Platform Intelligence Panel */}
+      <div className="px-4">
+        <div className="stitch-card p-12 md:p-16 bg-gray-950 text-white relative overflow-hidden group shadow-2xl shadow-gray-950/40">
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-16">
+            <div className="space-y-10 flex-1">
+              <div className="inline-flex items-center gap-4 px-6 py-3 bg-white/5 rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] text-warning italic border border-white/5">
+                <Zap size={16} className="fill-warning animate-pulse" /> Verified_Transporter_Network
+              </div>
+              <h2 className="text-5xl font-black leading-tight italic tracking-tighter uppercase">
+                Maximize utilization with <span className="text-warning not-italic">neural routing.</span>
+              </h2>
+              <p className="text-white/40 text-xl font-medium leading-relaxed italic max-w-2xl">
+                Algorithmic freight matching reduces empty miles by <span className="text-white font-black underline decoration-warning/20 underline-offset-8">62%</span>. Verified payment protection via SmartKissan Escrow vault.
+              </p>
+            </div>
+            
+            <div className="relative z-10 grid grid-cols-2 gap-8 shrink-0">
+              <div className="text-center p-10 bg-white/5 rounded-[3rem] border border-white/5 group-hover:bg-warning/10 transition-colors">
+                <p className="text-6xl font-black text-warning mb-3 italic">98<span className="text-2xl text-white/40">%</span></p>
+                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/30 italic">AVG_UTILIZATION</p>
+              </div>
+              <div className="text-center p-10 bg-white/5 rounded-[3rem] border border-white/5 group-hover:bg-warning/10 transition-colors">
+                <p className="text-6xl font-black text-warning mb-3 italic">15<span className="text-2xl text-white/40">m</span></p>
+                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/30 italic">FAST_SETTLEMENT</p>
+              </div>
+            </div>
           </div>
-          <h2 className="text-4xl font-black leading-tight max-w-lg">
-            Maximize your truck's utilization with high-density routes.
-          </h2>
-          <p className="text-gray-400 font-medium max-w-md">
-            Our algorithmic route matching ensures you spend less time empty and more time earning. Verified payment protection via Smart-Kissan Escrow.
-          </p>
-        </div>
-        
-        <div className="relative z-10 grid grid-cols-2 gap-8 shrink-0">
-          <div className="text-center p-8 bg-white/5 rounded-[2.5rem] border border-white/5">
-            <p className="text-5xl font-black text-orange-500 mb-2">98<span className="text-2xl text-white">%</span></p>
-            <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Avg. Utilization</p>
-          </div>
-          <div className="text-center p-8 bg-white/5 rounded-[2.5rem] border border-white/5">
-            <p className="text-5xl font-black text-orange-500 mb-2">15<span className="text-2xl text-white">m</span></p>
-            <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Fast Settlement</p>
-          </div>
-        </div>
 
-        {/* Decorative elements */}
-        <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-orange-600 rounded-full blur-[120px] opacity-20"></div>
-        <div className="absolute top-10 right-10 w-px h-64 bg-gradient-to-b from-transparent via-white/10 to-transparent"></div>
+          <div className="absolute -left-40 -bottom-40 w-[600px] h-[600px] bg-warning/10 rounded-full blur-[150px] opacity-20"></div>
+          <div className="absolute top-0 right-0 p-12 text-white/5 pointer-events-none group-hover:rotate-12 transition-transform duration-[2s]">
+            <Globe size={300} />
+          </div>
+        </div>
       </div>
     </div>
   );

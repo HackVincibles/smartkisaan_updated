@@ -24,7 +24,18 @@ import {
   Zap,
   Lock,
   Box,
-  Fingerprint
+  Fingerprint,
+  Cpu,
+  Workflow,
+  Activity,
+  Layers,
+  Sparkles,
+  ChevronDown,
+  Target,
+  ArrowUpRight,
+  MoreHorizontal,
+  ExternalLink,
+  ShieldAlert
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 // @ts-ignore
@@ -32,7 +43,7 @@ import buyerService from '../../services/buyerService';
 import { formatCurrency, formatRelativeTime } from '../../lib/utils';
 import AIGradeCard from '../../components/farmer/AIGradeCard';
 import SBTBadge from '../../components/farmer/SBTBadge';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 const ProductDetailBidPage = () => {
   const { id } = useParams();
@@ -105,322 +116,363 @@ const ProductDetailBidPage = () => {
   };
 
   if (loading) return (
-    <div className="flex items-center justify-center h-[70vh] fade-in">
-      <div className="text-center space-y-6">
-        <div className="w-24 h-24 border-4 border-secondary-50 border-t-secondary rounded-[2rem] animate-spin mx-auto shadow-2xl"></div>
-        <div className="space-y-2">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-secondary italic">Asset Verification Protocol...</p>
-          <p className="text-xs text-gray-400 font-medium italic">Connecting to distributed ledger...</p>
+    <div className="flex items-center justify-center h-[80vh] fade-in">
+      <div className="text-center space-y-10">
+        <div className="w-24 h-24 bg-secondary/10 rounded-[2.5rem] border border-secondary/20 flex items-center justify-center shadow-2xl relative">
+            <div className="absolute inset-0 border-4 border-secondary/20 border-t-secondary rounded-[2.5rem] animate-spin"></div>
+            <Cpu size={40} className="text-secondary" />
+        </div>
+        <div className="space-y-3">
+          <p className="text-[10px] font-black uppercase tracking-[0.5em] text-secondary italic leading-none">Asset Verification Protocol...</p>
+          <p className="text-xs text-gray-400 font-medium italic leading-none">Synchronizing with Distributed Ledger...</p>
         </div>
       </div>
     </div>
   );
 
-  if (!product) return <div className="p-20 text-center italic text-gray-400">Resource context not found.</div>;
+  if (!product) return <div className="p-40 text-center italic text-gray-400 text-2xl font-black uppercase tracking-widest">Resource context not found.</div>;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-12 pb-24 fade-in">
-      {/* Top Navigation */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-10">
-        <div className="space-y-4">
-          <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-secondary transition-colors group">
-            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Exit Terminal
+    <div className="max-w-7xl mx-auto space-y-16 pb-32 fade-in">
+      {/* Premium Navigation & Context */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 relative overflow-hidden p-4">
+        <div className="space-y-6 relative z-10">
+          <button onClick={() => navigate(-1)} className="inline-flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 hover:text-secondary transition-all group italic">
+            <ArrowLeft size={16} className="group-hover:-translate-x-2 transition-transform" /> TERMINATE SESSION
           </button>
-          <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-secondary">
-            <Box size={14} /> <span>SK-COMMODITY-INDEX</span>
-            <ChevronRight size={10} className="text-gray-300" />
-            <span className="text-gray-400">Node #{id?.substring(0, 8)}</span>
+          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-secondary italic">
+            <Box size={16} /> <span>COMMODITY_INDEX_ALPHA</span>
+            <ChevronRight size={12} className="text-gray-200" />
+            <span className="text-gray-400">NODE_ID::{id?.substring(0, 12).toUpperCase()}</span>
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 tracking-tight italic leading-none">
-            {product.name}. <span className="not-italic text-secondary">Asset.</span>
+          <h1 className="text-6xl md:text-8xl font-black text-gray-950 tracking-tighter italic leading-none">
+            {product.name} <span className="not-italic text-secondary">Asset.</span>
           </h1>
         </div>
         
-        <div className="flex gap-4">
+        <div className="flex items-center gap-6 relative z-10">
           <motion.button 
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsFavorite(!isFavorite)}
-            className={`flex items-center gap-3 px-8 py-5 rounded-[1.5rem] font-bold text-[10px] uppercase tracking-widest transition-all shadow-xl ${
-              isFavorite ? 'bg-error/10 text-error shadow-error/10' : 'bg-white text-gray-400 border border-gray-100 hover:border-error hover:text-error'
+            className={`flex items-center gap-4 px-10 py-6 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.4em] transition-all italic shadow-2xl ${
+              isFavorite ? 'bg-error/10 text-error shadow-error/10 border border-error/10' : 'bg-white text-gray-400 border border-gray-100 hover:border-error hover:text-error hover:bg-error/5 shadow-gray-200/50'
             }`}
           >
-            <Heart size={18} className={isFavorite ? 'fill-current' : ''} />
-            {isFavorite ? 'Watchlisted' : 'Watchlist Asset'}
+            <Heart size={20} className={isFavorite ? 'fill-current' : ''} />
+            {isFavorite ? 'WATCHLISTED' : 'ADD_WATCHLIST'}
           </motion.button>
-          <button className="p-5 bg-white rounded-[1.5rem] border border-gray-100 text-gray-400 hover:text-secondary hover:border-secondary transition-all shadow-xl">
-            <Share2 size={20} />
+          <button className="p-6 bg-white rounded-[2rem] border border-gray-100 text-gray-400 hover:text-secondary hover:border-secondary transition-all shadow-2xl shadow-gray-200/50">
+            <Share2 size={24} />
           </button>
+        </div>
+
+        {/* Decorative Background Text */}
+        <div className="absolute top-0 right-0 opacity-[0.02] pointer-events-none select-none -mr-40 -mt-10">
+            <h1 className="text-[20rem] font-black italic tracking-tighter">ASSET</h1>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        {/* Left Column */}
-        <div className="lg:col-span-8 space-y-12">
-          {/* Main Visual */}
-          <div className="stitch-card p-4 bg-white relative group overflow-hidden">
-            <div className="aspect-[16/9] rounded-[2.5rem] overflow-hidden relative shadow-2xl shadow-gray-200">
-              <img src={sanitizeUrl(product.images?.[0])} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2000ms]" />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 via-transparent to-transparent"></div>
-              <div className="absolute top-10 left-10 flex flex-col gap-4">
-                <SBTBadge id="trust-badge" level="Platinum" />
-                <div className="px-6 py-4 bg-white/90 backdrop-blur-xl rounded-2xl text-[10px] font-bold uppercase tracking-widest text-success flex items-center gap-3 shadow-2xl border border-white/50">
-                  <Award size={18} /> AI-Grade: {product.aiGrade}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 px-4">
+        {/* Intelligence Cluster (Left) */}
+        <div className="lg:col-span-8 space-y-16">
+          {/* Main Visual Display */}
+          <div className="stitch-card p-6 bg-white relative group overflow-hidden shadow-2xl shadow-gray-200/50">
+            <div className="aspect-[16/9] rounded-[3rem] overflow-hidden relative shadow-inner">
+              <img src={sanitizeUrl(product.images?.[0])} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] opacity-90" />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-950/60 via-transparent to-transparent"></div>
+              
+              <div className="absolute top-12 left-12 flex flex-col gap-6">
+                <SBTBadge id="trust-badge-premium" level="Platinum" />
+                <div className="px-8 py-5 bg-white/10 backdrop-blur-3xl rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] text-white flex items-center gap-4 shadow-2xl border border-white/10 italic">
+                  <Award size={20} className="text-secondary" /> AI_GRADE_VERIFIED: {product.aiGrade}
                 </div>
               </div>
-              <div className="absolute bottom-10 left-10 flex items-center gap-3">
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-xl rounded-xl flex items-center justify-center text-white border border-white/10">
-                  <TrendingUp size={24} />
+
+              <div className="absolute bottom-12 left-12 flex items-center gap-6">
+                <div className="w-16 h-16 bg-white/10 backdrop-blur-3xl rounded-[1.5rem] flex items-center justify-center text-white border border-white/10 shadow-2xl">
+                  <TrendingUp size={32} className="text-secondary" />
                 </div>
-                <div className="text-white">
-                  <p className="text-[9px] font-bold uppercase tracking-widest opacity-80">Supply Index</p>
-                  <p className="text-sm font-bold tracking-tight italic">Highly Liquid</p>
+                <div className="text-white space-y-1">
+                  <p className="text-[10px] font-black uppercase tracking-[0.5em] opacity-60 italic leading-none">SUPPLY_TELEMETRY</p>
+                  <p className="text-2xl font-black tracking-tight italic leading-none uppercase">Highly Liquid Node</p>
                 </div>
               </div>
             </div>
-            {/* Visual Navigation Overlay */}
-            <div className="absolute right-12 bottom-12 flex gap-3">
-              {[1, 2, 3, 4].map(i => (
-                <div key={i} className={`w-2 h-2 rounded-full transition-all ${i === 1 ? 'bg-white w-6' : 'bg-white/40'}`}></div>
-              ))}
+            
+            {/* Asset Overlay Scanners */}
+            <div className="absolute right-12 top-12 opacity-20 pointer-events-none">
+                <Scan size={100} className="text-white" />
             </div>
           </div>
 
-          {/* Tech Specs Matrix */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {/* Neural Metrics Matrix */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              { label: 'Moisture Protocol', val: `${product.moisture}%`, icon: <Zap size={20} />, color: 'secondary' },
-              { label: 'Protein Density', val: `${product.protein}%`, icon: <Activity size={20} />, color: 'warning' },
-              { label: 'Foreign Matter', val: `${product.foreignMatter}%`, icon: <Shield size={20} />, color: 'error' },
-              { label: 'Luster Score', val: 'Premium', icon: <Star size={20} />, color: 'success' }
+              { label: 'MOISTURE_SIG', val: `${product.moisture}%`, icon: Zap, color: 'secondary' },
+              { label: 'PROTEIN_DENSITY', val: `${product.protein}%`, icon: Activity, color: 'warning' },
+              { label: 'IMPURITY_COEFF', val: `${product.foreignMatter}%`, icon: ShieldAlert, color: 'error' },
+              { label: 'LUSTER_PROTOCOL', val: 'PREMIUM', icon: Sparkles, color: 'primary' }
             ].map((spec, i) => (
-              <div key={i} className="stitch-card p-8 bg-white border-none shadow-xl shadow-gray-200/50 flex flex-col items-center text-center space-y-4 hover:translate-y-[-4px] transition-transform">
-                <div className={`w-12 h-12 rounded-xl bg-${spec.color}/10 text-${spec.color} flex items-center justify-center shadow-lg`}>
-                  {spec.icon}
+              <div key={i} className="stitch-card p-10 bg-white border border-gray-50 shadow-xl shadow-gray-200/50 flex flex-col items-center text-center space-y-6 group hover:translate-y-[-10px] transition-all duration-700">
+                <div className={`w-16 h-16 rounded-[1.8rem] bg-gray-50 text-gray-300 flex items-center justify-center shadow-inner group-hover:bg-${spec.color}/10 group-hover:text-${spec.color} transition-all duration-500`}>
+                  <spec.icon size={28} className="stroke-[1.5]" />
                 </div>
-                <div>
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1 italic">{spec.label}</p>
-                  <p className="text-xl font-bold text-gray-900 tracking-tight">{spec.val}</p>
+                <div className="space-y-1.5">
+                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-gray-400 italic leading-none">{spec.label}</p>
+                  <p className="text-2xl font-black text-gray-950 tracking-tighter italic leading-none">{spec.val}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Detailed Narrative */}
-          <div className="stitch-card p-12 bg-white space-y-10 relative overflow-hidden">
-            <div className="relative z-10 space-y-8">
-              <div className="flex items-center gap-4">
-                <div className="w-1.5 h-8 bg-secondary rounded-full"></div>
-                <h3 className="text-2xl font-bold text-gray-900 italic tracking-tight uppercase">Asset Narrative</h3>
+          {/* Institutional Narrative */}
+          <div className="stitch-card p-16 bg-white space-y-12 relative overflow-hidden group shadow-2xl shadow-gray-200/50">
+            <div className="relative z-10 space-y-10">
+              <div className="flex items-center gap-6">
+                <div className="p-4 bg-gray-950 rounded-2xl text-secondary shadow-2xl group-hover:rotate-6 transition-transform duration-700">
+                    <Database size={28} />
+                </div>
+                <div className="space-y-1">
+                    <h3 className="text-3xl font-bold text-gray-950 italic tracking-tight uppercase leading-none">Asset <span className="not-italic text-secondary">Telemetry.</span></h3>
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.4em] italic leading-none">Deep metadata extraction complete</p>
+                </div>
               </div>
-              <p className="text-gray-500 font-medium leading-relaxed text-xl italic max-w-3xl">
+              <p className="text-gray-500 font-medium leading-relaxed text-2xl italic max-w-4xl border-l-4 border-gray-50 pl-10 py-4">
                 "{product.description}"
               </p>
               
-              <div className="grid md:grid-cols-3 gap-10 pt-10 border-t border-gray-50">
-                <div className="space-y-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2"><Clock size={12} /> Origin Protocol</p>
-                  <p className="font-bold text-gray-900 italic tracking-tight">{new Date(product.harvestDate).toLocaleDateString([], { month: 'long', year: 'numeric' })} Harvest</p>
+              <div className="grid md:grid-cols-3 gap-16 pt-12 border-t border-gray-50">
+                <div className="space-y-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 italic flex items-center gap-3"><Clock size={16} /> HARVEST_CYCLE</p>
+                  <p className="text-2xl font-black text-gray-950 italic tracking-tighter leading-none">{new Date(product.harvestDate).toLocaleDateString([], { month: 'long', year: 'numeric' }).toUpperCase()}</p>
                 </div>
-                <div className="space-y-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2"><MapPin size={12} /> Geo-Signature</p>
-                  <p className="font-bold text-gray-900 italic tracking-tight">{product.location}</p>
+                <div className="space-y-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 italic flex items-center gap-3"><MapPin size={16} /> GEO_COORDINATES</p>
+                  <p className="text-2xl font-black text-gray-950 italic tracking-tighter leading-none uppercase">{product.location}</p>
                 </div>
-                <div className="space-y-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2"><Truck size={12} /> Logistics Rail</p>
-                  <p className="font-bold text-gray-900 italic tracking-tight">{product.leadTime} Fulfillment</p>
+                <div className="space-y-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 italic flex items-center gap-3"><Truck size={16} /> LOGISTICS_HUB</p>
+                  <p className="text-2xl font-black text-gray-950 italic tracking-tighter leading-none uppercase">{product.leadTime} WINDOW</p>
                 </div>
               </div>
             </div>
-            <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2"></div>
+            {/* Background Branding */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-secondary/5 rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2 group-hover:bg-secondary/10 transition-colors"></div>
+            <div className="absolute bottom-0 left-0 p-12 text-gray-50 opacity-[0.03] pointer-events-none">
+                <Cpu size={250} />
+            </div>
           </div>
 
-          {/* Secure Escrow Protocol */}
-          <div className="bg-gray-900 rounded-[3rem] p-12 md:p-16 text-white relative overflow-hidden shadow-2xl">
-            <div className="relative z-10 space-y-12">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-                <div className="flex items-center gap-5">
-                  <div className="w-16 h-16 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center text-secondary shadow-2xl border border-white/10">
-                    <ShieldCheck size={32} />
+          {/* Secure Settlement Protocols */}
+          <div className="stitch-card p-16 bg-gray-950 text-white relative overflow-hidden shadow-2xl group shadow-gray-950/20">
+            <div className="relative z-10 space-y-16">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
+                <div className="flex items-center gap-8">
+                  <div className="w-20 h-20 bg-white/5 backdrop-blur-3xl rounded-[2rem] flex items-center justify-center text-secondary shadow-2xl border border-white/5 group-hover:rotate-12 transition-transform duration-1000">
+                    <ShieldCheck size={40} className="stroke-[1.5]" />
                   </div>
-                  <div>
-                    <h3 className="text-3xl font-bold tracking-tight italic leading-none">SmartKissan <span className="text-secondary not-italic">Vault.</span></h3>
-                    <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest mt-2 flex items-center gap-2">
-                      <Lock size={12} /> Multi-Sig Escrow Active
-                    </p>
+                  <div className="space-y-2">
+                    <h3 className="text-4xl font-bold italic tracking-tight leading-none uppercase">SK.VAULT <span className="text-secondary not-italic">PROTOCOL.</span></h3>
+                    <p className="text-white/30 text-[10px] font-black uppercase tracking-[0.4em] italic leading-none">Institutional Multi-Sig Settlement Infrastructure Active</p>
                   </div>
                 </div>
-                <div className="px-6 py-3 bg-secondary/20 rounded-xl border border-secondary/30 text-secondary text-[10px] font-bold uppercase tracking-widest">
-                  Polygon-ZKEVM Protocol
+                <div className="px-8 py-4 bg-secondary/10 rounded-2xl border border-secondary/20 text-secondary text-[10px] font-black uppercase tracking-[0.4em] italic shadow-2xl shadow-secondary/5">
+                  POLYGON_ZKEVM_V2
                 </div>
               </div>
               
-              <div className="grid md:grid-cols-4 gap-10">
+              <div className="grid md:grid-cols-4 gap-12">
                 {[
-                  { title: 'Bid Signature', desc: 'Immutable Intent' },
-                  { title: 'Vault Lock', desc: 'Proof of Funds' },
-                  { title: 'Quality Gate', desc: 'AI Verification' },
-                  { title: 'Final Release', desc: 'Smart Release' }
+                  { title: 'BID_SIG', desc: 'Immutable intent binding' },
+                  { title: 'VAULT_LOCK', desc: 'Cryptographic proof of funds' },
+                  { title: 'QUALITY_GATE', desc: 'Neural asset verification' },
+                  { title: 'FINAL_SYNC', desc: 'Atomic smart release' }
                 ].map((step, i) => (
-                  <div key={i} className="space-y-4 group">
-                    <p className="text-5xl font-bold text-white/5 group-hover:text-secondary/20 transition-colors">{i + 1}</p>
-                    <h4 className="font-bold text-[11px] uppercase tracking-widest text-white">{step.title}</h4>
-                    <p className="text-xs text-gray-400 font-medium italic leading-relaxed">{step.desc}</p>
+                  <div key={i} className="space-y-6 group/step relative">
+                    <p className="text-6xl font-black text-white/5 group-hover/step:text-secondary/10 transition-colors italic leading-none">{i + 1}</p>
+                    <div className="space-y-2 relative z-10">
+                        <h4 className="font-black text-[11px] uppercase tracking-[0.4em] text-white italic">{step.title}</h4>
+                        <p className="text-xs text-white/40 font-medium italic leading-relaxed">{step.desc}</p>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/10 rounded-full blur-[120px]"></div>
+            {/* Background Decor */}
+            <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-secondary/10 rounded-full blur-[150px] opacity-20 group-hover:opacity-40 transition-opacity duration-1000"></div>
+            <div className="absolute top-0 right-0 p-12 text-white/5 pointer-events-none">
+                <Workflow size={200} />
+            </div>
           </div>
         </div>
 
-        {/* Right Column */}
-        <div className="lg:col-span-4 space-y-10">
-          {/* Terminal Transaction Card */}
-          <div className="stitch-card p-10 bg-white border-none shadow-2xl shadow-gray-200/50 sticky top-10 overflow-hidden">
-            <div className="space-y-8 relative z-10">
-              <div className="pb-8 border-b border-gray-50 flex justify-between items-end">
-                <div className="space-y-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 italic">Market Benchmark</p>
-                  <div className="flex items-baseline gap-2">
-                    <h2 className="text-5xl font-bold text-gray-900 tracking-tighter italic">₹{product.price}</h2>
-                    <span className="text-gray-400 font-bold uppercase text-[10px] tracking-widest">/ {product.unit}</span>
+        {/* Transaction Terminal (Right) */}
+        <div className="lg:col-span-4 space-y-12">
+          {/* Main Bidding Engine */}
+          <div className="stitch-card p-12 bg-white border border-gray-100 shadow-2xl shadow-gray-200/50 sticky top-12 overflow-hidden group/terminal">
+            <div className="space-y-10 relative z-10">
+              {/* Price Display */}
+              <div className="pb-10 border-b border-gray-50 flex justify-between items-end relative overflow-hidden">
+                <div className="space-y-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.5em] text-gray-300 italic leading-none">MARKET_BENCHMARK</p>
+                  <div className="flex items-baseline gap-3">
+                    <h2 className="text-6xl font-black text-gray-950 tracking-tighter italic leading-none">₹{product.price}</h2>
+                    <span className="text-gray-400 font-black uppercase text-[10px] tracking-[0.3em] italic">/ {product.unit}</span>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-success flex items-center justify-end gap-1">
-                    <TrendingUp size={10} /> +2.4%
-                  </p>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest italic">Weekly Trend</p>
+                <div className="text-right space-y-1">
+                  <div className="flex items-center justify-end gap-2 text-success font-black text-[11px] uppercase tracking-widest italic">
+                    <TrendingUp size={14} /> +2.4%
+                  </div>
+                  <p className="text-[9px] font-black text-gray-300 uppercase tracking-[0.4em] italic leading-none">WEEKLY_DELTA</p>
                 </div>
+                
+                {/* Scanline Effect */}
+                <div className="absolute inset-0 bg-scanline opacity-[0.02] pointer-events-none"></div>
               </div>
               
-              <div className="grid grid-cols-2 gap-6">
-                <div className="p-6 bg-gray-50/50 rounded-2xl border border-gray-100/50">
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2 italic">Liquid Inventory</p>
-                  <p className="font-bold text-gray-900 tracking-tight italic">{product.quantity} <span className="text-[10px] not-italic text-gray-400">{product.unit}</span></p>
+              {/* Inventory Meta */}
+              <div className="grid grid-cols-2 gap-8">
+                <div className="p-8 bg-gray-50/50 rounded-[2rem] border border-gray-50 flex flex-col justify-between group/meta hover:bg-white hover:shadow-xl transition-all duration-500">
+                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-gray-400 italic leading-none mb-4">LIQUID_INDEX</p>
+                  <p className="text-2xl font-black text-gray-950 tracking-tighter italic leading-none group-hover:text-secondary transition-colors">
+                    {product.quantity} <span className="text-[10px] not-italic text-gray-300">{product.unit}</span>
+                  </p>
                 </div>
-                <div className="p-6 bg-gray-50/50 rounded-2xl border border-gray-100/50">
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2 italic">Minimum Threshold</p>
-                  <p className="font-bold text-gray-900 tracking-tight italic">{product.minOrder} <span className="text-[10px] not-italic text-gray-400">{product.unit}</span></p>
+                <div className="p-8 bg-gray-50/50 rounded-[2rem] border border-gray-50 flex flex-col justify-between group/meta hover:bg-white hover:shadow-xl transition-all duration-500">
+                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-gray-400 italic leading-none mb-4">MIN_THRESHOLD</p>
+                  <p className="text-2xl font-black text-gray-950 tracking-tighter italic leading-none group-hover:text-warning transition-colors">
+                    {product.minOrder} <span className="text-[10px] not-italic text-gray-300">{product.unit}</span>
+                  </p>
                 </div>
               </div>
 
-              {/* Bidding Terminal */}
-              <div className="space-y-6 pt-4">
-                <div className="flex justify-between items-center px-1">
-                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-900 flex items-center gap-2">
-                    <Gavel size={14} className="text-secondary" /> Negotiate Node
+              {/* Bidding Control Interface */}
+              <div className="space-y-8 pt-4">
+                <div className="flex justify-between items-center px-2">
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-gray-950 flex items-center gap-4 italic">
+                    <div className="w-2 h-2 bg-secondary rounded-full animate-pulse"></div>
+                    NEGOTIATION_TERMINAL
                   </h3>
-                  <button className="text-[9px] font-bold uppercase tracking-widest text-secondary hover:underline flex items-center gap-1 italic">
-                    <Info size={10} /> Analysis
+                  <button className="text-[9px] font-black uppercase tracking-[0.4em] text-secondary hover:underline underline-offset-4 flex items-center gap-3 italic transition-all">
+                    <Info size={14} /> LIVE_ANALYSIS
                   </button>
                 </div>
                 
-                <form onSubmit={handlePlaceBid} className="space-y-4">
-                  <div className="relative group">
-                    <div className="absolute left-6 top-1/2 -translate-y-1/2 font-bold text-gray-300 group-focus-within:text-secondary transition-colors">₹</div>
+                <form onSubmit={handlePlaceBid} className="space-y-6">
+                  <div className="relative group/field">
+                    <div className="absolute left-8 top-1/2 -translate-y-1/2 font-black text-gray-200 text-2xl group-focus-within/field:text-secondary transition-colors italic leading-none">₹</div>
                     <input 
                       type="number" 
                       value={bidAmount}
                       onChange={(e) => setBidAmount(e.target.value)}
-                      placeholder="Enter Bid Amount"
-                      className="w-full pl-12 pr-6 py-6 bg-gray-50 border-none rounded-[1.5rem] focus:ring-4 focus:ring-secondary/5 font-bold text-2xl text-gray-900 placeholder:text-gray-200 italic"
+                      placeholder="SET_BID_VALUE"
+                      className="w-full pl-16 pr-8 py-10 bg-gray-50 border border-transparent rounded-[2.5rem] focus:ring-8 focus:ring-secondary/5 focus:bg-white focus:border-secondary/20 transition-all font-black text-4xl text-gray-950 placeholder:text-gray-100 italic outline-none"
                     />
                   </div>
+                  
                   <motion.button 
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     type="submit"
-                    className="w-full py-6 bg-secondary text-white rounded-[1.5rem] font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-secondary-600 shadow-2xl shadow-secondary/20 transition-all flex items-center justify-center gap-3"
+                    className="w-full py-8 bg-secondary text-white rounded-[2.5rem] font-black text-[12px] uppercase tracking-[0.5em] italic hover:bg-secondary-600 shadow-[0_20px_50px_rgba(59,130,246,0.3)] transition-all flex items-center justify-center gap-4 relative overflow-hidden group/btn"
                   >
-                    Confirm Negotiation
+                    <span className="relative z-10 flex items-center gap-4">CONFIRM_NEGOTIATION <Gavel size={20} /></span>
+                    <div className="absolute inset-0 bg-white opacity-0 group-hover/btn:opacity-10 transition-opacity"></div>
                   </motion.button>
                 </form>
                 
-                <div className="relative">
+                <div className="relative py-4">
                   <div className="absolute inset-0 flex items-center" aria-hidden="true">
                     <div className="w-full border-t border-gray-50"></div>
                   </div>
-                  <div className="relative flex justify-center text-[9px] font-bold uppercase tracking-widest">
-                    <span className="bg-white px-4 text-gray-300 italic">Protocol Bypass</span>
+                  <div className="relative flex justify-center text-[10px] font-black uppercase tracking-[0.6em]">
+                    <span className="bg-white px-6 text-gray-200 italic">SYSTEM_BYPASS</span>
                   </div>
                 </div>
 
                 <motion.button 
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full py-6 bg-gray-900 text-white rounded-[1.5rem] font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-black transition-all flex items-center justify-center gap-3 shadow-2xl"
+                  className="w-full py-8 bg-gray-950 text-white rounded-[2.5rem] font-black text-[12px] uppercase tracking-[0.5em] italic hover:bg-black transition-all flex items-center justify-center gap-4 shadow-2xl shadow-gray-950/20 group/instant"
                 >
-                  <Database size={16} /> Instant Settlement
+                  <Database size={18} className="text-secondary group-hover:rotate-12 transition-transform" /> INSTANT_SETTLEMENT
                 </motion.button>
                 
-                <div className="flex items-center justify-center gap-3 text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] pt-4 italic">
-                  <div className="w-1.5 h-1.5 bg-error rounded-full animate-pulse"></div>
-                  Terminal Closes: 2d 14h 25m
+                <div className="flex items-center justify-center gap-4 text-[10px] font-black text-gray-300 uppercase tracking-[0.4em] pt-6 italic leading-none">
+                  <div className="w-1.5 h-1.5 bg-error rounded-full animate-ping"></div>
+                  TERMINAL_CLOSURE_V3: 2D 14H 25M
                 </div>
               </div>
 
-              {/* Tape Feed (Recent Bids) */}
-              <div className="mt-12 space-y-6">
-                <h4 className="text-[10px] font-bold uppercase tracking-widest text-gray-400 px-1 italic border-l-2 border-secondary pl-3">Live Bidding Tape</h4>
-                <div className="space-y-4">
+              {/* Tape Feed (Live Market Data) */}
+              <div className="mt-16 space-y-10">
+                <div className="flex items-center gap-4 px-2">
+                    <Activity size={18} className="text-secondary" />
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 italic">Live_Bidding_Tape</h4>
+                </div>
+                <div className="space-y-5">
                   {[
-                    { name: 'AGRO-CORP', qty: '100 Qtl', price: '₹2,150', time: '2m ago', isUser: true },
-                    { name: 'V.P. FOODS', qty: '200 Qtl', price: '₹2,120', time: '1h ago' },
-                    { name: 'S.T. EXPORTS', qty: '150 Qtl', price: '₹2,100', time: '4h ago' }
+                    { name: 'AGRO-CORP-IX', qty: '100 QTL', price: '₹2,150', time: '2M_AGO', isUser: true },
+                    { name: 'V.P. FOODS_X', qty: '200 QTL', price: '₹2,120', time: '1H_AGO' },
+                    { name: 'S.T. EXPORTS_01', qty: '150 QTL', price: '₹2,100', time: '4H_AGO' }
                   ].map((bid, i) => (
-                    <div key={i} className={`p-6 rounded-2xl flex items-center justify-between transition-all hover:bg-gray-50 border-l-4 ${bid.isUser ? 'bg-secondary/5 border-secondary shadow-lg' : 'bg-gray-50/50 border-gray-100'}`}>
-                      <div>
-                        <p className="font-bold text-xs text-gray-900 italic">{bid.name} {bid.isUser && '(ME)'}</p>
-                        <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-1">{bid.qty}</p>
+                    <div key={i} className={`p-8 rounded-[2rem] flex items-center justify-between transition-all group/bid relative overflow-hidden ${bid.isUser ? 'bg-secondary/5 border border-secondary/10 shadow-xl' : 'bg-gray-50/50 border border-transparent hover:bg-white hover:shadow-lg'}`}>
+                      <div className="relative z-10 space-y-2">
+                        <p className="font-black text-[11px] text-gray-950 italic tracking-tight flex items-center gap-3">
+                            {bid.name} {bid.isUser && <span className="px-2 py-0.5 bg-secondary text-white rounded-md text-[8px] not-italic">ME</span>}
+                        </p>
+                        <p className="text-[9px] text-gray-400 font-black uppercase tracking-[0.3em] italic leading-none">{bid.qty}</p>
                       </div>
-                      <div className="text-right">
-                        <p className="font-bold text-sm text-gray-900 tracking-tight italic">{bid.price}</p>
-                        <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-1">{bid.time}</p>
+                      <div className="relative z-10 text-right space-y-2">
+                        <p className="font-black text-xl text-gray-950 tracking-tighter italic leading-none">{bid.price}</p>
+                        <p className="text-[9px] text-gray-400 font-black uppercase tracking-[0.3em] italic leading-none">{bid.time}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-secondary/0 via-secondary to-secondary/0"></div>
+            
+            {/* Top Border Glow */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-secondary to-transparent opacity-40"></div>
           </div>
 
-          {/* Supplier Protocol */}
-          <div className="stitch-card p-10 bg-white border-none shadow-xl shadow-gray-200/50 space-y-8">
-            <div className="flex items-center gap-6">
-              <div className="w-20 h-20 rounded-[2rem] bg-secondary/5 flex items-center justify-center text-secondary font-bold text-3xl shadow-inner border border-secondary/10 relative">
+          {/* Supplier Identity Card */}
+          <div className="stitch-card p-12 bg-white border border-gray-50 shadow-2xl shadow-gray-200/50 space-y-10 group/supplier">
+            <div className="flex items-center gap-8">
+              <div className="w-24 h-24 rounded-[2.5rem] bg-secondary/5 flex items-center justify-center text-secondary font-black text-4xl shadow-inner border border-secondary/10 relative group-hover:scale-105 transition-transform duration-700">
                 {product.farmerName?.[0]}
-                <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-success rounded-full border-4 border-white flex items-center justify-center text-white">
-                  <ShieldCheck size={14} />
+                <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary rounded-full border-4 border-white flex items-center justify-center text-white shadow-2xl">
+                  <ShieldCheck size={16} />
                 </div>
               </div>
-              <div className="space-y-1">
-                <h4 className="text-xl font-bold text-gray-900 tracking-tight italic leading-tight">{product.farmerName}</h4>
-                <div className="flex items-center gap-2 text-warning font-bold text-[10px] uppercase tracking-widest">
-                  <Star size={14} className="fill-current" />
-                  {product.farmerRating} Trust Index
+              <div className="space-y-2">
+                <h4 className="text-2xl font-black text-gray-950 tracking-tighter italic leading-none uppercase">{product.farmerName}</h4>
+                <div className="flex items-center gap-3 text-warning font-black text-[10px] uppercase tracking-[0.4em] italic">
+                  <Star size={16} className="fill-current" />
+                  {product.farmerRating} TRUST_SCORE
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-8 py-2">
+            <div className="grid grid-cols-2 gap-10 py-4 border-y border-gray-50">
               <div className="space-y-2">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 italic">Protocol Deals</p>
-                <p className="font-bold text-gray-900 text-lg italic tracking-tight">{product.totalSales}</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 italic leading-none">PROTOCOL_DEALS</p>
+                <p className="font-black text-gray-950 text-2xl italic tracking-tighter leading-none">{product.totalSales}</p>
               </div>
               <div className="space-y-2">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 italic">Punctuality Score</p>
-                <p className="font-bold text-success text-lg italic tracking-tight">{product.onTimeDelivery}</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 italic leading-none">PUNCTUALITY</p>
+                <p className="font-black text-primary text-2xl italic tracking-tighter leading-none">{product.onTimeDelivery}</p>
               </div>
             </div>
 
-            <div className="flex flex-col gap-4">
-              <button className="w-full py-5 bg-white border border-gray-100 text-gray-600 rounded-[1.2rem] font-bold text-[10px] uppercase tracking-widest hover:border-secondary hover:text-secondary transition-all flex items-center justify-center gap-3">
-                <MessageCircle size={18} /> Secure Message
+            <div className="flex flex-col gap-5 pt-4">
+              <button className="w-full py-6 bg-white border border-gray-100 text-gray-950 rounded-[1.8rem] font-black text-[10px] uppercase tracking-[0.4em] italic hover:bg-gray-50 hover:border-secondary/20 transition-all flex items-center justify-center gap-4 shadow-sm">
+                <MessageCircle size={20} className="text-secondary" /> SECURE_RELIANCE_RELAY
               </button>
-              <button className="w-full py-5 bg-gray-50 text-gray-400 rounded-[1.2rem] font-bold text-[10px] uppercase tracking-widest hover:bg-gray-100 hover:text-gray-900 transition-all flex items-center justify-center gap-3 italic">
-                <Fingerprint size={18} /> View Supplier Meta
+              <button className="w-full py-6 bg-gray-50 text-gray-400 rounded-[1.8rem] font-black text-[10px] uppercase tracking-[0.4em] italic hover:bg-gray-100 hover:text-gray-950 transition-all flex items-center justify-center gap-4 group/meta">
+                <Fingerprint size={20} className="group-hover:text-secondary transition-colors" /> VIEW_NODE_METADATA
               </button>
             </div>
           </div>
