@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, Smartphone, Shield, Truck, TrendingUp, Scale, Zap, Globe, ArrowRight, CheckCircle2, ChevronRight, Activity } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Mail, Lock, Eye, EyeOff, Shield, MapPin, BarChart3, CheckCircle, ArrowRight, Users, Truck, Leaf } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState('farmer');
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -23,13 +24,17 @@ const LoginPage = () => {
     });
   };
   
+  const handleRoleSelect = (role: string) => {
+    setSelectedRole(role);
+  };
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
     try {
       const user = await login(formData.email, formData.password);
-      toast.success('Access Granted. Synchronizing Workspace...');
+      toast.success('Access Granted. Redirecting to dashboard...');
       
       const role = user?.role?.toLowerCase();
       setTimeout(() => {
@@ -47,183 +52,199 @@ const LoginPage = () => {
     }
   };
   
+  const roles = [
+    { 
+      id: 'farmer', 
+      label: 'Farmer', 
+      icon: Leaf, 
+      description: 'List your products and connect with buyers directly'
+    },
+    { 
+      id: 'buyer', 
+      label: 'Buyer', 
+      icon: Users, 
+      description: 'Source quality products from verified farmers'
+    },
+    { 
+      id: 'transporter', 
+      label: 'Transporter', 
+      icon: Truck, 
+      description: 'Join logistics network and earn'
+    }
+  ];
+
   return (
-    <div className="min-h-screen flex bg-white font-sans selection:bg-emerald-100 selection:text-emerald-900">
-      {/* Left Column: Premium Visual & Trust Signal */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gray-900 relative overflow-hidden flex-col justify-between p-20">
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#10b981_0%,transparent_50%)] blur-[120px]"></div>
-          <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_80%,#3b82f6_0%,transparent_40%)] blur-[100px]"></div>
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-        </div>
-
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="relative z-10"
-        >
-          <div className="flex items-center gap-3 mb-12">
-            <div className="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-2xl shadow-emerald-500/20">
-              <Zap size={24} fill="white" />
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+      {/* Left Side - Welcome Section */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-green-600 to-green-700 relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="relative z-10 flex flex-col justify-center p-12 text-white">
+          <div className="text-center space-y-8">
+            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-8">
+              <Leaf className="w-8 h-8 text-green-400" />
             </div>
-            <h1 className="text-3xl font-black text-white italic tracking-tighter">Smart<span className="text-emerald-500 not-italic">Kissan</span></h1>
+            <h1 className="text-4xl font-bold mb-4">Welcome Back!</h1>
+            <p className="text-lg mb-8">Login to your Smart-Kissan account and continue your journey.</p>
           </div>
-
-          <div className="space-y-6 max-w-lg">
-            <h2 className="text-6xl font-black text-white leading-tight tracking-tighter italic">
-              Digital <span className="not-italic text-emerald-500 underline decoration-emerald-500/30 underline-offset-8">Sovereignty</span> for Agriculture.
-            </h2>
-            <p className="text-gray-400 text-xl font-medium leading-relaxed">
-              Access the Pan-India agricultural blockchain grid. Secured by cryptographic custody and real-time IoT intelligence.
-            </p>
-          </div>
-        </motion.div>
-
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="relative z-10 grid grid-cols-2 gap-10"
-        >
-          <div className="space-y-4 p-8 bg-white/5 backdrop-blur-xl rounded-[2.5rem] border border-white/10">
-            <div className="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 border border-blue-500/20">
-              <Shield size={24} />
+          
+          {/* Feature Icons */}
+          <div className="grid grid-cols-2 gap-8 max-w-sm mx-auto">
+            <div className="text-center space-y-4">
+              <div className="w-12 h-12 bg-white/30 rounded-2xl flex items-center justify-center">
+                <Shield className="w-6 h-6 text-green-400" />
+              </div>
+              <p className="text-sm font-medium">Secure Payments</p>
             </div>
-            <h4 className="text-white font-black text-lg italic">Proof of Custody</h4>
-            <p className="text-gray-500 text-xs font-black uppercase tracking-widest leading-loose">Automated escrow and dispute resolution via smart contracts.</p>
-          </div>
-          <div className="space-y-4 p-8 bg-white/5 backdrop-blur-xl rounded-[2.5rem] border border-white/10">
-            <div className="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center text-emerald-400 border border-emerald-500/20">
-              <TrendingUp size={24} />
+            <div className="text-center space-y-4">
+              <div className="w-12 h-12 bg-white/30 rounded-2xl flex items-center justify-center">
+                <MapPin className="w-6 h-6 text-green-400" />
+              </div>
+              <p className="text-sm font-medium">Live Tracking</p>
             </div>
-            <h4 className="text-white font-black text-lg italic">Market Pulse</h4>
-            <p className="text-gray-500 text-xs font-black uppercase tracking-widest leading-loose">Live mandi analytics and AI-driven yield prediction models.</p>
+            <div className="text-center space-y-4">
+              <div className="w-12 h-12 bg-white/30 rounded-2xl flex items-center justify-center">
+                <BarChart3 className="w-6 h-6 text-green-400" />
+              </div>
+              <p className="text-sm font-medium">AI Price Insights</p>
+            </div>
+            <div className="text-center space-y-4">
+              <div className="w-12 h-12 bg-white/30 rounded-2xl flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-green-400" />
+              </div>
+              <p className="text-sm font-medium">Fair & Transparent</p>
+            </div>
           </div>
-        </motion.div>
-
-        <div className="absolute -bottom-20 -left-20 opacity-5">
-            <Globe size={600} strokeWidth={0.5} className="text-white animate-[spin_60s_linear_infinite]" />
         </div>
       </div>
 
-      {/* Right Column: Auth Interface */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 md:p-20 bg-gray-50/50">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-lg space-y-12"
-        >
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600 mb-2">
-              <Activity size={14} />
-              Protocol Node Access
+      {/* Right Side - Login Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+        <div className="w-full max-w-md">
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            {/* Logo */}
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Leaf className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">Login to Smart-Kissan</h2>
+              <p className="text-gray-600">Enter your credentials to access your account.</p>
             </div>
-            <h3 className="text-5xl font-black text-gray-900 tracking-tighter italic leading-none">Authentication <span className="not-italic">Vault</span></h3>
-            <p className="text-gray-400 font-medium text-lg">Secure entry to your professional agricultural dashboard.</p>
-          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4">Terminal Identifier (Email)</label>
-                <div className="relative group">
-                  <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-emerald-500 transition-colors" size={20} />
+            {/* Role Selection */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Select Role</label>
+              <div className="grid grid-cols-3 gap-4">
+                {roles.map((role) => (
+                  <button
+                    key={role.id}
+                    type="button"
+                    onClick={() => handleRoleSelect(role.id)}
+                    className={`p-4 rounded-lg border-2 transition-all ${
+                      selectedRole === role.id
+                        ? 'border-green-500 bg-green-500 text-white'
+                        : 'border-gray-200 bg-white text-gray-700 hover:border-green-500 hover:bg-green-50'
+                    }`}
+                  >
+                    <role.icon className="w-6 h-6 mb-2" />
+                    <span className="text-sm font-medium">{role.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Form Fields */}
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                   <input 
                     name="email"
                     type="email"
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="operator@smartkissan.in"
-                    className="w-full bg-white border border-gray-100 rounded-[2rem] py-6 pl-16 pr-8 text-gray-900 font-bold placeholder:text-gray-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all shadow-sm"
+                    placeholder="Enter your email"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex justify-between items-center px-4">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Cryptographic Key (Password)</label>
-                  <Link to="/forgot-password" size={14} className="text-[10px] font-black uppercase tracking-widest text-emerald-600 hover:text-emerald-700 transition-colors">Recover Key</Link>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-sm font-medium text-gray-700">Password</label>
+                  <Link to="/forgot-password" className="text-sm text-green-600 hover:text-green-700">Forgot Password?</Link>
                 </div>
-                <div className="relative group">
-                  <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-emerald-500 transition-colors" size={20} />
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                   <input 
                     name="password"
                     type={showPassword ? "text" : "password"}
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="••••••••"
-                    className="w-full bg-white border border-gray-100 rounded-[2rem] py-6 pl-16 pr-16 text-gray-900 font-bold placeholder:text-gray-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all shadow-sm"
+                    placeholder="Enter your password"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   />
                   <button 
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-300 hover:text-emerald-600 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-green-600"
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
               </div>
-            </div>
 
-            <div className="flex items-center gap-3 px-4">
-              <input type="checkbox" className="w-5 h-5 rounded-lg border-gray-200 text-emerald-500 focus:ring-emerald-500/20 transition-all cursor-pointer" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Maintain Session on this Node</span>
-            </div>
+              <div className="flex items-center">
+                <input 
+                  type="checkbox" 
+                  className="w-4 h-4 text-green-600 focus:ring-green-500 rounded"
+                />
+                <label className="ml-2 text-sm text-gray-600">Remember me</label>
+              </div>
 
-            <button 
-              type="submit"
-              disabled={loading}
-              className="w-full py-8 bg-gray-900 text-white rounded-[2.5rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-emerald-600 shadow-2xl shadow-gray-200 hover:shadow-emerald-900/20 transition-all flex items-center justify-center gap-4 group relative overflow-hidden"
-            >
-              <AnimatePresence mode="wait">
+              <button 
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+              >
                 {loading ? (
-                  <motion.div 
-                    key="loading"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="flex items-center gap-3"
-                  >
-                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                    Authenticating Node...
-                  </motion.div>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 ) : (
-                  <motion.div 
-                    key="idle"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="flex items-center gap-3"
-                  >
-                    Authorize Access <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
-                  </motion.div>
+                  <>
+                    Login
+                    <ArrowRight size={16} />
+                  </>
                 )}
-              </AnimatePresence>
-            </button>
-          </form>
+              </button>
+            </form>
 
-          <div className="pt-12 border-t border-gray-100 text-center">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-              New Participant? <Link to="/register" className="text-emerald-600 hover:text-emerald-700 transition-colors ml-2">Initialize Registration</Link>
-            </p>
-          </div>
-          
-          <div className="flex justify-center gap-8 opacity-40 grayscale group-hover:grayscale-0 transition-all">
-            <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-gray-400">
-              <CheckCircle2 size={12} className="text-emerald-500" />
-              SOC2 Certified
+            {/* Google Login */}
+            <div className="mt-6">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-full h-0.5 bg-gray-300"></div>
+                  <p className="bg-white px-4 py-1 text-sm text-gray-600 relative">or continue with</p>
+                </div>
+              </div>
+              <button className="w-full py-3 border border-gray-300 rounded-lg bg-white text-gray-700 hover:bg-gray-50 transition-colors flex items-center justify-center gap-3">
+                <div className="w-5 h-5 bg-blue-600 rounded"></div>
+                Continue with Google
+              </button>
             </div>
-            <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-gray-400">
-              <CheckCircle2 size={12} className="text-emerald-500" />
-              AES-256 Encrypted
+
+            {/* Register Link */}
+            <div className="text-center mt-6">
+              <p className="text-gray-600">
+                Don't have an account? <Link to="/register" className="text-green-600 hover:text-green-700 font-medium">Register</Link>
+              </p>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
-};
+}; 
 
 export default LoginPage;

@@ -1,342 +1,480 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useAnimation, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
+import { motion } from 'framer-motion';
 import { 
-  TrendingUp, 
-  Shield, 
-  Truck, 
-  Users, 
-  Sparkles, 
-  Award,
-  ArrowRight,
-  CheckCircle2,
   Leaf,
-  Scale,
-  Zap,
-  Globe,
-  Database,
-  ShieldCheck,
-  Activity,
-  ChevronRight,
-  ArrowUpRight,
-  MousePointer2,
-  Fingerprint,
-  Cpu,
-  Lock,
-  Workflow
+  ArrowRight,
+  Shield,
+  MapPin,
+  BarChart3,
+  Users,
+  Truck,
+  CheckCircle,
+  TrendingUp,
+  Menu,
+  X,
+  MessageCircle,
+  Package,
+  Moon,
+  Sun
 } from 'lucide-react';
 
 const LandingPage = () => {
-  const controls = useAnimation();
-  const [ref, inView] = useInView({ threshold: 0.1, triggerOnce: true });
-  const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], [0, -150]);
-  const y2 = useTransform(scrollY, [0, 500], [0, 150]);
-  
-  useEffect(() => {
-    if (inView) {
-      controls.start('visible');
-    }
-  }, [controls, inView]);
-  
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 60, filter: 'blur(10px)' },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      filter: 'blur(0px)',
-      transition: { duration: 1, ease: [0.16, 1, 0.3, 1] } 
-    }
-  };
-  
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2, delayChildren: 0.3 }
-    }
-  };
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-  const heroImage = "/home/pineapple/.gemini/antigravity/brain/f0a2836f-531e-4f17-828e-932994a44758/smart_kissan_hero_visual_1778587208207.png";
-  
+  const features = [
+    { icon: Shield, title: 'Secure Payments', description: 'Escrow-based transactions protect both farmers and buyers' },
+    { icon: MapPin, title: 'Live Tracking', description: 'Real-time monitoring of agricultural products in transit' },
+    { icon: BarChart3, title: 'AI Price Insights', description: 'Intelligent pricing recommendations based on market data' },
+    { icon: CheckCircle, title: 'Fair & Transparent', description: 'Blockchain-powered trust and verification system' }
+  ];
+
+  const roles = [
+    { 
+      title: 'Farmer', 
+      icon: Leaf, 
+      description: 'List your products and connect with buyers directly',
+      path: '/register'
+    },
+    { 
+      title: 'Buyer', 
+      icon: Users, 
+      description: 'Source quality products from verified farmers',
+      path: '/register'
+    },
+    { 
+      title: 'Transporter', 
+      icon: Truck, 
+      description: 'Join the logistics network and earn',
+      path: '/register'
+    }
+  ];
+
+  const stats = [
+    { number: '10,000+', label: 'Active Farmers' },
+    { number: '50,000+', label: 'Products Listed' },
+    { number: '25,000+', label: 'Successful Transactions' },
+    { number: '99.9%', label: 'Uptime' }
+  ];
+
   return (
-    <div className="bg-white font-sans selection:bg-tertiary-100 selection:text-tertiary-900 overflow-x-hidden">
-      {/* Premium Navigation (Landing) */}
-      <nav className="fixed top-0 left-0 w-full z-[1000] px-12 py-8 flex justify-between items-center pointer-events-none">
-        <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3 pointer-events-auto group cursor-pointer"
-        >
-            <div className="w-12 h-12 bg-gray-900 rounded-2xl flex items-center justify-center text-white shadow-2xl group-hover:scale-110 transition-transform duration-500">
-                <Zap size={24} fill="white" className="text-tertiary" />
+    <div className="min-h-screen bg-white">
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center">
+                <Leaf className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xl font-bold text-gray-900">Smart<span className="text-green-600">Kissan</span></span>
             </div>
-            <span className="text-2xl font-black text-white italic tracking-tighter mix-blend-difference">Smart<span className="text-tertiary not-italic">Kissan</span></span>
-        </motion.div>
-        
-        <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-6 pointer-events-auto"
-        >
-            <Link to="/login" className="px-10 py-5 bg-white/10 backdrop-blur-3xl border border-white/20 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white hover:text-gray-900 transition-all shadow-2xl">
-                Nexus Access
-            </Link>
-            <Link to="/register" className="px-10 py-5 bg-tertiary text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-tertiary-600 transition-all shadow-2xl shadow-tertiary-900/20">
-                Initialize Protocol
-            </Link>
-        </motion.div>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              <Link to="/" className="text-gray-600 hover:text-green-600 font-medium transition-colors">
+                Home
+              </Link>
+              <Link to="/features" className="text-gray-600 hover:text-green-600 font-medium transition-colors">
+                Features
+              </Link>
+              <Link to="/how-it-works" className="text-gray-600 hover:text-green-600 font-medium transition-colors">
+                How it Works
+              </Link>
+              <Link to="/marketplace" className="text-gray-600 hover:text-green-600 font-medium transition-colors">
+                Marketplace
+              </Link>
+              <Link to="/about" className="text-gray-600 hover:text-green-600 font-medium transition-colors">
+                About Us
+              </Link>
+              <Link to="/contact" className="text-gray-600 hover:text-green-600 font-medium transition-colors">
+                Contact
+              </Link>
+              <Link to="/login" className="text-gray-600 hover:text-green-600 font-medium transition-colors">
+                Login
+              </Link>
+              <Link to="/register" className="bg-green-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-green-700 transition-colors">
+                Register
+              </Link>
+              <a 
+                href="https://enam.gov.in" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-orange-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-orange-700 transition-colors"
+              >
+                eNAM
+              </a>
+              <button
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+              >
+                {isDarkMode ? <Sun className="w-5 h-5 text-gray-600" /> : <Moon className="w-5 h-5 text-gray-600" />}
+              </button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-gray-600 hover:text-green-600"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="md:hidden bg-white border-b border-gray-100"
+          >
+            <div className="max-w-7xl mx-auto px-6 sm:px-8 py-4 space-y-4">
+              <Link to="/login" className="block text-gray-600 hover:text-green-600 font-medium transition-colors">Login</Link>
+              <Link to="/register" className="block bg-green-600 text-white px-6 py-2 rounded-xl font-medium hover:bg-green-700 transition-colors text-center">Get Started</Link>
+            </div>
+          </motion.div>
+        )}
       </nav>
 
-      {/* Hero Section: Cinematic Visuals */}
-      <section className="relative min-h-screen flex items-center bg-gray-950 overflow-hidden">
-        {/* Background Visual Layer */}
-        <motion.div style={{ y: y1 }} className="absolute inset-0 z-0">
-          <img 
-            src={heroImage} 
-            alt="Agricultural Nexus" 
-            className="w-full h-full object-cover opacity-50 scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/80 to-transparent"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent"></div>
-        </motion.div>
-
-        <div className="container-custom relative z-10 pt-20">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-            className="max-w-5xl"
-          >
-            <motion.div variants={fadeInUp} className="mb-10">
-              <span className="inline-flex items-center gap-4 px-8 py-3 rounded-full bg-tertiary/10 backdrop-blur-2xl border border-tertiary/20 text-tertiary text-[11px] font-black uppercase tracking-[0.4em] shadow-2xl">
-                <Activity className="w-5 h-5 animate-pulse" />
-                Agricultural Protocol v4.0 Active
-              </span>
-            </motion.div>
-            
-            <motion.h1 
-              variants={fadeInUp}
-              className="text-7xl md:text-[8.5rem] font-black mb-12 text-white leading-[0.85] tracking-tighter italic"
-            >
-              The New <br/> <span className="not-italic text-tertiary underline decoration-tertiary/20 underline-offset-[2rem]">Authority</span> in Trade.
-            </motion.h1>
-            
-            <motion.p variants={fadeInUp} className="text-2xl text-gray-400 mb-16 max-w-2xl font-medium leading-relaxed italic">
-              Decentralized commerce engineered for traditional integrity. A high-trust, AI-secured bridge for Farmers, Buyers, and Logistics.
-            </motion.p>
-            
-            <motion.div variants={fadeInUp} className="flex flex-wrap gap-8">
-              <Link to="/register" className="px-14 py-8 bg-tertiary text-white rounded-[2.5rem] text-xs font-black uppercase tracking-[0.4em] hover:bg-tertiary-600 transition-all shadow-2xl shadow-tertiary-900/40 flex items-center gap-6 group">
-                Begin Onboarding
-                <ArrowRight className="w-6 h-6 group-hover:translate-x-3 transition-transform" />
-              </Link>
-              <button className="px-14 py-8 bg-white/5 backdrop-blur-2xl border border-white/10 text-white rounded-[2.5rem] text-xs font-black uppercase tracking-[0.4em] hover:bg-white hover:text-gray-900 transition-all flex items-center gap-6 group">
-                Explore Nodes <ChevronRight className="w-6 h-6 group-hover:rotate-90 transition-transform" />
-              </button>
-            </motion.div>
-          </motion.div>
-        </div>
-
-        {/* Global Stats Overlay */}
-        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20 hidden xl:flex gap-12 text-white container-custom justify-end">
-            {[
-                { label: 'Active Clusters', value: '542+', icon: Globe },
-                { label: 'Verified Nodes', value: '1.2M', icon: ShieldCheck },
-                { label: 'Settlement Volume', value: '₹8.4B', icon: TrendingUp }
-            ].map((stat, i) => (
-                <motion.div 
-                    key={i}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.5 + (i * 0.15) }}
-                    className="flex items-center gap-6 p-10 bg-white/5 backdrop-blur-3xl rounded-[3rem] border border-white/10 group hover:bg-white/10 transition-colors"
-                >
-                    <div className="w-14 h-14 bg-white/10 rounded-[1.2rem] flex items-center justify-center text-tertiary group-hover:scale-110 transition-transform">
-                        <stat.icon size={28} />
-                    </div>
-                    <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-2 italic">{stat.label}</p>
-                        <h4 className="text-4xl font-black italic tracking-tighter">{stat.value}</h4>
-                    </div>
-                </motion.div>
-            ))}
-        </div>
-        
-        {/* Scroll Indicator */}
-        <motion.div 
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="absolute bottom-10 left-10 z-20 flex flex-col items-center gap-4"
-        >
-            <div className="w-px h-20 bg-gradient-to-b from-transparent via-tertiary to-transparent"></div>
-            <span className="text-[8px] font-black uppercase tracking-[0.5em] text-gray-500 vertical-text italic">Protocol Explorer</span>
-        </motion.div>
-      </section>
-      
-      {/* Premium Trust Architecture */}
-      <section ref={ref} className="py-60 bg-white relative overflow-hidden">
-        <div className="container-custom relative z-10">
-          <motion.div
-            initial="hidden"
-            animate={controls}
-            variants={staggerContainer}
-            className="text-center mb-40 space-y-6"
-          >
-            <motion.p variants={fadeInUp} className="text-tertiary text-[11px] font-black uppercase tracking-[0.4em] italic">System Architecture</motion.p>
-            <motion.h2 variants={fadeInUp} className="text-6xl md:text-[7.5rem] font-black text-gray-950 tracking-tighter italic leading-[0.85]">
-                Engineered for <br/> <span className="not-italic text-tertiary">Absolute Authority.</span>
-            </motion.h2>
-          </motion.div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {[
-              { icon: Fingerprint, title: 'Cryptographic Identity', description: 'Zero-knowledge verification for every network participant ensuring total anonymity and trust.' },
-              { icon: Lock, title: 'Escrow Sovereignty', description: 'Institutional-grade asset locking until logistics telemetry confirms handover completion.' },
-              { icon: Activity, title: 'Regional Pulse', description: 'AI-driven mandi telemetry monitoring 500+ regional nodes for dynamic price discovery.' },
-              { icon: Cpu, title: 'Yield Forecasting', description: 'Geospatial AI predicting crop maturity and market demand cycles with 94% accuracy.' },
-              { icon: Globe, title: 'Logistics Rails', description: 'Automated regional route optimization with real-time condition monitoring of payloads.' },
-              { icon: Award, title: 'Asset Certification', description: 'Visual AI grading at origin, establishing a new global standard for agricultural quality.' }
-            ].map((feature, index) => (
-              <motion.div
-                key={index}
-                variants={fadeInUp}
-                className="group p-16 rounded-[4rem] bg-gray-50/50 border border-transparent hover:border-tertiary/10 hover:bg-white hover:shadow-[0_40px_100px_-20px_rgba(0,0,0,0.05)] transition-all duration-700"
-              >
-                <div className="w-20 h-20 bg-white rounded-[2rem] flex items-center justify-center text-tertiary shadow-sm border border-gray-100 mb-12 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500">
-                    <feature.icon size={36} />
-                </div>
-                <h3 className="text-3xl font-black text-gray-950 mb-6 italic leading-tight group-hover:text-tertiary transition-colors">{feature.title}</h3>
-                <p className="text-gray-400 font-medium text-xl leading-relaxed italic">{feature.description}</p>
-                <div className="mt-12 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                    <div className="flex items-center gap-3 text-tertiary font-black text-[10px] uppercase tracking-widest">
-                        Protocol Details <ArrowUpRight size={16} />
-                    </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-        
-        {/* Background Mesh */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-[0.03] pointer-events-none -z-0">
-            <svg viewBox="0 0 100 100" className="w-full h-full">
-                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" strokeWidth="0.5"/>
-                </pattern>
-                <rect width="100%" height="100%" fill="url(#grid)" />
-            </svg>
-        </div>
-      </section>
-      
-      {/* Immersive Path Selection */}
-      <section className="py-60 bg-gray-950 relative overflow-hidden">
-        <div className="container-custom relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-end gap-12 mb-32">
-            <div className="space-y-6">
-                <p className="text-tertiary text-[11px] font-black uppercase tracking-[0.4em] italic">Participant Tiers</p>
-                <h2 className="text-7xl md:text-[8.5rem] font-black text-white tracking-tighter italic leading-[0.85]">
-                    Select Your <br/> <span className="not-italic text-tertiary">Access Point.</span>
-                </h2>
+      {/* Hero Section - Full Width Design */}
+      <section className="pt-24 pb-16 min-h-screen flex items-center">
+        <div className="w-full">
+          <div className="relative h-screen bg-gradient-to-br from-green-50 via-green-100 to-white">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-5">
+              <div className="absolute top-8 left-8 w-32 h-32 bg-yellow-300 rounded-full blur-3xl"></div>
+              <div className="absolute top-16 right-8 w-40 h-40 bg-blue-300 rounded-full blur-3xl"></div>
+              <div className="absolute bottom-8 left-16 w-48 h-48 bg-green-300 rounded-full blur-3xl"></div>
+              <div className="absolute bottom-8 right-16 w-64 h-64 bg-purple-300 rounded-full blur-3xl"></div>
+              <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-gradient-to-br from-green-100/50 to-transparent"></div>
             </div>
-            <p className="text-gray-400 max-w-sm text-2xl font-medium leading-relaxed italic">Initialize your role within the pan-India agricultural network.</p>
+            
+            {/* Central Content */}
+            <div className="relative z-20 h-full flex items-center justify-center text-center px-6">
+              <div className="max-w-4xl mx-auto">
+                <div className="w-32 h-32 bg-green-600 rounded-full flex items-center justify-center mb-12 mx-auto shadow-2xl">
+                  <Leaf className="w-16 h-16 text-white" />
+                </div>
+                <h1 className="text-6xl sm:text-7xl md:text-8xl font-bold text-gray-900 mb-6">
+                  Smart<span className="text-green-600">Kissan</span>
+                </h1>
+                <p className="text-3xl sm:text-4xl text-gray-600 mb-12 max-w-4xl mx-auto">
+                  India's Trusted Agricultural Marketplace
+                </p>
+                
+                {/* Feature Pills */}
+                <div className="flex flex-wrap justify-center gap-6 mb-12">
+                  <div className="bg-white/90 backdrop-blur-sm px-8 py-4 rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition-all">
+                    <div className="flex items-center space-x-4">
+                      <Shield className="w-8 h-8 text-green-600" />
+                      <div className="text-left">
+                        <h3 className="font-bold text-gray-900 text-lg">Secure Payments</h3>
+                        <p className="text-sm text-gray-600">Blockchain escrow protection</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-white/90 backdrop-blur-sm px-8 py-4 rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition-all">
+                    <div className="flex items-center space-x-4">
+                      <CheckCircle className="w-8 h-8 text-blue-600" />
+                      <div className="text-left">
+                        <h3 className="font-bold text-gray-900 text-lg">Verified Quality</h3>
+                        <p className="text-sm text-gray-600">AI-powered verification</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-white/90 backdrop-blur-sm px-8 py-4 rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition-all">
+                    <div className="flex items-center space-x-4">
+                      <TrendingUp className="w-8 h-8 text-purple-600" />
+                      <div className="text-left">
+                        <h3 className="font-bold text-gray-900 text-lg">Smart Pricing</h3>
+                        <p className="text-sm text-gray-600">Market intelligence insights</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CTA Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link 
+                    to="/register" 
+                    className="bg-green-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-green-700 transition-all transform hover:scale-105 shadow-xl"
+                  >
+                    Get Started
+                    <ArrowRight className="inline-block ml-2 w-5 h-5" />
+                  </Link>
+                  <Link 
+                    to="/marketplace" 
+                    className="bg-white text-green-600 border-2 border-green-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-green-50 transition-all"
+                  >
+                    Browse Marketplace
+                  </Link>
+                </div>
+              </div>
           </div>
-          
-          <div className="grid md:grid-cols-3 gap-12">
-            {[
-              { role: 'Farmer', icon: Leaf, color: 'tertiary', path: '/register', description: 'Direct marketplace sovereignty, precision forecasting, and instant asset settlement.' },
-              { role: 'Buyer', icon: Users, color: 'blue', path: '/register', description: 'Institutional procurement from verified clusters with automated fulfillment rails.' },
-              { role: 'Transporter', icon: Truck, color: 'orange', path: '/register', description: 'Payload assignment with IoT-verified tracking and route optimization rails.' }
-            ].map((item, index) => (
+        </div>
+          </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-16 px-6 sm:px-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Trusted by Thousands</h2>
+            <p className="text-lg text-gray-600">Join the growing network of agricultural professionals</p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
               <motion.div
                 key={index}
-                variants={fadeInUp}
-                whileHover={{ y: -30 }}
-                className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[5rem] p-20 text-center cursor-pointer group transition-all duration-700"
-                onClick={() => window.location.href = item.path}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center"
               >
-                <div className={`w-28 h-28 bg-${item.color}-500/20 rounded-[3rem] flex items-center justify-center mx-auto mb-12 shadow-2xl group-hover:scale-110 transition-transform duration-500 border border-${item.color}-500/30`}>
-                  <item.icon className={`w-14 h-14 text-${item.color}-400`} />
-                </div>
-                <h3 className="text-4xl font-black text-white mb-8 italic tracking-tighter">{item.role}</h3>
-                <p className="text-gray-400 text-xl font-medium mb-16 leading-relaxed italic opacity-70 group-hover:opacity-100 transition-opacity">{item.description}</p>
-                <div className="flex justify-center items-center gap-4 text-white font-black text-[11px] uppercase tracking-[0.4em] opacity-40 group-hover:opacity-100 group-hover:text-tertiary transition-all">
-                  Initialize Link <ArrowRight className="w-6 h-6" />
-                </div>
+                <div className="text-4xl font-bold text-green-600 mb-2">{stat.number}</div>
+                <div className="text-gray-600 font-medium">{stat.label}</div>
               </motion.div>
             ))}
           </div>
         </div>
-        
-        {/* Dynamic Background Element */}
-        <div className="absolute top-0 right-0 w-full h-full pointer-events-none">
-            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-tertiary/20 rounded-full blur-[150px] opacity-20"></div>
-            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px] opacity-10"></div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 px-6 sm:px-8">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose SmartKissan?</h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">Built specifically for India's agricultural ecosystem</p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow"
+              >
+                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                  <feature.icon className="w-6 h-6 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
-      
-      {/* Final Protocol CTA */}
-      <section className="py-80 bg-white text-center relative overflow-hidden">
-        <div className="container-custom relative z-10">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-20"
+
+      {/* Roles Section */}
+      <section className="py-16 px-6 sm:px-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
           >
-            <h2 className="text-7xl md:text-[10rem] font-black text-gray-950 tracking-tighter italic leading-[0.8]">
-              Join the <br/> <span className="not-italic text-tertiary">Nexus.</span>
-            </h2>
-            <div className="flex flex-col items-center gap-10">
-                <Link to="/register" className="px-24 py-10 bg-gray-950 text-white rounded-[3.5rem] text-xs font-black uppercase tracking-[0.6em] hover:bg-tertiary transition-all shadow-2xl shadow-gray-200 hover:shadow-tertiary-900/20 flex items-center gap-8 group">
-                    Initialize Protocol <ArrowRight className="w-8 h-8 group-hover:translate-x-4 transition-transform" />
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Join as</h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">Choose your role in the agricultural ecosystem</p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {roles.map((role, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ scale: 1.05 }}
+                className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all cursor-pointer"
+              >
+                <Link to={role.path} className="block">
+                  <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6 mx-auto">
+                    <role.icon className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">{role.title}</h3>
+                  <p className="text-gray-600 text-center mb-6">{role.description}</p>
+                  <div className="flex items-center justify-center text-green-600 font-medium">
+                    Get Started <ArrowRight className="w-4 h-4 ml-1" />
+                  </div>
                 </Link>
-                <div className="flex items-center gap-6">
-                    <p className="text-gray-400 font-black text-[11px] uppercase tracking-[0.3em] italic">Verified Participants Only</p>
-                    <div className="w-2 h-2 rounded-full bg-tertiary animate-pulse"></div>
-                    <p className="text-gray-400 font-black text-[11px] uppercase tracking-[0.3em] italic">ISO 27001 Certified</p>
-                </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Massive Background Typography */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full z-0 opacity-[0.02] pointer-events-none select-none">
-            <h1 className="text-[40rem] font-black text-gray-950 tracking-tighter">SMARTKISSAN</h1>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Premium Footer */}
-      <footer className="bg-gray-50 py-32 px-12 border-t border-gray-100">
-        <div className="container-custom">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-20 mb-20">
-                <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-gray-950 rounded-[1.2rem] flex items-center justify-center text-white shadow-2xl">
-                        <Zap size={24} fill="white" className="text-tertiary" />
-                    </div>
-                    <span className="text-3xl font-black text-gray-950 italic tracking-tighter">Smart<span className="text-tertiary not-italic">Kissan</span></span>
-                </div>
-                <div className="flex flex-wrap justify-center gap-16 text-[11px] font-black uppercase tracking-[0.3em] text-gray-400">
-                    <a href="#" className="hover:text-tertiary transition-colors italic">System Protocol</a>
-                    <a href="#" className="hover:text-tertiary transition-colors italic">Regional Nodes</a>
-                    <a href="#" className="hover:text-tertiary transition-colors italic">Security Ledger</a>
-                    <a href="#" className="hover:text-tertiary transition-colors italic">Nexus Command</a>
-                </div>
+      {/* CTA Section */}
+      <section className="py-16 px-6 sm:px-8 bg-green-600">
+        <div className="max-w-7xl mx-auto text-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="space-y-6"
+          >
+            <h2 className="text-3xl font-bold text-white mb-4">Ready to Transform Your Agricultural Business?</h2>
+            <p className="text-xl text-green-50 mb-8 max-w-2xl mx-auto">Join thousands of farmers and buyers already using SmartKissan</p>
+            <Link 
+              to="/register" 
+              className="inline-flex items-center bg-white text-green-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-50 transition-all transform hover:scale-105 shadow-lg"
+            >
+              Get Started Now <ArrowRight className="w-5 h-5 ml-2" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Chatbot Section */}
+      <section className="py-16 px-6 sm:px-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center"
+          >
+            <div className="mb-12">
+              <div className="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <MessageCircle className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">AI Agricultural Assistant</h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">Get instant help with farming, pricing, and market insights from our AI-powered chatbot</p>
             </div>
-            <div className="flex flex-col md:flex-row justify-between items-center gap-10 pt-10 border-t border-gray-200/50">
-                <div className="text-[11px] font-black uppercase tracking-[0.3em] text-gray-300 italic">
-                    © 2026 Smart-Kissan Protocol. Regional Data Sovereignty Enforced.
+
+            <div className="grid md:grid-cols-2 gap-8">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all"
+              >
+                <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6">
+                  <MessageCircle className="w-8 h-8 text-green-600" />
                 </div>
-                <div className="flex gap-8">
-                    <div className="w-10 h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-400 hover:text-tertiary hover:border-tertiary transition-all cursor-pointer">
-                        <Globe size={18} />
-                    </div>
-                    <div className="w-10 h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-400 hover:text-tertiary hover:border-tertiary transition-all cursor-pointer">
-                        <ShieldCheck size={18} />
-                    </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">24/7 Support</h3>
+                <p className="text-gray-600 mb-4">Get instant answers to your farming questions</p>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-gray-700">Crop disease identification</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-gray-700">Market price analysis</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-gray-700">Weather forecasts</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-gray-700">Best selling practices</span>
+                  </div>
                 </div>
+                <button className="w-full bg-green-600 text-white py-3 rounded-xl font-medium hover:bg-green-700 transition-colors mt-6">
+                  Start Chatting with AI Assistant
+                </button>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all"
+              >
+                <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
+                  <BarChart3 className="w-8 h-8 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Smart Analytics</h3>
+                <p className="text-gray-600 mb-4">AI-powered insights for better decision making</p>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-700">Yield prediction</span>
+                    <span className="text-green-600 font-bold">+15%</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-700">Price optimization</span>
+                    <span className="text-green-600 font-bold">+8%</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-700">Risk assessment</span>
+                    <span className="text-green-600 font-bold">Low</span>
+                  </div>
+                </div>
+                <button className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors mt-6">
+                  View Analytics Dashboard
+                </button>
+              </motion.div>
             </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12 px-6 sm:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                  <Leaf className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-xl font-bold">Smart<span className="text-green-400">Kissan</span></span>
+              </div>
+              <p className="text-gray-400">India's trusted agricultural marketplace</p>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Platform</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link to="/about" className="hover:text-white transition-colors">About Us</Link></li>
+                <li><Link to="/features" className="hover:text-white transition-colors">Features</Link></li>
+                <li><Link to="/how-it-works" className="hover:text-white transition-colors">How It Works</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Support</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link to="/help" className="hover:text-white transition-colors">Help Center</Link></li>
+                <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+                <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Legal</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 SmartKissan. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>
