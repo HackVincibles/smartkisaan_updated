@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "SmartKissan",
+    "slug": "smartkissan",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "scheme": "smartkissan",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        { "cameraPermission": "Allow app to access camera to scan crops." }
+      ],
+      [
+        "expo-image-picker",
+        { "photosPermission": "Allow app to access your photos." }
+      ]
+    ]
+  }
+}

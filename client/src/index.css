@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 :root {
   --primary: #006e2f;
@@ -74,10 +74,10 @@
     @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
   }
   .btn-primary {
-    @apply bg-primary text-white hover:bg-primary-600 active:scale-[0.98];
+    @apply bg-primary text-white hover:opacity-90 active:scale-[0.98];
   }
   .btn-secondary {
-    @apply bg-secondary text-white hover:bg-secondary-600 active:scale-[0.98];
+    @apply bg-secondary text-white hover:opacity-90 active:scale-[0.98];
   }
   .btn-outline {
     @apply border border-gray-200 text-gray-700 hover:bg-gray-50 active:scale-[0.98];

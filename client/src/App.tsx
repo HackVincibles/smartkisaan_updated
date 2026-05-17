@@ -37,6 +37,12 @@ import CreateDemand from './pages/buyer/CreateDemand';
 import BuyerProfilePage from './pages/buyer/BuyerProfilePage';
 import FarmerOrdersPage from './pages/farmer/Orders';
 
+// Blockchain & Dispute Vault Pages
+import SbtBadgesPage from './pages/farmer/SbtBadgesPage';
+import BlockchainReceiptPage from './pages/common/BlockchainReceiptPage';
+import EvidenceVaultPage from './pages/buyer/EvidenceVaultPage';
+import EscrowStatusPage from './pages/common/EscrowStatusPage';
+
 // Transporter Pages
 import TransporterDashboard from './pages/transporter/TransporterDashboard';
 import AssignedOrdersPage from './pages/transporter/AssignedOrdersPage';
@@ -137,6 +143,9 @@ function App() {
                 <Route path="disputes" element={<DisputesRatingsPage />} />
                 <Route path="orders" element={<FarmerOrdersPage />} />
                 <Route path="profile" element={<FarmerProfilePage />} />
+                <Route path="badges" element={<SbtBadgesPage />} />
+                <Route path="orders/:id/receipt" element={<BlockchainReceiptPage />} />
+                <Route path="orders/:id/escrow" element={<EscrowStatusPage />} />
               </Route>
               
               {/* Buyer Routes */}
@@ -150,6 +159,9 @@ function App() {
                 <Route path="product/:id" element={<ProductDetailBidPage />} />
                 <Route path="orders" element={<MyOrdersPage />} />
                 <Route path="orders/:id/track" element={<OrderTrackingPage />} />
+                <Route path="orders/:id/receipt" element={<BlockchainReceiptPage />} />
+                <Route path="orders/:id/escrow" element={<EscrowStatusPage />} />
+                <Route path="orders/:id/dispute-vault" element={<EvidenceVaultPage />} />
                 <Route path="disputes" element={<DisputesPage />} />
                 <Route path="demand/create" element={<CreateDemand />} />
                 <Route path="profile" element={<BuyerProfilePage />} />

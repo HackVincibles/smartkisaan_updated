@@ -17,6 +17,9 @@ import {
   CreditCard,
   Zap,
   Sparkles,
+  Lock,
+  ShieldCheck,
+  ShieldAlert,
   History,
   Activity,
   Layers,
@@ -308,7 +311,7 @@ const MyOrdersPage = () => {
 
                     {/* Action Bar */}
                     <div className="flex flex-col md:flex-row items-center justify-between pt-16 border-t border-gray-50 gap-10">
-                      <div className="flex gap-6 w-full md:w-auto">
+                      <div className="flex flex-wrap gap-6 w-full md:w-auto">
                         <button className="p-8 bg-gray-50 rounded-[1.8rem] text-gray-300 hover:text-secondary hover:bg-white hover:shadow-2xl hover:border-gray-100 transition-all border border-transparent shadow-inner group/btn">
                           <MoreHorizontal size={28} className="group-hover:rotate-90 transition-transform" />
                         </button>
@@ -316,6 +319,28 @@ const MyOrdersPage = () => {
                           <FileText size={20} className="group-hover/btn:text-secondary transition-colors" />
                           AUDIT_CONTRACT_LEDGER
                         </button>
+                        <Link 
+                          to={`/buyer/orders/${order.id || 'ORD-5521'}/escrow`}
+                          className="px-10 py-6 bg-white border border-gray-100 rounded-[2rem] text-[10px] font-black uppercase tracking-[0.3em] italic text-primary hover:bg-primary hover:text-white hover:shadow-2xl transition-all flex items-center justify-center gap-3 shadow-sm"
+                        >
+                          <Lock size={16} /> VIEW_ESCROW
+                        </Link>
+                        {(order.escrowState === 'DELIVERED' || order.escrowState === 'COMPLETED') && (
+                          <Link 
+                            to={`/buyer/orders/${order.id || 'ORD-5521'}/receipt`}
+                            className="px-10 py-6 bg-white border border-gray-100 rounded-[2rem] text-[10px] font-black uppercase tracking-[0.3em] italic text-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-2xl transition-all flex items-center justify-center gap-3 shadow-sm"
+                          >
+                            <ShieldCheck size={16} /> TRUST_RECEIPT
+                          </Link>
+                        )}
+                        {['DELIVERED', 'IN_TRANSIT', 'DISPUTED'].includes(order.escrowState) && (
+                          <Link 
+                            to={`/buyer/orders/${order.id || 'ORD-5521'}/dispute-vault`}
+                            className="px-10 py-6 bg-white border border-gray-100 rounded-[2rem] text-[10px] font-black uppercase tracking-[0.3em] italic text-error hover:bg-error hover:text-white hover:shadow-2xl transition-all flex items-center justify-center gap-3 shadow-sm"
+                          >
+                            <ShieldAlert size={16} /> LODGE_DISPUTE
+                          </Link>
+                        )}
                       </div>
                       
                       <Link 

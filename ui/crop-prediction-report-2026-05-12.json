@@ -1,0 +1,84 @@
+{
+  "location": "23.2073, 79.8962",
+  "farmData": {
+    "soilType": "Black Soil",
+    "climate": "Subtropical",
+    "rainfall": 800,
+    "temperature": 35,
+    "season": "Kharif",
+    "farmSize": 1,
+    "previousCrop": "wheat",
+    "budget": 200000,
+    "location": "23.2073, 79.8962"
+  },
+  "predictions": [
+    {
+      "name": "Cotton",
+      "successProbability": 95,
+      "expectedYield": "15-20 quintals/hectare",
+      "profitMargin": "₹125000-175000/hectare",
+      "growthPeriod": "180-200 days",
+      "waterRequirement": "Medium (500-800mm)",
+      "difficulty": "Medium",
+      "marketDemand": "High",
+      "reasons": [
+        "Black soil is ideal for cotton cultivation",
+        "Good market demand for quality cotton",
+        "Temperature (35°C) suitable for cotton",
+        "Government MSP support available"
+      ],
+      "tips": [
+        "Use Bt cotton varieties for better pest resistance",
+        "Monitor for bollworm attacks regularly",
+        "Maintain proper spacing between plants",
+        "Use drip irrigation for water efficiency"
+      ]
+    },
+    {
+      "name": "Maize",
+      "successProbability": 88,
+      "expectedYield": "5-7 tons/hectare",
+      "profitMargin": "₹75000-100000/hectare",
+      "growthPeriod": "90-120 days",
+      "waterRequirement": "Medium (500-750mm)",
+      "difficulty": "Easy",
+      "marketDemand": "High",
+      "reasons": [
+        "Ideal for Kharif season planting",
+        "Good monsoon crop with reliable yields",
+        "Multiple uses: food, feed, and industrial",
+        "Relatively drought tolerant"
+      ],
+      "tips": [
+        "Plant after sufficient soil moisture",
+        "Use recommended spacing for better yields",
+        "Apply nitrogen fertilizer in splits",
+        "Protect from birds during maturity"
+      ]
+    },
+    {
+      "name": "Wheat",
+      "successProbability": 85,
+      "expectedYield": "3-4 tons/hectare",
+      "profitMargin": "₹87500-112500/hectare",
+      "growthPeriod": "110-130 days",
+      "waterRequirement": "Medium (450-650mm)",
+      "difficulty": "Easy",
+      "marketDemand": "High",
+      "reasons": [
+        "Well-suited for subtropical climate",
+        "Lower water requirements compared to rice",
+        "Stable market prices throughout the year",
+        "Good rotation crop after wheat"
+      ],
+      "tips": [
+        "Sow at the right time (November-December for Rabi)",
+        "Use balanced fertilizers (NPK)",
+        "Monitor for rust and aphid attacks",
+        "Harvest at proper moisture content"
+      ]
+    }
+  ],
+  "timestamp": "2026-05-12T23:37:10.277Z",
+  "generatedBy": "AgroLink AI Crop Predictor"
+}

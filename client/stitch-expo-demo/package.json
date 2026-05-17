@@ -1,0 +1,44 @@
+{
+  "name": "stitch-expo-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "expo-router/entry",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@expo/vector-icons": "^15.1.1",
+    "@types/react": "~19.2.10",
+    "expo": "~55.0.0",
+    "expo-blur": "~55.0.14",
+    "expo-camera": "~55.0.18",
+    "expo-constants": "^55.0.16",
+    "expo-image-picker": "~55.0.20",
+    "expo-linear-gradient": "~55.0.14",
+    "expo-linking": "^55.0.15",
+    "expo-media-library": "~55.0.17",
+    "expo-router": "^55.0.14",
+    "expo-status-bar": "^55.0.6",
+    "lucide-react-native": "^1.16.0",
+    "nativewind": "^4.2.4",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-native": "0.83.6",
+    "react-native-css-interop": "^0.2.4",
+    "react-native-gesture-handler": "~2.30.0",
+    "react-native-reanimated": "4.2.1",
+    "react-native-safe-area-context": "~5.6.2",
+    "react-native-screens": "~4.23.0",
+    "react-native-svg": "15.15.3",
+    "react-native-webview": "^13.16.1",
+    "react-native-worklets-core": "^1.6.3",
+    "tailwindcss": "^3.4.19"
+  },
+  "devDependencies": {
+    "babel-preset-expo": "^55.0.21",
+    "postcss": "^8.5.14"
+  }
+}

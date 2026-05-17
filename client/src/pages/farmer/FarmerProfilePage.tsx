@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { 
   User, Mail, Phone, MapPin, 
   ShieldCheck, CreditCard, Award, 
@@ -254,6 +255,48 @@ const FarmerProfilePage = () => {
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -mr-48 -mt-48 group-hover:bg-primary/10 transition-colors duration-1000"></div>
             <div className="absolute bottom-0 left-0 p-12 text-gray-50/50 opacity-[0.03]">
                 <Cpu size={200} />
+            </div>
+          </div>
+
+          {/* Sovereign Reputation & SBT Credentials */}
+          <div className="stitch-card p-16 bg-white shadow-2xl shadow-gray-200/50 space-y-12 relative overflow-hidden group">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-10 relative z-10">
+              <div className="flex items-center gap-6">
+                <div className="p-5 bg-gray-950 rounded-[1.8rem] text-primary shadow-2xl group-hover:rotate-12 transition-transform duration-1000">
+                    <Award size={36} />
+                </div>
+                <div className="space-y-2">
+                    <h3 className="text-4xl font-bold text-gray-950 tracking-tight italic leading-none">Reputation <span className="not-italic text-primary">Credentials.</span></h3>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] italic leading-none">Tamper-proof Soulbound Tokens (SBT) active</p>
+                </div>
+              </div>
+              <Link 
+                to="/farmer/badges" 
+                className="px-10 py-5 bg-gray-950 text-white rounded-[2rem] font-black text-[10px] uppercase tracking-[0.4em] italic hover:bg-primary transition-all flex items-center gap-4 shadow-2xl"
+              >
+                OPEN SBT GALLERY <ArrowRight size={16} />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+              {[
+                { title: 'TRUSTED FARMER', badge: '🌟', status: 'ISSUED', color: 'bg-emerald-50 text-emerald-500 border-emerald-100' },
+                { title: 'QUALITY CHAMPION', badge: '🏆', status: 'ISSUED', color: 'bg-amber-50 text-amber-500 border-amber-100' },
+                { title: 'CONSISTENT SUPPLY', badge: '⚡', status: '75% PENDING', color: 'bg-blue-50 text-blue-500 border-blue-100' }
+              ].map((item, i) => (
+                <div key={i} className="p-8 bg-gray-50 rounded-[2.5rem] border border-gray-100 flex flex-col justify-between h-56 group/item hover:bg-white hover:border-primary/20 hover:shadow-2xl transition-all shadow-sm">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[20px]">{item.badge}</span>
+                    <span className="px-4 py-1.5 bg-white border border-gray-100 rounded-xl text-[8px] font-black uppercase tracking-[0.2em] italic text-gray-400">
+                      {item.status}
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] italic leading-none">BLOCKCHAIN SIGNED</p>
+                    <p className="text-xl font-black text-gray-950 italic tracking-tighter leading-none uppercase">{item.title}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 

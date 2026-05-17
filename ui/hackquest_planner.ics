@@ -1,0 +1,520 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//HackQuest Prep Night Owl Plan//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:HackQuest Prep 🌙
+X-WR-TIMEZONE:Asia/Kolkata
+BEGIN:VTIMEZONE
+TZID:Asia/Kolkata
+BEGIN:STANDARD
+DTSTART:19700101T000000
+TZOFFSETFROM:+0530
+TZOFFSETTO:+0530
+TZNAME:IST
+END:STANDARD
+END:VTIMEZONE
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260513T222000
+DTEND;TZID=Asia/Kolkata:20260514T000000
+SUMMARY:🔴 Day 1: SQLi Labs (WHERE, Login Bypass, UNION)
+DESCRIPTION:PortSwigger SQL injection labs. Complete all three with screenshots of every flag. Focus on understanding the underlying SQL logic.\n\nHard stop at midnight.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 1 starts in 30 mins — wrap up what you're doing
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — open PortSwigger, get Burp Suite ready
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260514T222000
+DTEND;TZID=Asia/Kolkata:20260515T000000
+SUMMARY:🔴 Day 2: SQLi Labs (Blind, Error, Time)
+DESCRIPTION:PortSwigger blind SQL injection labs — conditional responses, error-based, time-based. Document how detection differs for each type.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 2 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — Burp Suite ready, lab list open
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260515T222000
+DTEND;TZID=Asia/Kolkata:20260516T000000
+SUMMARY:🔴 Day 3: XSS Labs (Reflected, Stored, DOM)
+DESCRIPTION:PortSwigger XSS labs. Complete reflected, stored, and DOM-based. Pay close attention to injection context — HTML body, attribute, JavaScript.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 3 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — PortSwigger Academy open
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260516T222000
+DTEND;TZID=Asia/Kolkata:20260517T000000
+SUMMARY:🔴 Day 4: Access Control Labs
+DESCRIPTION:PortSwigger access control labs — unprotected admin functionality, IDOR, multi-step process with broken access control. Screenshot every step.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 4 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — ready up
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260517T222000
+DTEND;TZID=Asia/Kolkata:20260518T000000
+SUMMARY:⚪ Day 5: PYQ Recreation #1 (Web Challenge)
+DESCRIPTION:Find a TCS HackQuest Season 9 or 10 web writeup. Use AI prompt: "Create a local Docker lab mimicking this TCS web challenge. Give me the Dockerfile and vulnerable source code." Build it, break it, document the process.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 5 starts in 30 mins — find a writeup first
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — AI prompt ready, Docker installed?
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260518T222000
+DTEND;TZID=Asia/Kolkata:20260519T000000
+SUMMARY:🟡 Day 6: PicoCTF Sprint (5 Easy Web)
+DESCRIPTION:Solve 5 easy web challenges on PicoCTF. Focus areas: source code inspection, cookie manipulation, basic SQL injection patterns.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 6 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — PicoCTF logged in, ready
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260519T222000
+DTEND;TZID=Asia/Kolkata:20260520T000000
+SUMMARY:⚪ Day 7: Review & Report Practice
+DESCRIPTION:Pick your cleanest solve from Week 1. Write a formal HackQuest-style penetration test report — include objective, steps with screenshots, flag, and remediation recommendation.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 7 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — open your notes from the week
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260520T222000
+DTEND;TZID=Asia/Kolkata:20260521T000000
+SUMMARY:🔴 Day 8: SSRF Labs x3
+DESCRIPTION:PortSwigger SSRF labs — basic SSRF against local server, SSRF with filter bypass, blind SSRF. SSRF is heavily tested in HackQuest.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 8 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — Burp Suite and labs open
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260521T222000
+DTEND;TZID=Asia/Kolkata:20260522T000000
+SUMMARY:🔴 Day 9: File Upload & Path Traversal
+DESCRIPTION:PortSwigger labs — file upload via path traversal, web shell upload via race condition, simple directory traversal.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 9 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — ready
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260522T222000
+DTEND;TZID=Asia/Kolkata:20260523T000000
+SUMMARY:🔵 Day 10: Cryptography Day
+DESCRIPTION:PicoCTF Cryptography category — 5 easy challenges. Master base64 decoding, ROT13 cipher, XOR basics. Use CyberChef as your primary tool.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 10 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — CyberChef open in browser
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260523T222000
+DTEND;TZID=Asia/Kolkata:20260524T000000
+SUMMARY:🟢 Day 11: Forensics Day
+DESCRIPTION:PicoCTF Forensics category — 5 easy challenges. Focus on: strings command usage, file header inspection, hidden data in images (steganography basics).
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 11 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — terminal ready, PicoCTF open
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260524T222000
+DTEND;TZID=Asia/Kolkata:20260525T000000
+SUMMARY:⚪ Day 12: PYQ Recreation #2 (Crypto)
+DESCRIPTION:Find a HackQuest crypto challenge writeup. AI prompt: "Generate a Python script implementing a similar cipher with a hidden flag. Include encoding method and flag format." Solve it yourself, document approach.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 12 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — AI and code editor open
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260525T222000
+DTEND;TZID=Asia/Kolkata:20260526T000000
+SUMMARY:🟡 Day 13: OSINT Day
+DESCRIPTION:PicoCTF OSINT category — 5 challenges. Learn: reverse image search techniques, EXIF data extraction, username tracing across platforms.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 13 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — browser ready for searches
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260526T222000
+DTEND;TZID=Asia/Kolkata:20260527T000000
+SUMMARY:⚪ Day 14: Week 2 Review
+DESCRIPTION:Re-solve 2 labs that gave you trouble this week WITHOUT looking at any solutions. Write mini-reports for both. Identify one topic you still feel weak on.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 14 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — pick your two hardest labs
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260527T222000
+DTEND;TZID=Asia/Kolkata:20260528T000000
+SUMMARY:🔴 Day 15: HTB/TryHackMe Box
+DESCRIPTION:Complete one full easy-rated machine or room. Focus on full enumeration methodology — don't skip to the exploit. Document your step-by-step thought process.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 15 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — HTB/TryHackMe VPN connected
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260528T222000
+DTEND;TZID=Asia/Kolkata:20260529T000000
+SUMMARY:🔴 Day 16: Advanced SQLi + Automation
+DESCRIPTION:PortSwigger "SQL injection with filter bypass via XML encoding". Then write a small Python script using requests library to automate a blind SQL injection attack.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 16 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — VS Code and Burp Suite open
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260529T222000
+DTEND;TZID=Asia/Kolkata:20260530T000000
+SUMMARY:⚪ Day 17: PYQ Recreation #3 (Forensics)
+DESCRIPTION:Find a HackQuest forensics challenge writeup. AI prompt: "Design a PCAP-based forensics challenge similar to [describe] with hidden flag in network traffic. Provide analysis methodology." Analyze and solve.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 17 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — Wireshark installed?
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260530T222000
+DTEND;TZID=Asia/Kolkata:20260531T000000
+SUMMARY:🔴 Day 18: Burp Suite Deep Dive
+DESCRIPTION:Burp Suite Intruder and Repeater mastery. Solve 2 PortSwigger labs using ONLY Burp features — no browser dev tools allowed. Focus on efficient workflow.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 18 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — Burp Suite proxy configured
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260531T222000
+DTEND;TZID=Asia/Kolkata:20260601T000000
+SUMMARY:🟡 Day 19: PicoCTF Medium Challenges
+DESCRIPTION:Solve 5 medium-difficulty challenges from any category on PicoCTF. Note exactly where you got stuck and what resource helped you overcome it.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 19 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — PicoCTF filtered to Medium
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260601T180000
+DTEND;TZID=Asia/Kolkata:20260602T000000
+SUMMARY:🌙 6-HOUR SIMULATION #1
+DESCRIPTION:Full exam simulation. Block 6 PM to midnight. Select 5-6 challenges from PicoCTF and your PYQ recreations. Strict timer, no phone, no distractions. Mimic real exam conditions exactly.\n\nCategories to include: 2 Web, 1 Crypto, 1 Forensics, 1 OSINT, 1 Misc.
+BEGIN:VALARM
+TRIGGER:-PT1H
+ACTION:DISPLAY
+DESCRIPTION:Simulation starts in 1 hour — prep your environment
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT15M
+ACTION:DISPLAY
+DESCRIPTION:15 mins — final setup, water bottle ready
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260602T222000
+DTEND;TZID=Asia/Kolkata:20260603T000000
+SUMMARY:⚪ Day 21: Simulation Review
+DESCRIPTION:Score yourself honestly. Write formal reports for all solved challenges. Identify your single weakest category — this determines Day 22's focus.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 21 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — simulation notes open
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260603T222000
+DTEND;TZID=Asia/Kolkata:20260604T000000
+SUMMARY:🎯 Day 22: Weakest Category Deep-Dive
+DESCRIPTION:Based on simulation review, solve 5 challenges ONLY in your weakest category. No switching. This is deliberate practice on your vulnerability.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 22 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — challenges lined up for weak category
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260604T222000
+DTEND;TZID=Asia/Kolkata:20260605T000000
+SUMMARY:⚪ Day 23: PYQ Recreation #4 (Multi-Step Chain)
+DESCRIPTION:AI prompt: "Create a multi-step CTF chain for TCS HackQuest: vulnerable login page + exposed API endpoint + encrypted flag requiring crypto decryption." Solve end-to-end, document every transition.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 23 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — Docker and AI ready
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260605T222000
+DTEND;TZID=Asia/Kolkata:20260606T000000
+SUMMARY:⏱️ Day 24: Time Management Drill
+DESCRIPTION:Exactly 30 minutes per challenge, no extensions. Solve 3 challenges in 90 minutes total. When timer goes off, you MUST move to the next one. Learn the discipline of knowing when to move on.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 24 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — set three 30-min timers
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260606T222000
+DTEND;TZID=Asia/Kolkata:20260607T000000
+SUMMARY:📝 Day 25: Report Writing Sprint
+DESCRIPTION:Solve 2 challenges AND write full professional reports for both within the 100-minute session. Speed and quality. This skill is just as important as the hacking itself for HackQuest scoring.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 25 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — report template open
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260607T222000
+DTEND;TZID=Asia/Kolkata:20260608T000000
+SUMMARY:🟡 Day 26: OSINT Speedrun
+DESCRIPTION:5 OSINT challenges. Target: find each flag in under 5 minutes. Focus on efficiency — what's the fastest path to the answer? Note your go-to techniques.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 26 starts in 30 mins
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — timer and challenges ready
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260608T180000
+DTEND;TZID=Asia/Kolkata:20260609T000000
+SUMMARY:🌙 FINAL 6-HOUR SIMULATION #2
+DESCRIPTION:Last full-length simulation. 6 PM to midnight. Full exam conditions — no phone, no Discord, no help, no walkthroughs. Treat this like the real thing. All four categories: Web, Crypto, Forensics, OSINT.\n\nYour final confidence test.
+BEGIN:VALARM
+TRIGGER:-PT1H
+ACTION:DISPLAY
+DESCRIPTION:Final simulation in 1 hour — everything ready
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT15M
+ACTION:DISPLAY
+DESCRIPTION:15 mins — deep breath, you've prepared for this
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260609T222000
+DTEND;TZID=Asia/Kolkata:20260610T000000
+SUMMARY:🏆 Day 28: Final Review & Celebrate
+DESCRIPTION:Review your final simulation. Compare to Simulation #1 — measure your growth. List 3 specific things to lightly brush up on. Then close the laptop and acknowledge the 28 days of discipline you just completed.
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Day 28 — last session, finish strong
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:10 mins — one last time
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260513T221000
+DTEND;TZID=Asia/Kolkata:20260513T222000
+RRULE:FREQ=DAILY;UNTIL=20260609T235959
+SUMMARY:📖 Read One HackQuest Writeup
+DESCRIPTION:Spend 10 minutes reading a past TCS HackQuest writeup. Focus on methodology, not just the flag. Rotate categories each day.
+BEGIN:VALARM
+TRIGGER:-PT5M
+ACTION:DISPLAY
+DESCRIPTION:Writeup reading in 5 mins
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Kolkata:20260513T235500
+DTEND;TZID=Asia/Kolkata:20260513T235500
+RRULE:FREQ=DAILY;UNTIL=20260609T235959
+SUMMARY:✍️ One Thing I Learned Today
+DESCRIPTION:Write exactly one sentence in your notes doc. "Today I learned that..." — 2 minutes max.
+BEGIN:VALARM
+TRIGGER:-PT0M
+ACTION:DISPLAY
+DESCRIPTION:Write your one sentence now
+END:VALARM
+END:VEVENT
+
+END:VCALENDAR

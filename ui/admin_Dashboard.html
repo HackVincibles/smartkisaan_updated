@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Smart-Kissan – Agri Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --g1:#16a34a;--g2:#22c55e;--g3:#4ade80;--g4:#86efac;
+  --bg:#f8faf8;--surface:#ffffff;--surface2:#f1f5f1;--surface3:#e8f0e8;
+  --border:#e2e8e2;--border2:#d1d9d1;
+  --text1:#111811;--text2:#3d5440;--text3:#6b7b6e;--text4:#9aaa9d;
+  --red:#dc2626;--amber:#d97706;--blue:#2563eb;--purple:#7c3aed;
+  --sidebar-w:220px;--header-h:64px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md:0 4px 6px rgba(0,0,0,0.07),0 2px 4px rgba(0,0,0,0.06);
+  --radius:10px;--radius-lg:14px;--radius-xl:20px;
+}
+[data-theme="dark"]{
+  --bg:#0f1510;--surface:#161f18;--surface2:#1e2a21;--surface3:#253028;
+  --border:#2a3a2d;--border2:#334038;
+  --text1:#e8f4e8;--text2:#a8c4aa;--text3:#6b8f6e;--text4:#3d5440;
+  --shadow:0 1px 3px rgba(0,0,0,0.3),0 1px 2px rgba(0,0,0,0.2);
+  --shadow-md:0 4px 6px rgba(0,0,0,0.3),0 2px 4px rgba(0,0,0,0.2);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text1);font-size:14px;line-height:1.5;transition:background .25s,color .25s;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:inherit}
+
+/* LAYOUT */
+.app{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;transition:transform .3s,background .25s;overflow-y:auto}
+.sidebar-logo{display:flex;align-items:center;gap:10px;padding:20px 20px 16px;border-bottom:1px solid var(--border)}
+.logo-icon{width:36px;height:36px;background:var(--g1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-icon svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2}
+.logo-text{font-size:15px;font-weight:700;color:var(--text1);line-height:1.2}
+.logo-sub{font-size:11px;color:var(--text3);font-weight:400}
+.sidebar-nav{padding:12px 0;flex:1}
+.nav-section{padding:8px 16px 4px;font-size:10px;font-weight:600;color:var(--text4);letter-spacing:.08em;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;color:var(--text2);font-size:13.5px;font-weight:500;cursor:pointer;transition:all .15s;border-left:3px solid transparent;position:relative}
+.nav-item:hover{background:var(--surface2);color:var(--g1)}
+.nav-item.active{background:linear-gradient(90deg,rgba(22,163,74,.12),transparent);color:var(--g1);border-left-color:var(--g1)}
+.nav-item i{font-size:17px;width:20px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:99px;min-width:18px;text-align:center}
+.nav-badge.green{background:var(--g1)}
+.sidebar-footer{padding:16px;border-top:1px solid var(--border)}
+.logout-btn{display:flex;align-items:center;gap:10px;padding:9px 4px;color:#dc2626;font-size:13.5px;font-weight:500;cursor:pointer;width:100%}
+.logout-btn i{font-size:17px}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{height:var(--header-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;position:sticky;top:0;z-index:100;transition:background .25s}
+.topbar-title{font-size:18px;font-weight:700;color:var(--text1)}
+.topbar-sub{font-size:13px;color:var(--text3);margin-top:1px}
+.topbar-spacer{flex:1}
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 14px;min-width:260px}
+.search-bar input{background:none;border:none;outline:none;color:var(--text1);font-size:13px;width:100%}
+.search-bar input::placeholder{color:var(--text4)}
+.topbar-actions{display:flex;align-items:center;gap:8px}
+.icon-btn{width:36px;height:36px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;color:var(--text2);background:var(--surface2);border:1px solid var(--border);cursor:pointer;transition:all .15s;position:relative;font-size:17px}
+.icon-btn:hover{background:var(--surface3);color:var(--text1)}
+.notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid var(--surface)}
+.user-chip{display:flex;align-items:center;gap:10px;padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .15s}
+.user-chip:hover{background:var(--surface3)}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:var(--g1);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;overflow:hidden}
+.user-avatar img{width:100%;height:100%;object-fit:cover}
+.user-name{font-size:13px;font-weight:600;color:var(--text1)}
+.user-role{font-size:11px;color:var(--text3)}
+
+/* PAGE CONTENT */
+.page-content{padding:24px;flex:1}
+.page-content.hidden{display:none}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;transition:box-shadow .15s}
+.stat-card:hover{box-shadow:var(--shadow-md)}
+.stat-icon{width:42px;height:42px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:20px}
+.stat-label{font-size:12px;color:var(--text3);font-weight:500;margin-bottom:4px}
+.stat-value{font-size:22px;font-weight:700;color:var(--text1)}
+.stat-change{font-size:11px;margin-top:4px;display:flex;align-items:center;gap:3px}
+.stat-change.up{color:#16a34a}.stat-change.down{color:#dc2626}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px;transition:background .25s}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.card-title{font-size:15px;font-weight:700;color:var(--text1)}
+.card-action{font-size:12px;color:var(--g1);font-weight:600;cursor:pointer}
+.card-action:hover{text-decoration:underline}
+
+/* GRID LAYOUTS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.grid-main-side{display:grid;grid-template-columns:1fr 340px;gap:20px}
+
+/* TABLES */
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:left}
+.data-table td{padding:12px 14px;border-bottom:1px solid var(--border);color:var(--text2);font-size:13px;vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--surface2)}
+.table-wrap{overflow-x:auto}
+
+/* BADGES / STATUS */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600}
+.badge-green{background:rgba(22,163,74,.12);color:#15803d}
+.badge-amber{background:rgba(217,119,6,.12);color:#d97706}
+.badge-red{background:rgba(220,38,38,.12);color:#dc2626}
+.badge-blue{background:rgba(37,99,235,.12);color:#2563eb}
+.badge-gray{background:var(--surface2);color:var(--text3)}
+.badge-purple{background:rgba(124,58,237,.12);color:#7c3aed}
+.badge-verified{background:rgba(22,163,74,.1);color:#16a34a;border:1px solid rgba(22,163,74,.2)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:1.5px solid transparent}
+.btn-primary{background:var(--g1);color:#fff;border-color:var(--g1)}.btn-primary:hover{background:#15803d}
+.btn-outline{background:transparent;color:var(--text1);border-color:var(--border)}.btn-outline:hover{background:var(--surface2)}
+.btn-ghost{background:transparent;color:var(--text2);border-color:transparent}.btn-ghost:hover{background:var(--surface2);color:var(--text1)}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-danger{background:var(--red);color:#fff;border-color:var(--red)}.btn-danger:hover{background:#b91c1c}
+
+/* PROFILE CARD */
+.profile-hero{display:flex;align-items:center;gap:20px;margin-bottom:28px}
+.profile-avatar-wrap{position:relative;flex-shrink:0}
+.profile-avatar{width:88px;height:88px;border-radius:50%;background:var(--surface3);border:3px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--text3)}
+.avatar-edit{position:absolute;bottom:2px;right:2px;width:26px;height:26px;background:var(--g1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;border:2px solid var(--surface);cursor:pointer}
+.profile-info h2{font-size:20px;font-weight:700;color:var(--text1);margin-bottom:4px}
+.profile-info p{font-size:13px;color:var(--text3)}
+.profile-meta{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.meta-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)}
+.meta-row i{color:var(--text4);font-size:15px}
+.profile-fields{display:flex;flex-direction:column;gap:0}
+.profile-field{display:flex;align-items:center;padding:14px 0;border-bottom:1px solid var(--border)}
+.profile-field:last-child{border-bottom:none}
+.field-label{font-size:13px;font-weight:600;color:var(--text2);width:160px;flex-shrink:0}
+.field-value{font-size:13px;color:var(--g1);flex:1}
+.field-action{margin-left:auto;color:var(--g1);font-size:15px;cursor:pointer;opacity:.7}
+.field-action:hover{opacity:1}
+.kyc-banner{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:rgba(22,163,74,.07);border:1px solid rgba(22,163,74,.2);border-radius:var(--radius);margin-top:20px}
+.kyc-left{display:flex;align-items:center;gap:12px}
+.kyc-info .kyc-title{font-size:13px;font-weight:700;color:var(--g1)}
+.kyc-info .kyc-sub{font-size:12px;color:var(--text3)}
+
+/* ALERTS */
+.alert-list{display:flex;flex-direction:column;gap:10px}
+.alert-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius);transition:background .15s}
+.alert-item:hover{background:var(--surface2)}
+.alert-icon{width:36px;height:36px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.alert-body{flex:1;min-width:0}
+.alert-title{font-size:13px;font-weight:600;color:var(--text1)}
+.alert-sub{font-size:12px;color:var(--text3)}
+.alert-time{font-size:11px;color:var(--text4);margin-left:auto;white-space:nowrap}
+
+/* CHART CONTAINER */
+.chart-wrap{position:relative;width:100%;height:240px}
+.chart-wrap-sm{position:relative;width:100%;height:180px}
+.donut-wrap{position:relative;width:220px;height:220px;flex-shrink:0}
+
+/* QUICK ACTIONS */
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quick-action{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .15s;font-size:13px;font-weight:500;color:var(--text1)}
+.quick-action:hover{background:var(--surface3);border-color:var(--g1);color:var(--g1)}
+.quick-action i{font-size:18px;color:var(--g1)}
+.quick-action .qa-arrow{margin-left:auto;font-size:14px;color:var(--text4)}
+
+/* TRANSACTIONS */
+.tx-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.tx-row:last-child{border-bottom:none}
+.tx-icon{width:36px;height:36px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.tx-body{flex:1;min-width:0}
+.tx-id{font-size:12px;font-weight:600;color:var(--text1);font-family:'DM Mono',monospace}
+.tx-type{font-size:12px;color:var(--text3)}
+.tx-amount{font-size:14px;font-weight:700;text-align:right}
+.tx-date{font-size:11px;color:var(--text4);text-align:right}
+
+/* PLATFORM SUMMARY */
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--surface2);border-radius:var(--radius)}
+.summary-label{font-size:12px;color:var(--text3)}
+.summary-val{font-size:13px;font-weight:700;color:var(--text1)}
+
+/* TOP PRODUCTS */
+.product-chips{display:flex;gap:12px;flex-wrap:wrap}
+.product-chip{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);flex:1;min-width:120px;cursor:pointer;transition:all .15s}
+.product-chip:hover{border-color:var(--g1)}
+.product-img{width:38px;height:38px;border-radius:8px;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.product-name{font-size:13px;font-weight:600;color:var(--text1)}
+.product-orders{font-size:11px;color:var(--text3)}
+.product-gmv{font-size:12px;font-weight:700;color:var(--g1)}
+
+/* SETTINGS TABS */
+.settings-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:24px;gap:0;overflow-x:auto}
+.settings-tab{padding:12px 20px;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.settings-tab.active{color:var(--g1);border-bottom-color:var(--g1)}
+.settings-tab:hover:not(.active){color:var(--text1)}
+
+/* SETTINGS SECTIONS */
+.settings-section{margin-bottom:32px}
+.settings-section-title{font-size:16px;font-weight:700;color:var(--text1);margin-bottom:4px}
+.settings-section-sub{font-size:13px;color:var(--text3);margin-bottom:20px}
+
+/* KYC STATUS GRID */
+.kyc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kyc-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px}
+.kyc-label{color:var(--text2);font-weight:500}
+
+/* ESCROW CARDS */
+.escrow-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px}
+.escrow-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center}
+.escrow-icon{font-size:24px;margin-bottom:8px}
+.escrow-amount{font-size:18px;font-weight:800;color:var(--text1);font-family:'DM Mono',monospace}
+.escrow-label{font-size:11px;color:var(--text3);font-weight:500;margin-top:2px}
+
+/* DISPUTE CARDS */
+.dispute-items{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.dispute-card{border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all .15s}
+.dispute-card:hover{border-color:var(--g1);background:var(--surface2)}
+.dispute-title{font-size:13px;font-weight:700;color:var(--text1);margin-bottom:4px}
+.dispute-desc{font-size:12px;color:var(--text3);margin-bottom:10px}
+.dispute-link{font-size:12px;color:var(--g1);font-weight:600}
+
+/* PLATFORM PREFS */
+.platform-prefs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.pref-card{border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all .15s}
+.pref-card:hover{border-color:var(--g1);background:var(--surface2)}
+.pref-icon{font-size:24px;margin-bottom:10px;color:var(--g1)}
+.pref-title{font-size:13px;font-weight:700;color:var(--text1);margin-bottom:4px}
+.pref-desc{font-size:12px;color:var(--text3);margin-bottom:10px}
+.pref-link{font-size:12px;color:var(--g1);font-weight:600}
+
+/* RIGHT PANEL */
+.right-panel{display:flex;flex-direction:column;gap:20px}
+.admin-profile-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
+.admin-avatar{width:56px;height:56px;border-radius:50%;background:var(--g1);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:700;margin:0 auto 12px}
+.admin-name{font-size:16px;font-weight:700;text-align:center;color:var(--text1)}
+.admin-role{font-size:12px;color:var(--text3);text-align:center;margin-bottom:14px}
+.admin-email{font-size:12px;color:var(--text3);text-align:center;margin-bottom:16px}
+.admin-meta-row{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid var(--border);font-size:12px}
+.meta-key{color:var(--text3)}.meta-val{color:var(--text1);font-weight:600}
+
+/* SYSTEM STATUS */
+.sys-status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--g1);font-weight:600}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--g1);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* COMPLIANCE */
+.compliance-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px}
+.compliance-row:last-child{border-bottom:none}
+.compliance-name{display:flex;align-items:center;gap:8px;color:var(--text2);font-weight:500}
+.compliance-link{color:var(--g1);font-weight:600;font-size:12px;cursor:pointer}
+
+/* MOBILE HAMBURGER */
+.hamburger{display:none;width:36px;height:36px;align-items:center;justify-content:center;cursor:pointer;color:var(--text2)}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .grid-main-side{grid-template-columns:1fr}
+  .grid-2{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay.open{display:block}
+  .main{margin-left:0}
+  .hamburger{display:flex}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .search-bar{display:none}
+  .topbar-title{font-size:16px}
+  .page-content{padding:16px}
+  .grid-3{grid-template-columns:1fr}
+  .escrow-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .stat-value{font-size:18px}
+  .donut-wrap{width:160px;height:160px}
+}
+
+/* THEME TOGGLE */
+.theme-toggle{width:36px;height:20px;background:var(--border);border-radius:99px;position:relative;cursor:pointer;transition:background .2s}
+.theme-toggle.on{background:var(--g1)}
+.theme-toggle-thumb{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.theme-toggle.on .theme-toggle-thumb{transform:translateX(16px)}
+
+/* PAGE TRANSITIONS */
+.page-content{animation:fadein .2s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* USER MANAGEMENT */
+.user-table-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border);transition:background .15s}
+.user-table-row:hover{background:var(--surface2)}
+.user-thumb{width:36px;height:36px;border-radius:50%;background:var(--g1);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0}
+.user-info-col{flex:1;min-width:0}
+.user-fullname{font-size:13px;font-weight:600;color:var(--text1)}
+.user-email{font-size:11px;color:var(--text3)}
+.user-role-col{width:100px;text-align:center}
+.user-status-col{width:90px;text-align:center}
+.user-actions-col{display:flex;gap:6px;justify-content:flex-end}
+
+/* INPUT STYLES */
+.form-group{margin-bottom:16px}
+.form-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;display:block}
+.form-input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text1);font-size:13px;outline:none;transition:border .15s}
+.form-input:focus{border-color:var(--g1)}
+.form-select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text1);font-size:13px;outline:none;appearance:none;cursor:pointer}
+
+/* PAGINATION */
+.pagination{display:flex;align-items:center;gap:6px;margin-top:16px;justify-content:flex-end}
+.page-btn{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);color:var(--text2);background:var(--surface);transition:all .15s}
+.page-btn.active{background:var(--g1);color:#fff;border-color:var(--g1)}
+.page-btn:hover:not(.active){background:var(--surface2)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.hidden{display:none}
+.modal{background:var(--surface);border-radius:var(--radius-xl);padding:28px;width:100%;max-width:480px;border:1px solid var(--border);box-shadow:var(--shadow-md)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.modal-title{font-size:17px;font-weight:700;color:var(--text1)}
+.modal-close{width:32px;height:32px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--text2)}
+
+/* REPORT CARDS */
+.report-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;cursor:pointer;transition:all .15s}
+.report-card:hover{box-shadow:var(--shadow-md);border-color:var(--g1)}
+.report-icon{width:42px;height:42px;border-radius:var(--radius);background:rgba(22,163,74,.1);display:flex;align-items:center;justify-content:center;color:var(--g1);font-size:20px;margin-bottom:12px}
+.report-title{font-size:14px;font-weight:700;color:var(--text1);margin-bottom:6px}
+.report-desc{font-size:12px;color:var(--text3)}
+
+/* SYSTEM CONTROLS */
+.sys-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sys-btn{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .15s;font-size:13px;color:var(--text1);background:var(--surface2)}
+.sys-btn:hover{border-color:var(--g1);color:var(--g1)}
+.sys-btn i{font-size:18px;color:var(--text3)}
+.sys-btn:hover i{color:var(--g1)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--g1);color:#fff;padding:12px 20px;border-radius:var(--radius);font-size:13px;font-weight:600;z-index:999;box-shadow:var(--shadow-md);display:flex;align-items:center;gap:8px;transform:translateY(80px);opacity:0;transition:all .3s}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* SEARCH IN TOPBAR */
+.topbar-search{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:7px 14px;flex:1;max-width:340px}
+.topbar-search input{background:none;border:none;outline:none;color:var(--text1);font-size:13px;width:100%}
+.topbar-search input::placeholder{color:var(--text4)}
+.topbar-search i{color:var(--text4);font-size:16px}
+
+/* ROLE SWITCHER */
+.role-switcher{display:flex;gap:6px;padding:4px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border);margin-right:8px}
+.role-btn{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;color:var(--text3)}
+.role-btn.active{background:var(--g1);color:#fff}
+.role-btn:hover:not(.active){background:var(--surface3);color:var(--text1)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text4)}
+
+/* ORDER STATUS PIE LEGEND */
+.order-overview{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.legend-items{display:flex;flex-direction:column;gap:8px;flex:1}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.legend-label{color:var(--text2);flex:1}
+.legend-count{font-weight:700;color:var(--text1)}
+.legend-pct{color:var(--text4);margin-left:4px}
+
+/* DISPUTE PENDING BANNER */
+.pending-banner{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(217,119,6,.07);border:1px solid rgba(217,119,6,.2);border-radius:var(--radius);margin-top:16px}
+.pending-count{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#d97706}
+.pending-count .num{background:#d97706;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px}
+
+/* PROFILE PAGE SPECIFIC */
+.profile-page-grid{display:grid;grid-template-columns:1fr 300px;gap:24px}
+@media(max-width:900px){.profile-page-grid{grid-template-columns:1fr}}
+
+/* NOTIFICATIONS DROPDOWN */
+.notif-dropdown{position:absolute;top:46px;right:0;width:340px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);z-index:300;overflow:hidden}
+.notif-dropdown.hidden{display:none}
+.notif-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.notif-title{font-size:14px;font-weight:700;color:var(--text1)}
+.notif-mark{font-size:12px;color:var(--g1);cursor:pointer;font-weight:600}
+.notif-item{display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.notif-item:hover{background:var(--surface2)}
+.notif-item.unread{background:rgba(22,163,74,.04)}
+.notif-icon{width:34px;height:34px;border-radius:var(--radius);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px}
+.notif-text{flex:1;min-width:0}
+.notif-msg{font-size:12px;color:var(--text1);line-height:1.4}
+.notif-time{font-size:11px;color:var(--text4);margin-top:2px}
+.notif-unread-dot{width:8px;height:8px;border-radius:50%;background:var(--g1);flex-shrink:0;margin-top:4px}
+.notif-footer{padding:12px 16px;text-align:center}
+.notif-view-all{font-size:12px;color:var(--g1);font-weight:600;cursor:pointer}
+
+.relative{position:relative}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2C7 2 3 6 3 11c0 3 1.5 5.5 4 7l1 4h8l1-4c2.5-1.5 4-4 4-7 0-5-4-9-9-9z"/><path d="M9 11l2 2 4-4"/></svg>
+    </div>
+    <div>
+      <div class="logo-text">Smart-Kissan</div>
+      <div class="logo-sub" id="sidebar-subtitle">Admin Panel</div>
+    </div>
+  </div>
+  <div class="sidebar-nav" id="sidebar-nav"><!-- populated by JS --></div>
+  <div class="sidebar-footer">
+    <button class="logout-btn" onclick="showToast('Logged out successfully')">
+      <i class="ti ti-logout"></i> Logout
+    </button>
+  </div>
+</nav>
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <button class="hamburger" onclick="toggleSidebar()"><i class="ti ti-menu-2" style="font-size:20px"></i></button>
+    <div>
+      <div class="topbar-title" id="page-title">Dashboard</div>
+      <div class="topbar-sub" id="page-sub">Welcome back, Admin! Here's what's happening.</div>
+    </div>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-search" id="topbar-search" style="display:flex">
+      <i class="ti ti-search"></i>
+      <input type="text" placeholder="Search by Order ID, User, Product..."/>
+    </div>
+    <div class="topbar-actions">
+      <div class="role-switcher">
+        <div class="role-btn active" onclick="switchRole('admin')">Admin</div>
+        <div class="role-btn" onclick="switchRole('farmer')">Farmer</div>
+        <div class="role-btn" onclick="switchRole('buyer')">Buyer</div>
+        <div class="role-btn" onclick="switchRole('transporter')">Transport</div>
+      </div>
+      <div class="icon-btn relative" id="theme-btn" onclick="toggleTheme()" title="Toggle dark/light mode">
+        <i class="ti ti-moon" id="theme-icon"></i>
+      </div>
+      <div class="relative">
+        <div class="icon-btn" onclick="toggleNotif()">
+          <i class="ti ti-bell"></i>
+          <div class="notif-dot"></div>
+        </div>
+        <div class="notif-dropdown hidden" id="notif-dropdown">
+          <div class="notif-header">
+            <span class="notif-title">Notifications</span>
+            <span class="notif-mark" onclick="markAllRead()">Mark all read</span>
+          </div>
+          <div class="notif-item unread">
+            <div class="notif-icon" style="background:rgba(220,38,38,.1);color:#dc2626"><i class="ti ti-alert-circle"></i></div>
+            <div class="notif-text">
+              <div class="notif-msg">Payment Hold Request – Order #SKO-2024-05-7842</div>
+              <div class="notif-time">2 min ago</div>
+            </div>
+            <div class="notif-unread-dot"></div>
+          </div>
+          <div class="notif-item unread">
+            <div class="notif-icon" style="background:rgba(217,119,6,.1);color:#d97706"><i class="ti ti-gavel"></i></div>
+            <div class="notif-text">
+              <div class="notif-msg">Dispute Needs Review – Order #SKO-2024-05-7681</div>
+              <div class="notif-time">15 min ago</div>
+            </div>
+            <div class="notif-unread-dot"></div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-icon" style="background:rgba(22,163,74,.1);color:#16a34a"><i class="ti ti-user-check"></i></div>
+            <div class="notif-text">
+              <div class="notif-msg">25 new transporter registrations awaiting verification</div>
+              <div class="notif-time">30 min ago</div>
+            </div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-icon" style="background:rgba(37,99,235,.1);color:#2563eb"><i class="ti ti-info-circle"></i></div>
+            <div class="notif-text">
+              <div class="notif-msg">Scheduled maintenance on 1 Jun 2024</div>
+              <div class="notif-time">1 hr ago</div>
+            </div>
+          </div>
+          <div class="notif-footer"><span class="notif-view-all">View all notifications</span></div>
+        </div>
+      </div>
+      <div class="user-chip" onclick="navigate('profile')">
+        <div class="user-avatar" id="topbar-avatar">A</div>
+        <div>
+          <div class="user-name" id="topbar-username">Admin</div>
+          <div class="user-role" id="topbar-userrole">Super Administrator</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PAGES -->
+  <div class="page-content" id="page-dashboard"><!-- Admin Dashboard --></div>
+  <div class="page-content hidden" id="page-users"><!-- User Management --></div>
+  <div class="page-content hidden" id="page-orders"><!-- Orders --></div>
+  <div class="page-content hidden" id="page-escrow"><!-- Escrow --></div>
+  <div class="page-content hidden" id="page-disputes"><!-- Disputes --></div>
+  <div class="page-content hidden" id="page-transport"><!-- Transport --></div>
+  <div class="page-content hidden" id="page-reports"><!-- Reports --></div>
+  <div class="page-content hidden" id="page-system"><!-- System --></div>
+  <div class="page-content hidden" id="page-notifications"><!-- Notifications --></div>
+  <div class="page-content hidden" id="page-audit"><!-- Audit --></div>
+  <div class="page-content hidden" id="page-settings"><!-- Settings --></div>
+  <div class="page-content hidden" id="page-profile"><!-- Profile --></div>
+  <div class="page-content hidden" id="page-support"><!-- Support --></div>
+  <!-- Farmer pages -->
+  <div class="page-content hidden" id="page-listings"><!-- My Listings --></div>
+  <div class="page-content hidden" id="page-payments"><!-- Payments --></div>
+  <!-- Buyer pages -->
+  <div class="page-content hidden" id="page-search"><!-- Search --></div>
+  <div class="page-content hidden" id="page-myorders"><!-- My Orders --></div>
+  <div class="page-content hidden" id="page-messages"><!-- Messages --></div>
+  <!-- Transporter pages -->
+  <div class="page-content hidden" id="page-loads"><!-- Loads --></div>
+  <div class="page-content hidden" id="page-trips"><!-- Trips --></div>
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay hidden" id="modal-overlay">
+  <div class="modal" id="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Modal</div>
+      <div class="modal-close" onclick="closeModal()"><i class="ti ti-x"></i></div>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="ti ti-check"></i><span id="toast-msg">Done</span></div>
+
+<script>
+// ============ STATE ============
+let currentRole = 'admin';
+let currentPage = 'dashboard';
+let isDark = false;
+let platformChart, donutChart, lineChart;
+
+// ============ ROLE CONFIG ============
+const roles = {
+  admin: {
+    subtitle: 'Admin Panel',
+    username: 'Admin',
+    userrole: 'Super Administrator',
+    avatar: 'A',
+    nav: [
+      {id:'dashboard', icon:'ti-dashboard', label:'Dashboard'},
+      {id:'users', icon:'ti-users', label:'User Management', badge:'12', badgeColor:'red'},
+      {id:'orders', icon:'ti-shopping-cart', label:'Orders & Transactions'},
+      {id:'escrow', icon:'ti-safe', label:'Escrow & Payments'},
+      {id:'disputes', icon:'ti-gavel', label:'Disputes Management', badge:'7', badgeColor:'amber'},
+      {id:'transport', icon:'ti-truck', label:'Transport & Logistics'},
+      {id:'reports', icon:'ti-chart-bar', label:'Reports & Analytics'},
+      {id:'system', icon:'ti-server', label:'System Management'},
+      {id:'notifications', icon:'ti-bell', label:'Notifications'},
+      {id:'audit', icon:'ti-history', label:'Audit Logs'},
+      {id:'settings', icon:'ti-settings', label:'Settings'},
+      {id:'profile', icon:'ti-user-circle', label:'Profile'},
+      {id:'support', icon:'ti-headset', label:'Support'},
+    ]
+  },
+  farmer: {
+    subtitle: 'Agri Marketplace',
+    username: 'Ramesh Yadav',
+    userrole: 'Farmer',
+    avatar: 'R',
+    nav: [
+      {id:'dashboard', icon:'ti-dashboard', label:'Dashboard'},
+      {id:'listings', icon:'ti-list', label:'My Listings'},
+      {id:'orders', icon:'ti-shopping-cart', label:'Orders', badge:'3', badgeColor:'green'},
+      {id:'messages', icon:'ti-message', label:'Messages', badge:'2', badgeColor:'green'},
+      {id:'payments', icon:'ti-wallet', label:'Payments'},
+      {id:'profile', icon:'ti-user-circle', label:'Profile'},
+      {id:'settings', icon:'ti-settings', label:'Settings'},
+      {id:'support', icon:'ti-headset', label:'Support'},
+    ]
+  },
+  buyer: {
+    subtitle: 'Agri Marketplace',
+    username: 'Amit Verma',
+    userrole: 'Buyer',
+    avatar: 'A',
+    nav: [
+      {id:'dashboard', icon:'ti-dashboard', label:'Dashboard'},
+      {id:'search', icon:'ti-search', label:'Search Products'},
+      {id:'myorders', icon:'ti-package', label:'My Orders', badge:'1', badgeColor:'green'},
+      {id:'payments', icon:'ti-wallet', label:'Payments'},
+      {id:'messages', icon:'ti-message', label:'Messages'},
+      {id:'profile', icon:'ti-user-circle', label:'Profile'},
+      {id:'settings', icon:'ti-settings', label:'Settings'},
+      {id:'support', icon:'ti-headset', label:'Support'},
+    ]
+  },
+  transporter: {
+    subtitle: 'Agri Marketplace',
+    username: 'Suresh Patel',
+    userrole: 'Transporter',
+    avatar: 'S',
+    nav: [
+      {id:'dashboard', icon:'ti-dashboard', label:'Dashboard'},
+      {id:'loads', icon:'ti-truck', label:'Available Loads'},
+      {id:'trips', icon:'ti-route', label:'My Trips', badge:'2', badgeColor:'green'},
+      {id:'payments', icon:'ti-wallet', label:'Payments'},
+      {id:'profile', icon:'ti-user-circle', label:'Profile'},
+      {id:'settings', icon:'ti-settings', label:'Settings'},
+      {id:'support', icon:'ti-headset', label:'Support'},
+    ]
+  }
+};
+
+// ============ NAVIGATION ============
+function buildSidebar(role) {
+  const cfg = roles[role];
+  document.getElementById('sidebar-subtitle').textContent = cfg.subtitle;
+  document.getElementById('topbar-username').textContent = cfg.username;
+  document.getElementById('topbar-userrole').textContent = cfg.userrole;
+  document.getElementById('topbar-avatar').textContent = cfg.avatar;
+  const nav = document.getElementById('sidebar-nav');
+  nav.innerHTML = cfg.nav.map(n => `
+    <div class="nav-item ${n.id === currentPage ? 'active' : ''}" id="nav-${n.id}" onclick="navigate('${n.id}')">
+      <i class="ti ${n.icon}" aria-hidden="true"></i>
+      <span>${n.label}</span>
+      ${n.badge ? `<span class="nav-badge ${n.badgeColor==='amber'?'':'green'}" style="${n.badgeColor==='amber'?'background:#d97706':''}">${n.badge}</span>` : ''}
+    </div>
+  `).join('');
+}
+
+function navigate(page) {
+  document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  currentPage = page;
+  const el = document.getElementById('page-' + page);
+  if (el) { el.classList.remove('hidden'); renderPage(page); }
+  const navEl = document.getElementById('nav-' + page);
+  if (navEl) navEl.classList.add('active');
+  updateTopbar(page);
+  closeSidebar();
+  closeNotif();
+}
+
+const pageTitles = {
+  dashboard:'Dashboard', users:'User Management', orders:'Orders & Transactions',
+  escrow:'Escrow & Payments', disputes:'Disputes Management', transport:'Transport & Logistics',
+  reports:'Reports & Analytics', system:'System Management', notifications:'Notifications',
+  audit:'Audit Logs', settings:'Global Settings', profile:'Profile', support:'Support',
+  listings:'My Listings', payments:'Payments', search:'Search Products',
+  myorders:'My Orders', messages:'Messages', loads:'Available Loads', trips:'My Trips'
+};
+const pageSubs = {
+  dashboard: () => `Welcome back, ${roles[currentRole].username}! Here's what's happening on Smart-Kissan.`,
+  settings: () => 'Manage your profile, verification, platform policies, escrow access and global preferences.',
+  profile: () => 'View and manage your account profile & KYC.',
+  users: () => 'Manage all registered users across roles.',
+  orders: () => 'View and manage all orders and transactions.',
+  escrow: () => 'Manage escrow accounts and payment flows.',
+  disputes: () => 'Review and resolve open disputes.',
+  reports: () => 'Analytics and system reports.',
+  listings: () => 'Manage your active crop listings.',
+  search: () => 'Discover and bid on quality crops.',
+  default: () => ''
+};
+function updateTopbar(page) {
+  document.getElementById('page-title').textContent = pageTitles[page] || page;
+  const sub = pageSubs[page] || pageSubs.default;
+  document.getElementById('page-sub').textContent = sub();
+  const noSearch = ['profile','settings','audit','notifications','support','messages'];
+  document.getElementById('topbar-search').style.display = noSearch.includes(page) ? 'none' : 'flex';
+}
+
+function switchRole(role) {
+  currentRole = role;
+  document.querySelectorAll('.role-btn').forEach((b,i) => {
+    const r = ['admin','farmer','buyer','transporter'][i];
+    b.classList.toggle('active', r === role);
+  });
+  currentPage = 'dashboard';
+  buildSidebar(role);
+  navigate('dashboard');
+}
+
+// ============ THEME ============
+function toggleTheme() {
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
+  document.getElementById('theme-icon').className = isDark ? 'ti ti-sun' : 'ti ti-moon';
+  setTimeout(() => { if(platformChart) renderCharts(); }, 50);
+}
+
+// ============ SIDEBAR MOBILE ============
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ============ TOAST ============
+function showToast(msg) {
+  document.getElementById('toast-msg').textContent = msg;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ============ MODAL ============
+function openModal(title, html) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-overlay').classList.remove('hidden');
+}
+function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
+document.getElementById('modal-overlay').addEventListener('click', e => { if(e.target.id==='modal-overlay') closeModal(); });
+
+// ============ NOTIF ============
+function toggleNotif() {
+  document.getElementById('notif-dropdown').classList.toggle('hidden');
+}
+function closeNotif() { document.getElementById('notif-dropdown').classList.add('hidden'); }
+function markAllRead() {
+  document.querySelectorAll('.notif-item.unread').forEach(i=>i.classList.remove('unread'));
+  document.querySelectorAll('.notif-unread-dot').forEach(d=>d.remove());
+  document.querySelector('.notif-dot').style.display='none';
+  showToast('All notifications marked as read');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.relative') && !e.target.closest('.notif-dropdown')) closeNotif();
+});
+
+// ============ PAGE RENDERERS ============
+function renderPage(page) {
+  const fn = renderers[page];
+  if (fn) { fn(); }
+  else { document.getElementById('page-'+page).innerHTML = renderGenericPage(page); }
+}
+
+const renderers = {
+  dashboard: renderDashboard,
+  users: renderUsers,
+  orders: renderOrders,
+  escrow: renderEscrow,
+  disputes: renderDisputes,
+  transport: renderTransport,
+  reports: renderReports,
+  system: renderSystem,
+  settings: renderSettings,
+  profile: renderProfile,
+  support: renderSupport,
+  notifications: renderNotifications,
+  audit: renderAudit,
+  listings: renderListings,
+  payments: renderPayments,
+  search: renderSearch,
+  myorders: renderMyOrders,
+  messages: renderMessages,
+  loads: renderLoads,
+  trips: renderTrips,
+};
+
+// ============ DASHBOARD ============
+function renderDashboard() {
+  const el = document.getElementById('page-dashboard');
+  const isAdmin = currentRole === 'admin';
+  const isFarmer = currentRole === 'farmer';
+  const isBuyer = currentRole === 'buyer';
+  const isTransport = currentRole === 'transporter';
+
+  if (isAdmin) {
+    el.innerHTML = `
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(22,163,74,.1);color:var(--g1)"><i class="ti ti-users"></i></div>
+          <div class="stat-label">Total Users</div>
+          <div class="stat-value">12,843</div>
+          <div class="stat-change up"><i class="ti ti-trending-up"></i> 18.5% vs last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(37,99,235,.1);color:#2563eb"><i class="ti ti-shopping-bag"></i></div>
+          <div class="stat-label">Total Orders</div>
+          <div class="stat-value">8,623</div>
+          <div class="stat-change up"><i class="ti ti-trending-up"></i> 23.7% vs last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(217,119,6,.1);color:#d97706"><i class="ti ti-currency-rupee"></i></div>
+          <div class="stat-label">Total GMV</div>
+          <div class="stat-value">₹12.48Cr</div>
+          <div class="stat-change up"><i class="ti ti-trending-up"></i> 32.1% vs last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(124,58,237,.1);color:#7c3aed"><i class="ti ti-truck"></i></div>
+          <div class="stat-label">Active Trips</div>
+          <div class="stat-value">2,154</div>
+          <div class="stat-change up"><i class="ti ti-trending-up"></i> 16.3% vs last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(220,38,38,.1);color:#dc2626"><i class="ti ti-gavel"></i></div>
+          <div class="stat-label">Disputes</div>
+          <div class="stat-value">87</div>
+          <div class="stat-change down"><i class="ti ti-trending-down"></i> 8.4% vs last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(22,163,74,.1);color:var(--g1)"><i class="ti ti-safe"></i></div>
+          <div class="stat-label">Platform Commission</div>
+          <div class="stat-value">₹98.76L</div>
+          <div class="stat-change up"><i class="ti ti-trending-up"></i> 29.6% vs last month</div>
+        </div>
+      </div>
+
+      <div class="grid-main-side">
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <!-- Platform Overview Chart -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Platform Overview</div>
+              <select class="form-select" style="width:auto;padding:6px 10px;font-size:12px">
+                <option>This Month</option><option>Last Month</option><option>Last 3 Months</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:16px;margin-bottom:12px;font-size:12px">
+              <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#22c55e"></span>Orders</span>
+              <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#2563eb"></span>GMV (₹)</span>
+              <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#d97706"></span>Users</span>
+            </div>
+            <div class="chart-wrap"><canvas id="platformChart" role="img" aria-label="Platform overview line chart showing orders, GMV, and users over May 2024">Platform overview chart</canvas></div>
+          </div>
+
+          <!-- Order Status + Recent Transactions -->
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><div class="card-title">Order Status Overview</div></div>
+              <div class="order-overview">
+                <div class="donut-wrap"><canvas id="donutChart" role="img" aria-label="Donut chart of order statuses">Order status donut chart</canvas></div>
+                <div class="legend-items">
+                  <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div><span class="legend-label">Completed</span><span class="legend-count">5,642</span><span class="legend-pct">(65.4%)</span></div>
+                  <div class="legend-item"><div class="legend-dot" style="background:#2563eb"></div><span class="legend-label">In Transit</span><span class="legend-count">1,542</span><span class="legend-pct">(17.9%)</span></div>
+                  <div class="legend-item"><div class="legend-dot" style="background:#d97706"></div><span class="legend-label">Pending</span><span class="legend-count">879</span><span class="legend-pct">(10.2%)</span></div>
+                  <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div><span class="legend-label">Cancelled</span><span class="legend-count">356</span><span class="legend-pct">(4.1%)</span></div>
+                  <div class="legend-item"><div class="legend-dot" style="background:#7c3aed"></div><span class="legend-label">Disputed</span><span class="legend-count">204</span><span class="legend-pct">(2.4%)</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><div class="card-title">Platform Summary</div><span class="card-action" onclick="navigate('reports')">View Analytics</span></div>
+              <div class="summary-grid">
+                <div class="summary-row"><span class="summary-label">Buyers</span><span class="summary-val">5,842</span></div>
+                <div class="summary-row"><span class="summary-label">Total Orders</span><span class="summary-val">8,623</span></div>
+                <div class="summary-row"><span class="summary-label">Suppliers</span><span class="summary-val">4,215</span></div>
+                <div class="summary-row"><span class="summary-label">Completed</span><span class="summary-val">5,642</span></div>
+                <div class="summary-row"><span class="summary-label">Transporters</span><span class="summary-val">786</span></div>
+                <div class="summary-row"><span class="summary-label">Active Orders</span><span class="summary-val">2,777</span></div>
+                <div class="summary-row"><span class="summary-label">Products</span><span class="summary-val">1,256</span></div>
+                <div class="summary-row"><span class="summary-label">Cancelled</span><span class="summary-val">204</span></div>
+              </div>
+              <div style="margin-top:14px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text4)">
+                <span>Data as of: 25 May 2024, 11:00 AM</span>
+                <button class="btn btn-ghost btn-sm" onclick="showToast('Data refreshed!')"><i class="ti ti-refresh"></i> Refresh</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Transactions -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">Recent Transactions</div><span class="card-action" onclick="navigate('orders')">View All</span></div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead><tr><th>Order ID</th><th>Type</th><th>User</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+                <tbody>
+                  <tr><td><span style="font-family:'DM Mono',monospace;font-size:12px">SKO-2024-05-0112</span></td><td>Escrow Release</td><td>Amit Verma (Buyer)</td><td><strong>₹21,500</strong></td><td><span class="badge badge-green">Completed</span></td><td style="color:var(--text3);font-size:12px">25 May 2024, 10:30 AM</td></tr>
+                  <tr><td><span style="font-family:'DM Mono',monospace;font-size:12px">SKO-2024-05-0111</span></td><td>Payment Hold</td><td>Ramesh Kumar (Supplier)</td><td><strong>₹18,200</strong></td><td><span class="badge badge-amber">On Hold</span></td><td style="color:var(--text3);font-size:12px">25 May 2024, 10:15 AM</td></tr>
+                  <tr><td><span style="font-family:'DM Mono',monospace;font-size:12px">SKO-2024-05-0110</span></td><td>Commission Deducted</td><td>Platform</td><td><strong>₹645</strong></td><td><span class="badge badge-green">Completed</span></td><td style="color:var(--text3);font-size:12px">25 May 2024, 9:50 AM</td></tr>
+                  <tr><td><span style="font-family:'DM Mono',monospace;font-size:12px">SKO-2024-05-0109</span></td><td>Refund Processed</td><td>Suresh Patel (Buyer)</td><td><strong>₹12,800</strong></td><td><span class="badge badge-green">Completed</span></td><td style="color:var(--text3);font-size:12px">25 May 2024, 9:20 AM</td></tr>
+                  <tr><td><span style="font-family:'DM Mono',monospace;font-size:12px">SKO-2024-05-0108</span></td><td>Escrow Hold</td><td>Transporter</td><td><strong>₹17,000</strong></td><td><span class="badge badge-amber">On Hold</span></td><td style="color:var(--text3);font-size:12px">25 May 2024, 9:10 AM</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Top Products -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">Top Products (By Orders)</div><span class="card-action" onclick="showToast('Report generated!')">View Report</span></div>
+            <div class="product-chips">
+              ${[['🌾','Wheat','2,854 Orders','₹4,12,50,000'],['🍚','Rice','1,986 Orders','₹3,25,40,000'],['🫘','Chickpea','1,523 Orders','₹2,15,30,000'],['🫱','Soybean','1,102 Orders','₹1,47,80,000'],['🌿','Mustard','856 Orders','₹1,02,10,000']].map(([emoji,name,orders,gmv])=>`
+              <div class="product-chip">
+                <div class="product-img">${emoji}</div>
+                <div>
+                  <div class="product-name">${name}</div>
+                  <div class="product-orders">${orders}</div>
+                  <div class="product-gmv">${gmv}</div>
+                </div>
+              </div>`).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="right-panel">
+          <!-- Alerts -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">Alerts & Approvals</div><span class="card-action">View All</span></div>
+            <div class="alert-list">
+              <div class="alert-item">
+                <div class="alert-icon" style="background:rgba(220,38,38,.1);color:#dc2626"><i class="ti ti-alert-circle"></i></div>
+                <div class="alert-body"><div class="alert-title">Payment Hold Request</div><div class="alert-sub">Order #SKO-2024-05-7842</div></div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span class="badge badge-red" style="font-size:10px">High</span><span class="alert-time">2m ago</span></div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-icon" style="background:rgba(217,119,6,.1);color:#d97706"><i class="ti ti-gavel"></i></div>
+                <div class="alert-body"><div class="alert-title">Dispute Needs Review</div><div class="alert-sub">Order #SKO-2024-05-7681</div></div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span class="badge badge-amber" style="font-size:10px">Medium</span><span class="alert-time">15m ago</span></div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-icon" style="background:rgba(22,163,74,.1);color:var(--g1)"><i class="ti ti-user-check"></i></div>
+                <div class="alert-body"><div class="alert-title">New User Verification</div><div class="alert-sub">25 new transporter registrations</div></div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span class="badge badge-blue" style="font-size:10px">Low</span><span class="alert-time">30m ago</span></div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-icon" style="background:rgba(37,99,235,.1);color:#2563eb"><i class="ti ti-info-circle"></i></div>
+                <div class="alert-body"><div class="alert-title">System Notification</div><div class="alert-sub">Scheduled maintenance on 1 Jun</div></div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span class="badge badge-blue" style="font-size:10px">Info</span><span class="alert-time">1h ago</span></div>
+              </div>
+            </div>
+            <button class="btn btn-outline" style="width:100%;margin-top:14px;justify-content:center" onclick="navigate('notifications')">View All Alerts</button>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px">Quick Actions</div>
+            <div class="quick-grid">
+              <div class="quick-action" onclick="navigate('escrow')"><i class="ti ti-safe"></i><span>Hold / Release Payment</span></div>
+              <div class="quick-action" onclick="navigate('disputes')"><i class="ti ti-gavel"></i><span>Resolve Dispute</span></div>
+              <div class="quick-action" onclick="navigate('users')"><i class="ti ti-users"></i><span>Manage Users</span></div>
+              <div class="quick-action" onclick="showToast('Announcement drafted!')"><i class="ti ti-speakerphone"></i><span>Add Announcement</span></div>
+              <div class="quick-action" onclick="navigate('settings')"><i class="ti ti-settings"></i><span>System Settings</span></div>
+              <div class="quick-action" onclick="navigate('reports')"><i class="ti ti-chart-bar"></i><span>Generate Reports</span></div>
+            </div>
+          </div>
+
+          <!-- System Status -->
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px">System Status</div>
+            <div class="sys-status"><div class="status-dot"></div>All Systems Operational</div>
+            <p style="font-size:12px;color:var(--text4);margin-top:6px">Last checked: 2 mins ago</p>
+            <button class="btn btn-outline" style="width:100%;margin-top:14px;justify-content:center" onclick="navigate('system')">View System Health</button>
+          </div>
+        </div>
+      </div>
+    `;
+    setTimeout(renderCharts, 50);
+  } else if (isFarmer) {
+    el.innerHTML = `
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(22,163,74,.1);color:var(--g1)"><i class="ti ti-list"></i></div><div class="stat-label">Active Listings</div><div class="stat-value">8</div><div class="stat-change up"><i class="ti ti-trending-up"></i> 2 new this week</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(37,99,235,.1);color:#2563eb"><i class="ti ti-shopping-cart"></i></div><div class="stat-label">Total Orders</div><div class="stat-value">143</div><div class="stat-change up"><i class="ti ti-trending-up"></i> 12.5% this month</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(217,119,6,.1);color:#d97706"><i class="ti ti-currency-rupee"></i></div><div class="stat-label">Total Earnings</div><div class="stat-value">₹4.85L</div><div class="stat-change up"><i class="ti ti-trending-up"></i> 18.3% vs last month</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(124,58,237,.1);color:#7c3aed"><i class="ti ti-star"></i></div><div class="stat-label">Rating</div><div class="stat-value">4.8 ★</div><div class="stat-change up">Based on 96 reviews</div></div>
+      </div>
+      <div class="grid-main-side">
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Earnings Overview</div></div>
+            <div class="chart-wrap"><canvas id="platformChart" role="img" aria-label="Farmer earnings overview chart">Earnings chart</canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Recent Listings</div><span class="card-action" onclick="navigate('listings')">View All</span></div>
+            ${[['🌾','Wheat – Grade A','45 Qtl','₹2,200/Qtl','Active'],['🌽','Maize – Premium','30 Qtl','₹1,450/Qtl','Active'],['🌿','Coriander Seed','12 Qtl','₹6,800/Qtl','Pending']].map(([e,n,qty,price,status])=>`
+            <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)">
+              <div class="product-img">${e}</div>
+              <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text1)">${n}</div><div style="font-size:12px;color:var(--text3)">${qty} · ${price}</div></div>
+              <span class="badge ${status==='Active'?'badge-green':'badge-amber'}">${status}</span>
+            </div>`).join('')}
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">AI Quality Insights</div></div>
+            ${[['Wheat Batch #W-2024-05','Grade A',88],['Maize Batch #M-2024-04','Grade B+',74],['Coriander #C-2024-03','Grade A-',82]].map(([name,grade,score])=>`
+            <div style="padding:12px 0;border-bottom:1px solid var(--border)">
+              <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:13px;font-weight:600">${name}</span><span class="badge badge-green">${grade}</span></div>
+              <div style="display:flex;align-items:center;gap:10px"><div style="flex:1;height:8px;background:var(--surface3);border-radius:99px;overflow:hidden"><div style="height:100%;width:${score}%;background:var(--g1);border-radius:99px"></div></div><span style="font-size:12px;font-weight:700;color:var(--g1)">${score}/100</span></div>
+            </div>`).join('')}
+          </div>
+        </div>
+        <div class="right-panel">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px">Quick Actions</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="showToast('New listing started!')"><i class="ti ti-plus"></i> Add New Listing</button>
+              <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="navigate('orders')"><i class="ti ti-shopping-cart"></i> View Orders</button>
+              <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="navigate('payments')"><i class="ti ti-wallet"></i> Withdraw Earnings</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px">SBT Farmer Badge</div>
+            <div style="text-align:center;padding:16px 0">
+              <div style="width:70px;height:70px;background:linear-gradient(135deg,#fbbf24,#d97706);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:30px">🏅</div>
+              <div style="font-size:15px;font-weight:700;color:var(--text1)">Verified Farmer</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:4px">Soul-Bound Token Holder</div>
+              <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap">
+                <span class="badge badge-green"><i class="ti ti-check"></i> KYC Verified</span>
+                <span class="badge badge-amber">⭐ Gold Tier</span>
+                <span class="badge badge-blue">143 Orders</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:10px">Mandi Price Insights</div>
+            ${[['Wheat','₹2,180/Qtl','↑ 2.4%'],['Rice','₹3,250/Qtl','↓ 1.1%'],['Soybean','₹4,890/Qtl','↑ 5.2%']].map(([c,p,ch])=>`
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
+              <span style="font-size:13px;font-weight:600">${c}</span>
+              <span style="font-size:13px;color:var(--text2)">${p}</span>
+              <span style="font-size:12px;font-weight:700;color:${ch.startsWith('↑')?'var(--g1)':'#dc2626'}">${ch}</span>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+    setTimeout(() => renderFarmerChart(), 50);
+  } else if (isBuyer) {
+    el.innerHTML = `
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(22,163,74,.1);color:var(--g1)"><i class="ti ti-package"></i></div><div class="stat-label">My Orders</div><div class="stat-value">28</div><div class="stat-change up">3 active orders</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(217,119,6,.1);color:#d97706"><i class="ti ti-currency-rupee"></i></div><div class="stat-label">Total Spent</div><div class="stat-value">₹6.2L</div><div class="stat-change up"><i class="ti ti-trending-up"></i> This year</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(124,58,237,.1);color:#7c3aed"><i class="ti ti-heart"></i></div><div class="stat-label">Saved Farmers</div><div class="stat-value">12</div><div class="stat-change up">Trusted network</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(37,99,235,.1);color:#2563eb"><i class="ti ti-star"></i></div><div class="stat-label">Reviews Given</div><div class="stat-value">19</div></div>
+      </div>
+      <div class="grid-main-side">
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Recent Orders</div><span class="card-action" onclick="navigate('myorders')">View All</span></div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead><tr><th>Order ID</th><th>Product</th><th>Farmer</th><th>Amount</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td><span style="font-family:'DM Mono',monospace;font-size:12px">SKO-0112</span></td><td>🌾 Wheat 50Qtl</td><td>Ramesh Yadav</td><td>₹1,10,000</td><td><span class="badge badge-green">Completed</span></td></tr>
+                  <tr><td><span style="font-family:'DM Mono',monospace;font-size:12px">SKO-0098</span></td><td>🍚 Rice 30Qtl</td><td>Mohan Lal</td><td>₹97,500</td><td><span class="badge badge-blue">In Transit</span></td></tr>
+                  <tr><td><span style="font-family:'DM Mono',monospace;font-size:12px">SKO-0085</span></td><td>🌿 Mustard 20Qtl</td><td>Priya Devi</td><td>₹56,000</td><td><span class="badge badge-amber">Pending</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Recommended Products</div><span class="card-action" onclick="navigate('search')">Browse All</span></div>
+            <div class="product-chips">
+              ${[['🌾','Wheat Grade A','Kota, Rajasthan','₹2,150/Qtl','4.9 ★'],['🍚','Basmati Rice','Karnal, Haryana','₹4,800/Qtl','4.8 ★'],['🫘','Soybean','Indore, MP','₹4,950/Qtl','4.7 ★']].map(([e,n,loc,price,rating])=>`
+              <div class="product-chip" style="flex-direction:column;align-items:flex-start">
+                <div style="display:flex;gap:10px;width:100%">
+                  <div class="product-img">${e}</div>
+                  <div><div class="product-name">${n}</div><div class="product-orders">${loc}</div><div class="product-gmv">${price}</div></div>
+                  <span style="margin-left:auto;font-size:12px;color:var(--text3)">${rating}</span>
+                </div>
+                <button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%;justify-content:center">Place Bid</button>
+              </div>`).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="right-panel">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px">Quick Actions</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="navigate('search')"><i class="ti ti-search"></i> Search Products</button>
+              <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="navigate('myorders')"><i class="ti ti-package"></i> Track Orders</button>
+              <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="showToast('Demand posted!')"><i class="ti ti-plus"></i> Post Demand</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px">Escrow Balance</div>
+            <div class="escrow-card" style="text-align:center">
+              <div class="escrow-icon">💰</div>
+              <div class="escrow-amount">₹1,23,500</div>
+              <div class="escrow-label">Funds in Escrow</div>
+              <div style="margin-top:12px;font-size:12px;color:var(--text3)">Across 3 active orders</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (isTransport) {
+    el.innerHTML = `
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(22,163,74,.1);color:var(--g1)"><i class="ti ti-truck"></i></div><div class="stat-label">Active Trips</div><div class="stat-value">3</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(37,99,235,.1);color:#2563eb"><i class="ti ti-route"></i></div><div class="stat-label">Total Trips</div><div class="stat-value">89</div><div class="stat-change up">This month: 12</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(217,119,6,.1);color:#d97706"><i class="ti ti-currency-rupee"></i></div><div class="stat-label">Total Earnings</div><div class="stat-value">₹1.24L</div><div class="stat-change up"><i class="ti ti-trending-up"></i> 22.1% this month</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(124,58,237,.1);color:#7c3aed"><i class="ti ti-star"></i></div><div class="stat-label">Rating</div><div class="stat-value">4.7 ★</div></div>
+      </div>
+      <div class="grid-main-side">
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Active Trips</div><span class="card-action" onclick="navigate('trips')">View All</span></div>
+            ${[['SKO-TR-0045','Kota → Bhopal','Wheat 45Qtl','In Transit','2 hrs'],['SKO-TR-0044','Jaipur → Indore','Rice 30Qtl','Loading','4 hrs'],['SKO-TR-0043','Indore → Nagpur','Soybean 60Qtl','In Transit','6 hrs']].map(([id,route,cargo,status,eta])=>`
+            <div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)">
+              <div class="tx-icon" style="background:rgba(22,163,74,.1);color:var(--g1)"><i class="ti ti-truck"></i></div>
+              <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text1)">${route}</div><div style="font-size:12px;color:var(--text3)">${id} · ${cargo}</div></div>
+              <div style="text-align:right"><span class="badge ${status==='In Transit'?'badge-blue':'badge-amber'}">${status}</span><div style="font-size:11px;color:var(--text4);margin-top:4px">ETA: ${eta}</div></div>
+            </div>`).join('')}
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Available Loads Nearby</div><span class="card-action" onclick="navigate('loads')">See All</span></div>
+            ${[['Bhopal → Nagpur','Wheat 50Qtl','₹8,500','24 May'],['Indore → Pune','Rice 40Qtl','₹11,200','25 May'],['Kota → Delhi','Mustard 35Qtl','₹14,800','26 May']].map(([route,cargo,pay,date])=>`
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">
+              <div class="tx-icon" style="background:rgba(37,99,235,.1);color:#2563eb"><i class="ti ti-package"></i></div>
+              <div style="flex:1"><div style="font-size:13px;font-weight:600">${route}</div><div style="font-size:12px;color:var(--text3)">${cargo} · ${date}</div></div>
+              <div style="text-align:right"><div style="font-size:14px;font-weight:700;color:var(--g1)">${pay}</div><button class="btn btn-primary btn-sm" style="margin-top:4px" onclick="showToast('Load accepted!')">Accept</button></div>
+            </div>`).join('')}
+          </div>
+        </div>
+        <div class="right-panel">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px">Quick Actions</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="navigate('loads')"><i class="ti ti-truck"></i> Browse Loads</button>
+              <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="showToast('QR Scanner opened!')"><i class="ti ti-qrcode"></i> Scan QR / Upload Proof</button>
+              <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="navigate('payments')"><i class="ti ti-wallet"></i> View Earnings</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:10px">Vehicle Info</div>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Vehicle</span><span style="font-weight:600">Tata Ace Gold</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Reg. No.</span><span style="font-weight:600;font-family:'DM Mono',monospace">MP09-AB-1234</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Capacity</span><span style="font-weight:600">750 Kg</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Insurance</span><span class="badge badge-green">Valid</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function renderFarmerChart() {
+  const ctx = document.getElementById('platformChart');
+  if (!ctx) return;
+  if (platformChart) { platformChart.destroy(); platformChart = null; }
+  platformChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+      datasets: [{label:'Earnings (₹)',data:[32000,45000,38000,61000,48500,72000],backgroundColor:'rgba(22,163,74,.7)',borderRadius:6}]
+    },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(128,128,128,.1)'}}}}
+  });
+}
+
+// ============ CHARTS ============
+function renderCharts() {
+  const isDarkMode = isDark;
+  const gridColor = isDarkMode ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+  const textColor = isDarkMode ? '#6b8f6e' : '#6b7b6e';
+
+  // Platform overview line chart
+  const pCtx = document.getElementById('platformChart');
+  if (pCtx) {
+    if (platformChart) { platformChart.destroy(); platformChart = null; }
+    const labels = ['01 May','06 May','11 May','16 May','21 May','26 May','31 May'];
+    platformChart = new Chart(pCtx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {label:'Orders',data:[420,680,590,820,750,880,780],borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,0.08)',tension:.4,pointRadius:4,pointBackgroundColor:'#22c55e',fill:true,borderWidth:2.5},
+          {label:'GMV',data:[280,410,380,520,460,580,490],borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.05)',tension:.4,pointRadius:4,pointBackgroundColor:'#2563eb',fill:true,borderWidth:2.5},
+          {label:'Users',data:[180,220,200,310,280,340,290],borderColor:'#d97706',backgroundColor:'rgba(217,119,6,0.05)',tension:.4,pointRadius:4,pointBackgroundColor:'#d97706',fill:true,borderWidth:2.5},
+        ]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{display:false}},
+        scales:{
+          x:{grid:{color:gridColor},ticks:{color:textColor,font:{size:11}}},
+          y:{grid:{color:gridColor},ticks:{color:textColor,font:{size:11}},beginAtZero:true}
+        },
+        interaction:{mode:'index',intersect:false}
+      }
+    });
+  }
+
+  // Donut chart
+  const dCtx = document.getElementById('donutChart');
+  if (dCtx) {
+    if (donutChart) { donutChart.destroy(); donutChart = null; }
+    donutChart = new Chart(dCtx, {
+      type: 'doughnut',
+      data: {
+        labels:['Completed','In Transit','Pending','Cancelled','Disputed'],
+        datasets:[{data:[5642,1542,879,356,204],backgroundColor:['#22c55e','#2563eb','#d97706','#dc2626','#7c3aed'],borderWidth:2,borderColor:isDarkMode?'#161f18':'#ffffff',hoverOffset:4}]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false, cutout:'68%',
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:d=>`${d.label}: ${d.raw.toLocaleString()}`}}},
+      }
+    });
+  }
+}
+
+// ============ USERS PAGE ============
+function renderUsers() {
+  const el = document.getElementById('page-users');
+  el.innerHTML = `
+    <div class="card" style="margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div class="topbar-search" style="max-width:300px"><i class="ti ti-search"></i><input type="text" placeholder="Search users..."/></div>
+        <select class="form-select" style="width:auto;padding:8px 14px"><option>All Roles</option><option>Farmer</option><option>Buyer</option><option>Transporter</option><option>Admin</option></select>
+        <select class="form-select" style="width:auto;padding:8px 14px"><option>All Status</option><option>Active</option><option>Suspended</option><option>Pending KYC</option></select>
+        <div style="margin-left:auto"><button class="btn btn-primary" onclick="openModal('Add New User','<div class=form-group><label class=form-label>Full Name</label><input class=form-input type=text placeholder=Enter full name/></div><div class=form-group><label class=form-label>Email</label><input class=form-input type=email placeholder=Enter email/></div><div class=form-group><label class=form-label>Role</label><select class=form-select><option>Farmer</option><option>Buyer</option><option>Transporter</option></select></div><button class=\"btn btn-primary\" style=\"width:100%;margin-top:8px\" onclick=\"closeModal();showToast(\'User created!\')\" >Create User</button>')"><i class="ti ti-plus"></i> Add User</button></div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="border-bottom:1px solid var(--border);margin-bottom:16px;padding-bottom:12px">
+        <div style="display:flex;gap:8px">
+          ${['All (12,843)','Farmers (4,215)','Buyers (5,842)','Transporters (786)','Admins (0)'].map((t,i)=>`<div class="settings-tab ${i===0?'active':''}" onclick="this.parentNode.querySelectorAll('.settings-tab').forEach(x=>x.classList.remove('active'));this.classList.add('active')">${t}</div>`).join('')}
+        </div>
+      </div>
+      ${[
+        ['RY','Ramesh Yadav','ramesh.yadav@email.com','Kota, Rajasthan','Farmer','Active','+91 98765 43210'],
+        ['AV','Amit Verma','amit.verma@email.com','Bhopal, MP','Buyer','Active','+91 91234 56789'],
+        ['SP','Suresh Patel','suresh.patel@email.com','Indore, MP','Transporter','Active','+91 98765 67890'],
+        ['PD','Priya Devi','priya.devi@email.com','Jaipur, Rajasthan','Farmer','Active','+91 99887 76655'],
+        ['MK','Mohan Kumar','mohan.k@email.com','Pune, Maharashtra','Buyer','Suspended','+91 98001 23456'],
+        ['AJ','Anjali Joshi','anjali.j@email.com','Nagpur, Maharashtra','Farmer','Pending KYC','+91 97564 32109'],
+      ].map(([init,name,email,loc,role,status,phone])=>`
+      <div class="user-table-row">
+        <div class="user-thumb">${init}</div>
+        <div class="user-info-col"><div class="user-fullname">${name}</div><div class="user-email">${email} · ${phone}</div></div>
+        <div style="flex:1;font-size:12px;color:var(--text3)">${loc}</div>
+        <div class="user-role-col"><span class="badge ${role==='Farmer'?'badge-green':role==='Buyer'?'badge-blue':role==='Transporter'?'badge-purple':'badge-gray'}">${role}</span></div>
+        <div class="user-status-col"><span class="badge ${status==='Active'?'badge-green':status==='Suspended'?'badge-red':'badge-amber'}">${status}</span></div>
+        <div class="user-actions-col">
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Viewing ${name}')"><i class="ti ti-eye"></i></button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Editing ${name}')"><i class="ti ti-edit"></i></button>
+          <button class="btn btn-ghost btn-sm" style="color:#dc2626" onclick="showToast('${name} suspended!')"><i class="ti ti-ban"></i></button>
+        </div>
+      </div>`).join('')}
+      <div class="pagination">
+        <div class="page-btn active">1</div>
+        <div class="page-btn" onclick="showToast('Page 2')">2</div>
+        <div class="page-btn" onclick="showToast('Page 3')">3</div>
+        <div class="page-btn" onclick="showToast('…')">…</div>
+        <div class="page-btn" onclick="showToast('Page 129')">129</div>
+        <div class="page-btn" onclick="showToast('Next page')"><i class="ti ti-chevron-right"></i></div>
+      </div>
+    </div>
+  `;
+}
+
+// ============ ORDERS PAGE ============
+function renderOrders() {
+  document.getElementById('page-orders').innerHTML = `
+    <div class="stats-grid" style="margin-bottom:20px">
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(22,163,74,.1);color:var(--g1)"><i class="ti ti-check-circle"></i></div><div class="stat-label">Completed</div><div class="stat-value">5,642</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(37,99,235,.1);color:#2563eb"><i class="ti ti-truck"></i></div><div class="stat-label">In Transit</div><div class="stat-value">1,542</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(217,119,6,.1);color:#d97706"><i class="ti ti-clock"></i></div><div class="stat-label">Pending</div><div class="stat-value">879</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(220,38,38,.1);color:#dc2626"><i class="ti ti-x-circle"></i></div><div class="stat-label">Cancelled</div><div class="stat-value">356</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">All Orders</div>
+        <div style="display:flex;gap:8px">
+          <select class="form-select" style="width:auto;padding:7px 12px;font-size:12px"><option>All Status</option><option>Completed</option><option>In Transit</option><option>Pending</option><option>Cancelled</option><option>Disputed</option></select>
+          <button class="btn btn-outline btn-sm" onclick="showToast('Exported to CSV!')"><i class="ti ti-download"></i> Export</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Order ID</th><th>Buyer</th><th>Seller</th><th>Product</th><th>Quantity</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody>
+            ${[
+              ['SKO-2024-05-0112','Amit Verma','Ramesh Yadav','Wheat Grade A','50 Qtl','₹1,10,000','Completed','25 May 2024'],
+              ['SKO-2024-05-0111','Suresh Patel','Mohan Lal','Rice Premium','30 Qtl','₹97,500','In Transit','25 May 2024'],
+              ['SKO-2024-05-0110','Priya Sharma','Ramesh Kumar','Soybean','40 Qtl','₹1,96,000','Pending','24 May 2024'],
+              ['SKO-2024-05-0109','Rakesh Singh','Anjali Devi','Mustard','20 Qtl','₹56,000','Completed','24 May 2024'],
+              ['SKO-2024-05-0108','Amit Verma','Suresh Kumar','Chickpea','25 Qtl','₹93,750','Disputed','23 May 2024'],
+              ['SKO-2024-05-0107','Deepak Jain','Priya Devi','Coriander','10 Qtl','₹68,000','Cancelled','23 May 2024'],
+            ].map(([id,buyer,seller,prod,qty,amt,status,date])=>`
+            <tr>
+              <td><span style="font-family:'DM Mono',monospace;font-size:12px">${id}</span></td>
+              <td>${buyer}</td><td>${seller}</td><td>${prod}</td><td>${qty}</td>
+              <td><strong>${amt}</strong></td>
+              <td><span class="badge ${status==='Completed'?'badge-green':status==='In Transit'?'badge-blue':status==='Pending'?'badge-amber':status==='Disputed'?'badge-purple':'badge-red'}">${status}</span></td>
+              <td style="color:var(--text3);font-size:12px">${date}</td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="showToast('Viewing order details')"><i class="ti ti-eye"></i></button>${status==='Disputed'?`<button class="btn btn-ghost btn-sm" style="color:#d97706" onclick="navigate('disputes')"><i class="ti ti-gavel"></i></button>`:''}</div></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <div class="page-btn active">1</div><div class="page-btn">2</div><div class="page-btn">3</div><div class="page-btn">…</div><div class="page-btn">87</div>
+      </div>
+    </div>
+  `;
+}
+
+// ============ ESCROW PAGE ============
+function renderEscrow() {
+  document.getElementById('page-escrow').innerHTML = `
+    <div class="escrow-grid">
+      <div class="escrow-card"><div class="escrow-icon">🏦</div><div class="escrow-amount">₹2,45,78,320</div><div class="escrow-label">Total Escrow Balance</div></div>
+      <div class="escrow-card"><div class="escrow-icon">⏸️</div><div class="escrow-amount">₹18,76,540</div><div class="escrow-label">Funds on Hold (64 orders)</div></div>
+      <div class="escrow-card"><div class="escrow-icon">💼</div><div class="escrow-amount">₹98,76,420</div><div class="escrow-label">Commission Wallet</div></div>
+      <div class="escrow-card"><div class="escrow-icon">✅</div><div class="escrow-amount">₹12,48,75,300</div><div class="escrow-label">Total Released (This Month)</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Escrow Controls</div></div>
+        <p style="font-size:13px;color:var(--text3);margin-bottom:16px">You have full access to review, hold, release or refund any transaction.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="showToast('Escrow manager opened!')"><i class="ti ti-safe"></i> Manage Escrow Accounts</button>
+          <button class="btn btn-outline" onclick="showToast('Bulk release initiated!')"><i class="ti ti-player-play"></i> Bulk Release</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Payment Settings</div></div>
+        <p style="font-size:13px;color:var(--text3);margin-bottom:16px">Manage commission rates, payout methods and payment schedules.</p>
+        <button class="btn btn-outline" onclick="showToast('Payment settings opened!')"><i class="ti ti-settings"></i> Configure Payment Settings</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:20px">
+      <div class="card-header"><div class="card-title">Escrow Transactions</div><span class="card-action">Export</span></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Order ID</th><th>Buyer</th><th>Seller</th><th>Amount</th><th>Type</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody>
+            ${[['SKO-0112','Amit Verma','Ramesh Yadav','₹1,10,000','Escrow Release','Released'],['SKO-0111','Suresh Patel','Mohan Lal','₹97,500','Payment Hold','On Hold'],['SKO-0110','Platform','–','₹645','Commission','Deducted'],['SKO-0109','Priya Sharma','Anjali','₹56,000','Refund','Processed']].map(([id,buyer,seller,amt,type,status])=>`
+            <tr>
+              <td><span style="font-family:'DM Mono',monospace;font-size:12px">${id}</span></td>
+              <td>${buyer}</td><td>${seller}</td><td><strong>${amt}</strong></td><td>${type}</td>
+              <td><span class="badge ${status==='Released'||status==='Deducted'||status==='Processed'?'badge-green':status==='On Hold'?'badge-amber':'badge-red'}">${status}</span></td>
+              <td style="color:var(--text3);font-size:12px">25 May 2024</td>
+              <td><button class="btn btn-primary btn-sm" onclick="showToast('Action completed!')">Release</button></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+// ============ DISPUTES PAGE ============
+function renderDisputes() {
+  document.getElementById('page-disputes').innerHTML = `
+    <div class="stats-grid" style="margin-bottom:20px">
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(220,38,38,.1);color:#dc2626"><i class="ti ti-gavel"></i></div><div class="stat-label">Open Disputes</div><div class="stat-value">7</div><div class="stat-change down">Needs immediate action</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(217,119,6,.1);color:#d97706"><i class="ti ti-clock"></i></div><div class="stat-label">In Review</div><div class="stat-value">12</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(22,163,74,.1);color:var(--g1)"><i class="ti ti-check-circle"></i></div><div class="stat-label">Resolved This Month</div><div class="stat-value">48</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(124,58,237,.1);color:#7c3aed"><i class="ti ti-robot"></i></div><div class="stat-label">Auto-Resolved</div><div class="stat-value">23</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Open Disputes</div><button class="btn btn-primary btn-sm" onclick="showToast('Dispute rules configured!')"><i class="ti ti-settings"></i> Configure Auto Rules</button></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Dispute ID</th><th>Order ID</th><th>Raised By</th><th>Vs</th><th>Reason</th><th>Priority</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody>
+            ${[
+              ['DIS-001','SKO-0108','Amit Verma','Ramesh Yadav','Quality mismatch','High','Open'],
+              ['DIS-002','SKO-0095','Priya Sharma','Mohan Lal','Delayed delivery','Medium','In Review'],
+              ['DIS-003','SKO-0087','Suresh Patel','Anjali Devi','Short weight','High','Open'],
+              ['DIS-004','SKO-0074','Rakesh Singh','Ramesh Kumar','Payment dispute','Low','In Review'],
+            ].map(([did,oid,rb,vs,reason,pri,status])=>`
+            <tr>
+              <td><span style="font-family:'DM Mono',monospace;font-size:12px">${did}</span></td>
+              <td><span style="font-family:'DM Mono',monospace;font-size:12px">${oid}</span></td>
+              <td>${rb}</td><td>${vs}</td><td>${reason}</td>
+              <td><span class="badge ${pri==='High'?'badge-red':pri==='Medium'?'badge-amber':'badge-blue'}">${pri}</span></td>
+              <td><span class="badge ${status==='Open'?'badge-red':'badge-amber'}">${status}</span></td>
+              <td style="font-size:12px;color:var(--text3)">24 May 2024</td>
+              <td><button class="btn btn-primary btn-sm" onclick="showToast('Reviewing dispute ${did}')">Review</button></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+// ============ SETTINGS PAGE ============
+function renderSettings() {
+  document.getElementById('page-settings').innerHTML = `
+    <div class="settings-tabs" id="settings-tabs">
+      ${['Profile & KYC','Escrow & Payments','Dispute Resolution','Platform Settings','Notifications','Security'].map((t,i)=>`<div class="settings-tab ${i===0?'active':''}" onclick="switchSettingsTab(${i})">${t}</div>`).join('')}
+    </div>
+    <div id="settings-panel"><!-- rendered by tab --></div>
+  `;
+  switchSettingsTab(0);
+}
+
+function switchSettingsTab(idx) {
+  document.querySelectorAll('#settings-tabs .settings-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  const panels = [renderSettingsKYC, renderSettingsEscrow, renderSettingsDispute, renderSettingsPlatform, renderSettingsNotif, renderSettingsSecurity];
+  document.getElementById('settings-panel').innerHTML = panels[idx]();
+}
+
+function renderSettingsKYC() {
+  return `
+    <div class="profile-page-grid">
+      <div>
+        <div class="settings-section">
+          <div class="settings-section-title">Admin Profile & KYC Verification</div>
+          <div class="settings-section-sub">Your identity is verified. All documents are up to date.</div>
+          <div class="card" style="margin-bottom:20px">
+            <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+                <div style="width:80px;height:80px;border-radius:50%;background:var(--g1);display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;font-weight:700">A</div>
+                <span class="badge badge-verified"><i class="ti ti-check"></i> Verified</span>
+              </div>
+              <div style="flex:1">
+                <div style="font-size:18px;font-weight:700;color:var(--text1)">Admin</div>
+                <div style="font-size:13px;color:var(--text3);margin-bottom:12px">Super Administrator</div>
+                <div style="display:flex;flex-direction:column;gap:6px;font-size:13px">
+                  <span style="color:var(--text2)">📧 admin@smartkissan.com</span>
+                  <span style="color:var(--text2)">📞 +91 98765 43210</span>
+                  <span style="color:var(--text3)">Last Login: 25 May 2024, 11:05 AM</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:13px;font-weight:700;color:var(--text1);margin-bottom:12px">KYC Status</div>
+                ${[['Identity Proof','Verified'],['Address Proof','Verified'],['PAN Number','Verified'],['Business Proof','Verified'],['Bank Details','Verified']].map(([k,v])=>`
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:8px;font-size:13px">
+                  <span style="color:var(--text2)">${k}</span>
+                  <span class="badge badge-green">${v}</span>
+                </div>`).join('')}
+              </div>
+              <div>
+                <div style="font-size:13px;font-weight:700;color:var(--text1);margin-bottom:12px">Profile Details</div>
+                ${[['Name','Admin'],['Role','Super Administrator'],['Admin ID','ADM-2024-0001'],['Joined On','01 Jan 2024']].map(([k,v])=>`
+                <div style="display:flex;justify-content:space-between;gap:20px;margin-bottom:8px;font-size:13px">
+                  <span style="color:var(--text3)">${k}</span><span style="font-weight:600;color:var(--text1)">${v}</span>
+                </div>`).join('')}
+                <button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%;justify-content:center" onclick="showToast('Profile editor opened!')">Edit Profile</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Escrow summary in KYC tab -->
+        <div class="settings-section">
+          <div class="settings-section-title">Escrow & Payments Access</div>
+          <div class="escrow-grid" style="margin-bottom:16px">
+            <div class="escrow-card"><div class="escrow-icon">🏦</div><div class="escrow-amount">₹2,45,78,320</div><div class="escrow-label">Total Escrow Balance</div></div>
+            <div class="escrow-card"><div class="escrow-icon">⏸️</div><div class="escrow-amount">₹18,76,540</div><div class="escrow-label">Funds on Hold · 64 Orders</div></div>
+            <div class="escrow-card"><div class="escrow-icon">💼</div><div class="escrow-amount">₹98,76,420</div><div class="escrow-label">Commission Wallet</div></div>
+            <div class="escrow-card"><div class="escrow-icon">✅</div><div class="escrow-amount">₹12,48,75,300</div><div class="escrow-label">Total Released This Month</div></div>
+          </div>
+          <div class="grid-2">
+            <div style="padding:14px;border:1px solid var(--border);border-radius:var(--radius)">
+              <div style="font-size:13px;font-weight:700;margin-bottom:6px">Escrow Controls</div>
+              <p style="font-size:12px;color:var(--text3);margin-bottom:12px">Full access to review, hold, release or refund any transaction.</p>
+              <button class="btn btn-primary btn-sm" onclick="showToast('Escrow manager opened!')"><i class="ti ti-safe"></i> Manage Escrow Accounts</button>
+            </div>
+            <div style="padding:14px;border:1px solid var(--border);border-radius:var(--radius)">
+              <div style="font-size:13px;font-weight:700;margin-bottom:6px">Payment Settings</div>
+              <p style="font-size:12px;color:var(--text3);margin-bottom:12px">Manage commission rates, payout methods and payment schedules.</p>
+              <button class="btn btn-outline btn-sm" onclick="showToast('Payment settings opened!')"><i class="ti ti-settings"></i> Configure Settings</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dispute Resolution Settings -->
+        <div class="settings-section">
+          <div class="settings-section-title">Dispute Resolution Settings</div>
+          <div class="dispute-items" style="margin-bottom:16px">
+            ${[['ti-robot','Auto Resolution Rules','Configure rules for auto-approval of disputes.'],['ti-hierarchy','Escalation Matrix','Set escalation levels and approval hierarchy.'],['ti-coins','Refund & Compensation','Manage refund sources and compensation policies.'],['ti-tag','Dispute Categories','Manage dispute reasons and classification.']].map(([icon,title,desc])=>`
+            <div class="dispute-card" onclick="showToast('${title} opened!')">
+              <i class="ti ${icon}" style="font-size:22px;color:var(--g1);margin-bottom:8px"></i>
+              <div class="dispute-title">${title}</div>
+              <div class="dispute-desc">${desc}</div>
+              <div class="dispute-link">Configure →</div>
+            </div>`).join('')}
+          </div>
+          <div class="pending-banner">
+            <div class="pending-count"><div class="num">7</div>7 disputes require your review and action.</div>
+            <button class="btn btn-outline btn-sm" onclick="navigate('disputes')"><i class="ti ti-alert-triangle"></i> Review Disputes</button>
+          </div>
+        </div>
+
+        <!-- Platform Preferences -->
+        <div class="settings-section">
+          <div class="settings-section-title">Platform Preferences</div>
+          <div class="platform-prefs">
+            ${[['ti-settings','General Settings','Manage platform name, currency, time zone and other preferences.'],['ti-palette','Theme & Appearance','Customize platform theme, colors, logo and branding.'],['ti-mail','Email & SMS Settings','Configure email templates, SMS gateway and notifications.'],['ti-language','Language Settings','Manage default language and multi-language preferences.']].map(([icon,title,desc])=>`
+            <div class="pref-card" onclick="showToast('${title} opened!')">
+              <i class="ti ${icon} pref-icon"></i>
+              <div class="pref-title">${title}</div>
+              <div class="pref-desc">${desc}</div>
+              <div class="pref-link">${title.includes('Theme')?'Customize':'Configure'} →</div>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel -->
+      <div class="right-panel">
+        <div class="admin-profile-card">
+          <div class="admin-avatar">A</div>
+          <div class="admin-name">Admin</div>
+          <div class="admin-role">Super Administrator</div>
+          <div class="admin-email">admin@smartkissan.com</div>
+          <div class="admin-meta-row"><span class="meta-key">Role</span><span class="meta-val">Super Admin</span></div>
+          <div class="admin-meta-row"><span class="meta-key">Permissions</span><span class="meta-val">All Access</span></div>
+          <div class="admin-meta-row"><span class="meta-key">Status</span><span class="badge badge-green">Active</span></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">Quick Actions</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            ${[['ti-safe','Hold / Release Escrow','escrow'],['ti-speakerphone','Raise Platform Announcement','notifications'],['ti-user-x','Suspend / Activate Users','users'],['ti-gavel','Review Pending Disputes','disputes'],['ti-file-text','Generate System Report','reports'],['ti-history','View Audit Logs','audit']].map(([icon,label,page])=>`
+            <div class="quick-action" onclick="navigate('${page}')"><i class="ti ${icon}"></i><span>${label}</span><i class="ti ti-chevron-right qa-arrow"></i></div>`).join('')}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">System Controls</div>
+          <div class="sys-controls">
+            <div class="sys-btn" onclick="showToast('Maintenance mode toggled!')"><i class="ti ti-tool"></i> Maintenance Mode</div>
+            <div class="sys-btn" onclick="showToast('Cache cleared!')"><i class="ti ti-trash"></i> Clear Cache</div>
+            <div class="sys-btn" onclick="showToast('Backup started!')"><i class="ti ti-cloud-upload"></i> Data Backup</div>
+            <div class="sys-btn" onclick="navigate('audit')"><i class="ti ti-file-text"></i> System Logs</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">Compliance & Policies</div>
+          ${[['Terms & Conditions'],['Privacy Policy'],['KYC Policy'],['Commission Policy']].map(([p])=>`
+          <div class="compliance-row">
+            <div class="compliance-name"><i class="ti ti-file-text" style="color:var(--g1)"></i>${p}</div>
+            <span class="compliance-link" onclick="showToast('Editing ${p}')">View / Edit</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderSettingsEscrow() { return `<div class="card"><div class="card-title" style="margin-bottom:16px">Escrow & Payments Settings</div><p style="color:var(--text3)">Configure commission rates, payout schedules, auto-release rules, and escrow policies.</p><div class="grid-2" style="margin-top:20px"><div class="form-group"><label class="form-label">Commission Rate (%)</label><input class="form-input" type="number" value="2.5"/></div><div class="form-group"><label class="form-label">Auto-Release Days</label><input class="form-input" type="number" value="7"/></div><div class="form-group"><label class="form-label">Min Payout Amount (₹)</label><input class="form-input" type="number" value="500"/></div><div class="form-group"><label class="form-label">Payout Schedule</label><select class="form-select"><option>Daily</option><option>Weekly</option><option>Monthly</option></select></div></div><button class="btn btn-primary" style="margin-top:8px" onclick="showToast('Escrow settings saved!')"><i class="ti ti-check"></i> Save Settings</button></div>`; }
+
+function renderSettingsDispute() { return `<div class="card"><div class="card-title" style="margin-bottom:16px">Dispute Resolution Settings</div><div class="grid-2"><div class="form-group"><label class="form-label">Auto-Resolve Threshold (days)</label><input class="form-input" type="number" value="15"/></div><div class="form-group"><label class="form-label">Max Escalation Levels</label><input class="form-input" type="number" value="3"/></div><div class="form-group"><label class="form-label">Default Refund Policy</label><select class="form-select"><option>Full Refund</option><option>Partial Refund</option><option>No Refund</option></select></div><div class="form-group"><label class="form-label">Escalation Notify (hrs)</label><input class="form-input" type="number" value="24"/></div></div><button class="btn btn-primary" style="margin-top:8px" onclick="showToast('Dispute settings saved!')"><i class="ti ti-check"></i> Save Settings</button></div>`; }
+
+function renderSettingsPlatform() { return `<div class="card"><div class="card-title" style="margin-bottom:16px">Platform Settings</div><div class="grid-2"><div class="form-group"><label class="form-label">Platform Name</label><input class="form-input" type="text" value="Smart-Kissan"/></div><div class="form-group"><label class="form-label">Default Currency</label><select class="form-select"><option>INR (₹)</option><option>USD ($)</option></select></div><div class="form-group"><label class="form-label">Timezone</label><select class="form-select"><option>Asia/Kolkata (IST)</option><option>UTC</option></select></div><div class="form-group"><label class="form-label">Default Language</label><select class="form-select"><option>English</option><option>Hindi</option><option>Marathi</option></select></div></div><div class="form-group"><label class="form-label">Platform Description</label><textarea class="form-input" rows="3">India's most trusted agri marketplace connecting farmers, buyers and transporters.</textarea></div><button class="btn btn-primary" style="margin-top:8px" onclick="showToast('Platform settings saved!')"><i class="ti ti-check"></i> Save Settings</button></div>`; }
+
+function renderSettingsNotif() { return `<div class="card"><div class="card-title" style="margin-bottom:16px">Notification Settings</div>${[['Email Notifications','Receive order and dispute updates via email','true'],['SMS Alerts','Get real-time SMS alerts for critical events','true'],['Push Notifications','Browser push notifications for admin panel','false'],['Weekly Report','Auto-send weekly analytics report','true'],['Dispute Alerts','Immediate alert when new dispute is filed','true']].map(([title,desc,on])=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:14px;font-weight:600;color:var(--text1)">${title}</div><div style="font-size:12px;color:var(--text3)">${desc}</div></div><div class="theme-toggle ${on==='true'?'on':''}" onclick="this.classList.toggle('on');showToast('Setting updated!')"><div class="theme-toggle-thumb"></div></div></div>`).join('')}</div>`; }
+
+function renderSettingsSecurity() { return `<div class="card"><div class="card-title" style="margin-bottom:16px">Security Settings</div><div style="display:flex;flex-direction:column;gap:16px"><div class="form-group"><label class="form-label">Current Password</label><input class="form-input" type="password" placeholder="Enter current password"/></div><div class="form-group"><label class="form-label">New Password</label><input class="form-input" type="password" placeholder="Min 8 characters"/></div><div class="form-group"><label class="form-label">Confirm Password</label><input class="form-input" type="password" placeholder="Repeat new password"/></div></div><button class="btn btn-primary" style="margin-top:8px" onclick="showToast('Password changed!')"><i class="ti ti-lock"></i> Update Password</button><div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)"><div style="font-size:14px;font-weight:700;margin-bottom:12px">Two-Factor Authentication</div><div style="display:flex;align-items:center;gap:16px"><div class="theme-toggle on"><div class="theme-toggle-thumb"></div></div><span style="font-size:13px;color:var(--text2)">2FA is enabled via Authenticator App</span></div></div></div>`; }
+
+// ============ PROFILE PAGE ============
+function renderProfile() {
+  const user = roles[currentRole];
+  const isAdmin = currentRole === 'admin';
+  document.getElementById('page-profile').innerHTML = `
+    <div class="profile-page-grid">
+      <div>
+        <div class="card">
+          <div class="profile-hero">
+            <div class="profile-avatar-wrap">
+              <div class="profile-avatar"><i class="ti ti-user-circle" style="font-size:52px"></i></div>
+              <div class="avatar-edit" onclick="showToast('Photo upload triggered!')"><i class="ti ti-camera"></i></div>
+            </div>
+            <div class="profile-info">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+                <h2>${user.username}</h2>
+                <span class="badge badge-verified"><i class="ti ti-check"></i> Verified</span>
+              </div>
+              <p>${user.userrole}</p>
+              <div class="profile-meta">
+                <div class="meta-row"><i class="ti ti-phone"></i>+91 90000 00000</div>
+                <div class="meta-row"><i class="ti ti-mail"></i>${isAdmin ? 'admin@smartkissan.com' : user.username.toLowerCase().replace(' ','.')+'@email.com'}</div>
+                ${!isAdmin ? `<div class="meta-row"><i class="ti ti-map-pin"></i>Bhopal, Madhya Pradesh</div>` : ''}
+              </div>
+            </div>
+            <button class="btn btn-outline" style="margin-left:auto" onclick="showToast('Edit profile opened!')"><i class="ti ti-edit"></i> Edit Profile</button>
+          </div>
+
+          <div class="profile-fields">
+            <div class="profile-field"><span class="field-label">Full Name</span><span class="field-value">${user.username}</span><i class="ti ti-edit field-action" onclick="showToast('Editing Full Name')"></i></div>
+            <div class="profile-field"><span class="field-label">Phone Number</span><span class="field-value">+91 90000 00000</span><i class="ti ti-edit field-action" onclick="showToast('Editing Phone')"></i></div>
+            <div class="profile-field"><span class="field-label">Email Address</span><span class="field-value">${isAdmin ? 'admin@smartkissan.com' : user.username.toLowerCase().replace(' ','.')+'@email.com'}</span><i class="ti ti-edit field-action" onclick="showToast('Editing Email')"></i></div>
+            ${!isAdmin ? `<div class="profile-field"><span class="field-label">Location</span><span class="field-value">Bhopal, Madhya Pradesh</span><i class="ti ti-edit field-action"></i></div>` : ''}
+            ${isAdmin ? `<div class="profile-field"><span class="field-label">Role</span><span class="field-value">Super Administrator</span><i class="ti ti-lock field-action"></i></div>` : ''}
+            <div class="profile-field"><span class="field-label">Member Since</span><span style="font-size:13px;color:var(--text2);flex:1">01 Jan 2023</span><i class="ti ti-lock field-action"></i></div>
+          </div>
+
+          <div class="kyc-banner">
+            <div class="kyc-left">
+              <i class="ti ti-shield-check" style="font-size:24px;color:var(--g1)"></i>
+              <div class="kyc-info">
+                <div class="kyc-title">KYC Verified</div>
+                <div class="kyc-sub">All your documents are verified</div>
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="showToast('KYC documents opened!')">View KYC</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">Account Security</div>
+          <button class="btn btn-outline" style="width:100%;justify-content:center;margin-bottom:8px" onclick="showToast('Password change email sent!')"><i class="ti ti-lock"></i> Change Password</button>
+          <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="showToast('2FA setup opened!')"><i class="ti ti-shield"></i> Setup Two-Factor Auth</button>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">Activity Summary</div>
+          ${[['Last Login','25 May 2024, 11:05 AM'],['Total Sessions','284'],['Devices','2 active devices'],['IP Address','103.xxx.xxx.xxx']].map(([k,v])=>`
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span style="color:var(--text3)">${k}</span><span style="font-weight:600">${v}</span>
+          </div>`).join('')}
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">Notification Preferences</div>
+          ${[['Email Alerts','true'],['SMS Notifications','true'],['Push Alerts','false']].map(([label,on])=>`
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+            <span style="font-size:13px;color:var(--text1)">${label}</span>
+            <div class="theme-toggle ${on==='true'?'on':''}" onclick="this.classList.toggle('on')"><div class="theme-toggle-thumb"></div></div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ============ REPORTS ============
+function renderReports() {
+  document.getElementById('page-reports').innerHTML = `
+    <div class="stats-grid" style="margin-bottom:20px">
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(22,163,74,.1);color:var(--g1)"><i class="ti ti-chart-bar"></i></div><div class="stat-label">Reports Generated</div><div class="stat-value">48</div><div class="stat-change up">This month</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(37,99,235,.1);color:#2563eb"><i class="ti ti-download"></i></div><div class="stat-label">Exports</div><div class="stat-value">132</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(217,119,6,.1);color:#d97706"><i class="ti ti-clock"></i></div><div class="stat-label">Scheduled Reports</div><div class="stat-value">6</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(124,58,237,.1);color:#7c3aed"><i class="ti ti-users"></i></div><div class="stat-label">Report Recipients</div><div class="stat-value">14</div></div>
+    </div>
+    <div class="grid-3" style="margin-bottom:20px">
+      ${[['ti-chart-line','Revenue Report','Monthly revenue trends, GMV and commission breakdown.'],['ti-users','User Analytics','Registration trends, retention and user lifecycle.'],['ti-shopping-cart','Order Report','Order volume, cancellations, completion rate.'],['ti-truck','Logistics Report','Trip completion, transporter performance.'],['ti-gavel','Dispute Analytics','Dispute rates, resolution times, categories.'],['ti-currency-rupee','Escrow Report','Escrow flow, holds, releases by period.']].map(([icon,title,desc])=>`
+      <div class="report-card" onclick="showToast('Generating ${title}...')">
+        <div class="report-icon"><i class="ti ${icon}"></i></div>
+        <div class="report-title">${title}</div>
+        <div class="report-desc">${desc}</div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn btn-primary btn-sm">Generate</button>
+          <button class="btn btn-outline btn-sm"><i class="ti ti-download"></i> Export</button>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Revenue Trend (Last 6 Months)</div></div>
+      <div style="display:flex;gap:16px;margin-bottom:12px;font-size:12px">
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#22c55e"></span>GMV</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#d97706"></span>Commission</span>
+      </div>
+      <div class="chart-wrap"><canvas id="reportsChart" role="img" aria-label="Revenue trend bar chart for last 6 months">Revenue trend chart</canvas></div>
+    </div>
+  `;
+  setTimeout(() => {
+    const ctx = document.getElementById('reportsChart');
+    if (ctx) new Chart(ctx, {
+      type:'bar',
+      data:{labels:['Dec','Jan','Feb','Mar','Apr','May'],datasets:[
+        {label:'GMV',data:[8500000,9200000,10100000,11400000,11900000,12487530],backgroundColor:'rgba(34,197,94,.7)',borderRadius:6},
+        {label:'Commission',data:[212500,230000,252500,285000,297500,312188],backgroundColor:'rgba(217,119,6,.7)',borderRadius:6}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(128,128,128,.1)'},ticks:{callback:v=>'₹'+(v/100000).toFixed(1)+'L'}}}}
+    });
+  }, 50);
+}
+
+// ============ SYSTEM ============
+function renderSystem() {
+  document.getElementById('page-system').innerHTML = `
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-header"><div class="card-title">System Health</div><div class="sys-status"><div class="status-dot"></div>Operational</div></div>
+        ${[['API Server','99.98%','Healthy'],['Database','99.92%','Healthy'],['Payment Gateway','99.85%','Healthy'],['File Storage','100.00%','Healthy'],['Email Service','98.74%','Degraded'],['SMS Gateway','99.50%','Healthy']].map(([svc,uptime,status])=>`
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+          <div style="width:8px;height:8px;border-radius:50%;background:${status==='Healthy'?'var(--g1)':'#d97706'};flex-shrink:0"></div>
+          <span style="font-size:13px;font-weight:600;flex:1">${svc}</span>
+          <span style="font-size:12px;color:var(--text3)">${uptime} uptime</span>
+          <span class="badge ${status==='Healthy'?'badge-green':'badge-amber'}">${status}</span>
+        </div>`).join('')}
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Resource Usage</div></div>
+        ${[['CPU Usage','34%',34,'green'],['Memory','62%',62,'amber'],['Disk Space','48%',48,'green'],['Network I/O','28%',28,'green']].map(([label,pct,val,color])=>`
+        <div style="margin-bottom:16px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;font-weight:600"><span>${label}</span><span style="color:var(--${color==='green'?'g1':'amber'})">${pct}</span></div>
+          <div style="height:8px;background:var(--surface3);border-radius:99px;overflow:hidden"><div style="height:100%;width:${val}%;background:${color==='green'?'var(--g1)':'#d97706'};border-radius:99px;transition:width .5s"></div></div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">System Controls</div></div>
+      <div class="sys-controls">
+        <div class="sys-btn" onclick="showToast('Maintenance mode activated!')"><i class="ti ti-tool"></i> Maintenance Mode</div>
+        <div class="sys-btn" onclick="showToast('Cache cleared!')"><i class="ti ti-trash"></i> Clear Cache</div>
+        <div class="sys-btn" onclick="showToast('Backup started!')"><i class="ti ti-cloud-upload"></i> Data Backup</div>
+        <div class="sys-btn" onclick="navigate('audit')"><i class="ti ti-file-text"></i> System Logs</div>
+        <div class="sys-btn" onclick="showToast('Restarting services...')"><i class="ti ti-refresh"></i> Restart Services</div>
+        <div class="sys-btn" onclick="showToast('Health check running...')"><i class="ti ti-activity"></i> Run Health Check</div>
+      </div>
+    </div>
+  `;
+}
+
+// ============ GENERIC PAGES ============
+function renderGenericPage(page) {
+  const icons = {transport:'ti-truck',notifications:'ti-bell',audit:'ti-history',support:'ti-headset',listings:'ti-list',payments:'ti-wallet',search:'ti-search',myorders:'ti-package',messages:'ti-message',loads:'ti-truck',trips:'ti-route'};
+  const icon = icons[page] || 'ti-layout-grid';
+  return `
+    <div class="card" style="text-align:center;padding:48px 20px">
+      <i class="ti ${icon}" style="font-size:48px;color:var(--g1);margin-bottom:16px;display:block"></i>
+      <div style="font-size:18px;font-weight:700;margin-bottom:8px">${pageTitles[page] || page}</div>
+      <p style="color:var(--text3);max-width:400px;margin:0 auto 24px">This section is fully functional in the complete React implementation. Showing placeholder for the interactive demo.</p>
+      <button class="btn btn-primary" onclick="navigate('dashboard')"><i class="ti ti-arrow-left"></i> Back to Dashboard</button>
+    </div>
+    ${renderContextualContent(page)}
+  `;
+}
+
+function renderContextualContent(page) {
+  const extras = {
+    notifications: `<div class="card" style="margin-top:20px"><div class="card-header"><div class="card-title">All Notifications</div><span class="card-action" onclick="markAllRead()">Mark All Read</span></div><div class="alert-list">${['Payment Hold Request – Order #SKO-2024-05-7842 | 2m ago','Dispute Needs Review – Order #SKO-2024-05-7681 | 15m ago','25 new transporter registrations | 30m ago','Scheduled maintenance on 1 Jun 2024 | 1h ago','Commission payout processed: ₹12,450 | 3h ago','New bulk order: 500 Qtl Wheat from MahaAgro | 5h ago'].map((n,i)=>`<div class="alert-item"><div class="alert-icon" style="background:rgba(22,163,74,.1);color:var(--g1)"><i class="ti ti-bell"></i></div><div class="alert-body"><div class="alert-title">${n.split(' | ')[0]}</div><div class="alert-sub">${n.split(' | ')[1]}</div></div>${i<2?'<div class="notif-unread-dot" style="width:8px;height:8px;border-radius:50%;background:var(--g1);margin:auto 0"></div>':''}</div>`).join('')}</div></div>`,
+    audit: `<div class="card" style="margin-top:20px"><div class="card-header"><div class="card-title">Audit Log</div></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Timestamp</th><th>User</th><th>Action</th><th>IP Address</th><th>Status</th></tr></thead><tbody>${[['25 May 11:05 AM','Admin','Login','103.xxx.xx.1','Success'],['25 May 10:30 AM','Admin','Escrow Release #0112','103.xxx.xx.1','Success'],['25 May 10:15 AM','Admin','Payment Hold #0111','103.xxx.xx.1','Success'],['24 May 4:12 PM','Admin','User Suspended: MK','103.xxx.xx.1','Success'],['24 May 2:00 PM','Admin','Dispute Resolved: DIS-004','103.xxx.xx.1','Success']].map(([t,u,a,ip,s])=>`<tr><td style="font-size:12px;color:var(--text3)">${t}</td><td>${u}</td><td>${a}</td><td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text4)">${ip}</td><td><span class="badge badge-green">${s}</span></td></tr>`).join('')}</tbody></table></div></div>`,
+    support: `<div class="card" style="margin-top:20px"><div class="card-header"><div class="card-title">Support Tickets</div><button class="btn btn-primary btn-sm" onclick="openModal('New Support Ticket','<div class=form-group><label class=form-label>Subject</label><input class=form-input type=text placeholder=Describe your issue/></div><div class=form-group><label class=form-label>Priority</label><select class=form-select><option>Low</option><option>Medium</option><option>High</option></select></div><div class=form-group><label class=form-label>Description</label><textarea class=form-input rows=4 placeholder=\"Detailed description...\"></textarea></div><button class=\"btn btn-primary\" style=\"width:100%\" onclick=\"closeModal();showToast(\\\'Ticket submitted!\\\')\" >Submit Ticket</button>')">New Ticket</button></div>${[['TKT-001','Payment not released after delivery','High','Open'],['TKT-002','Unable to update KYC documents','Medium','In Progress'],['TKT-003','App crashes on Android','Low','Resolved']].map(([id,sub,pri,status])=>`<div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><div style="font-size:13px;font-weight:600">${sub}</div><div style="font-size:12px;color:var(--text3)">${id}</div></div><span class="badge ${pri==='High'?'badge-red':pri==='Medium'?'badge-amber':'badge-blue'}">${pri}</span><span class="badge ${status==='Open'?'badge-red':status==='In Progress'?'badge-amber':'badge-green'}">${status}</span></div>`).join('')}</div>`,
+    listings: `<div class="card" style="margin-top:20px"><div class="card-header"><div class="card-title">My Crop Listings</div><button class="btn btn-primary btn-sm" onclick="showToast('Add listing opened!')"><i class="ti ti-plus"></i> Add Listing</button></div>${[['🌾','Wheat Grade A','45 Qtl','₹2,200/Qtl','Active','8 bids'],['🌽','Maize Premium','30 Qtl','₹1,450/Qtl','Active','3 bids'],['🌿','Coriander Seed','12 Qtl','₹6,800/Qtl','Pending','0 bids'],['🍅','Tomato Fresh','20 Qtl','₹800/Qtl','Sold','12 bids']].map(([e,n,qty,price,status,bids])=>`<div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)"><div class="product-img">${e}</div><div style="flex:1"><div style="font-size:14px;font-weight:700">${n}</div><div style="font-size:12px;color:var(--text3)">${qty} · ${price} · ${bids}</div></div><span class="badge ${status==='Active'?'badge-green':status==='Sold'?'badge-blue':'badge-amber'}">${status}</span><div style="display:flex;gap:6px"><button class="btn btn-ghost btn-sm" onclick="showToast('Editing listing')"><i class="ti ti-edit"></i></button><button class="btn btn-ghost btn-sm" style="color:#dc2626" onclick="showToast('Listing deleted!')"><i class="ti ti-trash"></i></button></div></div>`).join('')}</div>`,
+    payments: `<div class="card" style="margin-top:20px"><div class="card-header"><div class="card-title">Payment History</div><button class="btn btn-primary btn-sm" onclick="showToast('Withdrawal requested!')"><i class="ti ti-arrow-up"></i> Withdraw</button></div><div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px"><div class="escrow-card" style="flex:1;min-width:130px"><div class="escrow-icon">💰</div><div class="escrow-amount">₹23,450</div><div class="escrow-label">Available Balance</div></div><div class="escrow-card" style="flex:1;min-width:130px"><div class="escrow-icon">⏳</div><div class="escrow-amount">₹8,200</div><div class="escrow-label">Pending Release</div></div><div class="escrow-card" style="flex:1;min-width:130px"><div class="escrow-icon">✅</div><div class="escrow-amount">₹4.85L</div><div class="escrow-label">Total Earned</div></div></div>${[['Escrow Release','SKO-0112','₹18,500','25 May'],['Escrow Release','SKO-0089','₹12,200','20 May'],['Refund Deducted','SKO-0076','-₹3,000','15 May'],['Escrow Release','SKO-0065','₹22,750','10 May']].map(([type,id,amt,date])=>`<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)"><div class="tx-icon" style="background:${amt.startsWith('-')?'rgba(220,38,38,.1)':'rgba(22,163,74,.1)'};color:${amt.startsWith('-')?'#dc2626':'var(--g1)'}"><i class="ti ${amt.startsWith('-')?'ti-arrow-down':'ti-arrow-up'}"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:600">${type}</div><div style="font-size:12px;color:var(--text3)">${id} · ${date}</div></div><div style="font-size:14px;font-weight:700;color:${amt.startsWith('-')?'#dc2626':'var(--g1)'}">${amt}</div></div>`).join('')}</div>`,
+    search: `<div class="card" style="margin-top:20px"><div class="card-header"><div class="card-title">Browse Products</div></div><div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap"><div class="topbar-search" style="max-width:280px;flex:1"><i class="ti ti-search"></i><input type="text" placeholder="Search crops..."/></div><select class="form-select" style="width:auto;padding:8px 12px"><option>All Categories</option><option>Wheat</option><option>Rice</option><option>Pulses</option><option>Oilseeds</option><option>Spices</option></select><select class="form-select" style="width:auto;padding:8px 12px"><option>All States</option><option>Madhya Pradesh</option><option>Rajasthan</option><option>Maharashtra</option></select></div>${[['🌾','Wheat Grade A','Ramesh Yadav · Kota, Rajasthan','₹2,150/Qtl','Available: 50 Qtl','4.9 ★','Verified'],['🍚','Basmati Rice','Harpreet Singh · Karnal, Haryana','₹4,800/Qtl','Available: 30 Qtl','4.8 ★','Verified'],['🫘','Chickpea Kabuli','Suresh Mali · Indore, MP','₹6,200/Qtl','Available: 20 Qtl','4.7 ★','Verified'],['🌿','Mustard','Priya Devi · Alwar, Rajasthan','₹5,400/Qtl','Available: 40 Qtl','4.6 ★','Verified']].map(([e,n,farmer,price,avail,rating,badge])=>`<div style="display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--border)"><div class="product-img" style="width:52px;height:52px;font-size:26px">${e}</div><div style="flex:1"><div style="font-size:14px;font-weight:700;margin-bottom:2px">${n} <span class="badge badge-verified" style="font-size:10px">${badge}</span></div><div style="font-size:12px;color:var(--text3);margin-bottom:4px">${farmer}</div><div style="font-size:13px;color:var(--text2)">${avail}</div></div><div style="text-align:right"><div style="font-size:16px;font-weight:800;color:var(--g1)">${price}</div><div style="font-size:12px;color:var(--text3);margin-bottom:8px">${rating}</div><button class="btn btn-primary btn-sm" onclick="showToast('Bid placed!')">Place Bid</button></div></div>`).join('')}</div>`,
+    myorders: `<div class="card" style="margin-top:20px"><div class="card-header"><div class="card-title">My Orders</div></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Order ID</th><th>Product</th><th>Farmer</th><th>Qty</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>${[['SKO-0112','🌾 Wheat Grade A','Ramesh Yadav','50 Qtl','₹1,10,000','Completed','25 May'],['SKO-0098','🍚 Rice Premium','Harpreet Singh','30 Qtl','₹97,500','In Transit','20 May'],['SKO-0085','🌿 Mustard','Priya Devi','20 Qtl','₹56,000','Pending','15 May']].map(([id,prod,farmer,qty,amt,status,date])=>`<tr><td><span style="font-family:'DM Mono',monospace;font-size:12px">${id}</span></td><td>${prod}</td><td>${farmer}</td><td>${qty}</td><td><strong>${amt}</strong></td><td><span class="badge ${status==='Completed'?'badge-green':status==='In Transit'?'badge-blue':'badge-amber'}">${status}</span></td><td style="font-size:12px;color:var(--text3)">${date}</td><td><button class="btn btn-ghost btn-sm" onclick="showToast('Tracking order...')"><i class="ti ti-map-pin"></i></button></td></tr>`).join('')}</tbody></table></div></div>`,
+    messages: `<div class="card" style="margin-top:20px"><div style="display:flex;height:400px"><div style="width:260px;border-right:1px solid var(--border);overflow-y:auto">${[['Ramesh Yadav','About wheat order...','10:30 AM','3'],['Harpreet Singh','Delivery confirmed','9:45 AM',''],['Priya Devi','Price negotiation','Yesterday','1']].map(([name,msg,time,count])=>`<div style="display:flex;gap:10px;padding:14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''"><div class="user-thumb">${name[0]}</div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:600">${name}</span><span style="font-size:11px;color:var(--text4)">${time}</span></div><div style="font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${msg}</div></div>${count?`<div class="notif-unread-dot" style="width:18px;height:18px;border-radius:50%;background:var(--g1);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${count}</div>`:''}</div>`).join('')}</div><div style="flex:1;display:flex;flex-direction:column;padding:16px"><div style="flex:1;display:flex;flex-direction:column;gap:10px;overflow-y:auto"><div style="background:var(--surface2);border-radius:12px 12px 12px 4px;padding:10px 14px;max-width:75%;font-size:13px">Hi, about the wheat order – can you confirm the grade?</div><div style="background:var(--g1);color:#fff;border-radius:12px 12px 4px 12px;padding:10px 14px;max-width:75%;font-size:13px;margin-left:auto">Yes, it's Grade A certified. AI quality score: 92/100.</div><div style="background:var(--surface2);border-radius:12px 12px 12px 4px;padding:10px 14px;max-width:75%;font-size:13px">Perfect, I'll proceed with payment through escrow.</div></div><div style="display:flex;gap:8px;margin-top:12px"><input class="form-input" type="text" placeholder="Type a message..."/><button class="btn btn-primary" onclick="showToast('Message sent!')"><i class="ti ti-send"></i></button></div></div></div></div>`,
+    loads: `<div class="card" style="margin-top:20px"><div class="card-header"><div class="card-title">Available Loads Near You</div><div class="topbar-search" style="max-width:220px"><i class="ti ti-search"></i><input type="text" placeholder="Search loads..."/></div></div>${[['Bhopal → Nagpur','Wheat 50 Qtl · 350 km','₹8,500','24 May 2024 · 9:00 AM','FreshAgro Exports'],['Indore → Pune','Rice 40 Qtl · 620 km','₹11,200','25 May 2024 · 6:00 AM','Priya Traders'],['Kota → Delhi','Mustard 35 Qtl · 480 km','₹14,800','26 May 2024 · 7:00 AM','Sun Agri'],['Jabalpur → Mumbai','Soybean 60 Qtl · 830 km','₹22,000','27 May 2024 · 5:00 AM','MahaFarm']].map(([route,cargo,pay,time,co])=>`<div style="display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--border)"><div class="tx-icon" style="background:rgba(37,99,235,.1);color:#2563eb"><i class="ti ti-package"></i></div><div style="flex:1"><div style="font-size:14px;font-weight:700;margin-bottom:2px">${route}</div><div style="font-size:12px;color:var(--text3)">${cargo}</div><div style="font-size:12px;color:var(--text4)">${co} · ${time}</div></div><div style="text-align:right"><div style="font-size:16px;font-weight:800;color:var(--g1);margin-bottom:8px">${pay}</div><button class="btn btn-primary btn-sm" onclick="showToast('Load accepted!')">Accept Load</button></div></div>`).join('')}</div>`,
+    trips: `<div class="card" style="margin-top:20px"><div class="card-header"><div class="card-title">My Trips</div><div style="display:flex;gap:8px"><span class="badge badge-blue">3 Active</span><span class="badge badge-green">86 Completed</span></div></div>${[['SKO-TR-0045','Kota → Bhopal','Wheat 45 Qtl','In Transit','2 hrs ETA','₹7,200'],['SKO-TR-0044','Jaipur → Indore','Rice 30 Qtl','Loading','4 hrs ETA','₹6,500'],['SKO-TR-0043','Indore → Nagpur','Soybean 60 Qtl','In Transit','6 hrs ETA','₹9,800'],['SKO-TR-0040','Bhopal → Mumbai','Wheat 50 Qtl','Completed','Delivered','₹14,500']].map(([id,route,cargo,status,eta,pay])=>`<div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)"><div class="tx-icon" style="background:rgba(22,163,74,.1);color:var(--g1)"><i class="ti ti-truck"></i></div><div style="flex:1"><div style="font-size:14px;font-weight:700">${route}</div><div style="font-size:12px;color:var(--text3)">${id} · ${cargo} · ${eta}</div></div><span class="badge ${status==='Completed'?'badge-green':status==='In Transit'?'badge-blue':'badge-amber'}">${status}</span><div style="text-align:right;margin-left:12px"><div style="font-size:14px;font-weight:700;color:var(--g1)">${pay}</div>${status!=='Completed'?`<button class="btn btn-outline btn-sm" style="margin-top:6px" onclick="showToast('QR Scanner opened!')"><i class="ti ti-qrcode"></i> Scan</button>`:''}</div></div>`).join('')}</div>`,
+  };
+  return extras[page] ? extras[page] : '';
+}
+
+// Additional renderers for transport, support, etc.
+function renderTransport() {
+  document.getElementById('page-transport').innerHTML = `
+    <div class="stats-grid" style="margin-bottom:20px">
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(22,163,74,.1);color:var(--g1)"><i class="ti ti-truck"></i></div><div class="stat-label">Active Trips</div><div class="stat-value">2,154</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(37,99,235,.1);color:#2563eb"><i class="ti ti-users"></i></div><div class="stat-label">Registered Transporters</div><div class="stat-value">786</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(217,119,6,.1);color:#d97706"><i class="ti ti-package"></i></div><div class="stat-label">Available Loads</div><div class="stat-value">342</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(22,163,74,.1);color:var(--g1)"><i class="ti ti-check-circle"></i></div><div class="stat-label">Completed This Month</div><div class="stat-value">1,847</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Active Trips</div></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Trip ID</th><th>Transporter</th><th>Route</th><th>Cargo</th><th>Status</th><th>ETA</th><th>Actions</th></tr></thead>
+          <tbody>
+            ${[['SKO-TR-0045','Suresh Patel','Kota → Bhopal','Wheat 45 Qtl','In Transit','2 hrs'],['SKO-TR-0044','Rahul Gupta','Jaipur → Indore','Rice 30 Qtl','Loading','4 hrs'],['SKO-TR-0043','Mohan Das','Indore → Nagpur','Soybean 60 Qtl','In Transit','6 hrs']].map(([id,tp,route,cargo,status,eta])=>`
+            <tr>
+              <td><span style="font-family:'DM Mono',monospace;font-size:12px">${id}</span></td>
+              <td>${tp}</td><td>${route}</td><td>${cargo}</td>
+              <td><span class="badge ${status==='In Transit'?'badge-blue':'badge-amber'}">${status}</span></td>
+              <td style="font-size:12px;color:var(--text3)">${eta}</td>
+              <td><button class="btn btn-ghost btn-sm" onclick="showToast('Tracking trip...')"><i class="ti ti-map-pin"></i></button></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderSupport() {
+  document.getElementById('page-support').innerHTML = renderGenericPage('support') + '';
+  document.getElementById('page-support').innerHTML = `
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Support Tickets</div><button class="btn btn-primary btn-sm" onclick="openModal('New Support Ticket','<div class=form-group><label class=form-label>Subject</label><input class=form-input type=text placeholder=Describe your issue/></div><div class=form-group><label class=form-label>Priority</label><select class=form-select><option>Low</option><option>Medium</option><option>High</option></select></div><div class=form-group><label class=form-label>Description</label><textarea class=form-input rows=4 placeholder=\"Detailed description...\"></textarea></div><button class=\"btn btn-primary\" style=\"width:100%;margin-top:8px\" onclick=\"closeModal();showToast(\\\'Ticket submitted!\\\')\" >Submit Ticket</button>')">New Ticket</button></div>
+        ${[['TKT-001','Payment not released after delivery','High','Open'],['TKT-002','Unable to update KYC documents','Medium','In Progress'],['TKT-003','App crashes on Android','Low','Resolved']].map(([id,sub,pri,status])=>`
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)">
+          <div style="flex:1"><div style="font-size:13px;font-weight:600">${sub}</div><div style="font-size:12px;color:var(--text3)">${id}</div></div>
+          <span class="badge ${pri==='High'?'badge-red':pri==='Medium'?'badge-amber':'badge-blue'}">${pri}</span>
+          <span class="badge ${status==='Open'?'badge-red':status==='In Progress'?'badge-amber':'badge-green'}">${status}</span>
+        </div>`).join('')}
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px">Need Help?</div>
+        <p style="font-size:13px;color:var(--text3);margin-bottom:20px">Our support team is available 24/7 to help with any issues you face.</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <button class="btn btn-primary" style="justify-content:center" onclick="showToast('Opening live chat...')"><i class="ti ti-message"></i> Live Chat</button>
+          <button class="btn btn-outline" style="justify-content:center" onclick="showToast('Email support opened!')"><i class="ti ti-mail"></i> Email Support</button>
+          <button class="btn btn-outline" style="justify-content:center" onclick="showToast('Docs opened!')"><i class="ti ti-book"></i> Documentation</button>
+        </div>
+        <div style="margin-top:20px;padding:16px;background:var(--surface2);border-radius:var(--radius)">
+          <div style="font-size:13px;font-weight:700;margin-bottom:8px">Contact Us</div>
+          <div style="font-size:13px;color:var(--text3)">📧 support@smartkissan.com</div>
+          <div style="font-size:13px;color:var(--text3)">📞 1800-XXX-XXXX (Toll Free)</div>
+          <div style="font-size:12px;color:var(--text4);margin-top:6px">Mon–Sat, 9AM–6PM IST</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderNotifications() {
+  document.getElementById('page-notifications').innerHTML = `
+    <div class="card">
+      <div class="card-header"><div class="card-title">All Notifications</div><div style="display:flex;gap:8px"><button class="btn btn-outline btn-sm" onclick="markAllRead()">Mark All Read</button><select class="form-select" style="padding:6px 10px;font-size:12px"><option>All</option><option>Unread</option><option>High Priority</option></select></div></div>
+      <div class="alert-list">
+        ${[['ti-alert-circle','#dc2626','rgba(220,38,38,.1)','Payment Hold Request','Order #SKO-2024-05-7842','2 min ago','High','true'],['ti-gavel','#d97706','rgba(217,119,6,.1)','Dispute Needs Review','Order #SKO-2024-05-7681','15 min ago','Medium','true'],['ti-user-check','var(--g1)','rgba(22,163,74,.1)','New User Verification','25 new transporter registrations','30 min ago','Low','false'],['ti-info-circle','#2563eb','rgba(37,99,235,.1)','System Notification','Scheduled maintenance on 1 Jun','1 hr ago','Info','false'],['ti-currency-rupee','var(--g1)','rgba(22,163,74,.1)','Commission Payout','₹12,450 processed successfully','3 hrs ago','Info','false'],['ti-package','#7c3aed','rgba(124,58,237,.1)','New Bulk Order','500 Qtl Wheat from MahaAgro','5 hrs ago','High','false']].map(([icon,col,bg,title,sub,time,pri,unread])=>`
+        <div class="alert-item" style="${unread==='true'?'background:rgba(22,163,74,.04)':''}">
+          <div class="alert-icon" style="background:${bg};color:${col}"><i class="ti ${icon}"></i></div>
+          <div class="alert-body"><div class="alert-title">${title}</div><div class="alert-sub">${sub}</div></div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+            <span class="badge ${pri==='High'?'badge-red':pri==='Medium'?'badge-amber':pri==='Low'?'badge-blue':'badge-gray'}" style="font-size:10px">${pri}</span>
+            <span class="alert-time">${time}</span>
+          </div>
+          ${unread==='true'?'<div style="width:8px;height:8px;border-radius:50%;background:var(--g1);flex-shrink:0;margin:auto 0"></div>':''}
+        </div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderAudit() {
+  document.getElementById('page-audit').innerHTML = `
+    <div class="card">
+      <div class="card-header"><div class="card-title">Audit Logs</div><div style="display:flex;gap:8px"><select class="form-select" style="padding:7px 12px;font-size:12px"><option>All Actions</option><option>Login</option><option>Escrow</option><option>User Mgmt</option></select><button class="btn btn-outline btn-sm" onclick="showToast('Logs exported!')"><i class="ti ti-download"></i> Export</button></div></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Timestamp</th><th>User</th><th>Role</th><th>Action</th><th>Module</th><th>IP Address</th><th>Status</th></tr></thead>
+          <tbody>
+            ${[['25 May 2024, 11:05 AM','Admin','Super Admin','User Login','Auth','103.xx.xx.1','Success'],['25 May 2024, 10:30 AM','Admin','Super Admin','Escrow Release #SKO-0112','Escrow','103.xx.xx.1','Success'],['25 May 2024, 10:15 AM','Admin','Super Admin','Payment Hold #SKO-0111','Payments','103.xx.xx.1','Success'],['24 May 2024, 4:12 PM','Admin','Super Admin','User Suspended: MK-0089','Users','103.xx.xx.1','Success'],['24 May 2024, 2:00 PM','Admin','Super Admin','Dispute Resolved: DIS-004','Disputes','103.xx.xx.1','Success'],['24 May 2024, 9:30 AM','Admin','Super Admin','System Backup','System','103.xx.xx.1','Success']].map(([t,u,r,a,mod,ip,s])=>`
+            <tr>
+              <td style="font-size:12px;color:var(--text3)">${t}</td>
+              <td>${u}</td>
+              <td><span class="badge badge-purple">${r}</span></td>
+              <td>${a}</td>
+              <td><span class="badge badge-gray">${mod}</span></td>
+              <td><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text4)">${ip}</span></td>
+              <td><span class="badge badge-green">${s}</span></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <div class="page-btn active">1</div><div class="page-btn">2</div><div class="page-btn">3</div><div class="page-btn">…</div><div class="page-btn">48</div>
+      </div>
+    </div>
+  `;
+}
+
+// ============ INIT ============
+function init() {
+  buildSidebar(currentRole);
+  renderPage('dashboard');
+  updateTopbar('dashboard');
+  
+  // Add role btn event handlers correctly
+  document.querySelectorAll('.role-btn').forEach((btn, i) => {
+    const roles_arr = ['admin','farmer','buyer','transporter'];
+    btn.addEventListener('click', () => switchRole(roles_arr[i]));
+  });
+}
+
+init();
+</script>
+</body>
+</html>

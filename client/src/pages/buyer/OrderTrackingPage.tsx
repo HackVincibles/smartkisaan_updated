@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   Package, 
@@ -29,7 +29,10 @@ import {
   ExternalLink,
   Scan,
   Compass,
-  Radar
+  Radar,
+  ShieldAlert,
+  Lock,
+  Layers
 } from 'lucide-react';
 // @ts-ignore
 import buyerService from '../../services/buyerService';
@@ -37,6 +40,9 @@ import { formatCurrency, formatDateTime } from '../../lib/utils';
 import StatusBadge from '../../components/common/StatusBadge';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useOptimizedTracking } from '../../hooks/useOptimizedTracking';
+import LiveMap from '../../components/logistics/LiveMap';
+import { getMockOrderById } from '../../services/routeService';
 
 const steps = [
   { key: 'ordered', label: 'CONTRACT_SIGNED', icon: Package },
@@ -75,22 +81,19 @@ const OrderTrackingPage = () => {
       });
     } catch (error) {
       console.error('Failed to fetch order details:', error);
-      // Mock for high-fidelity demo
-      setOrder({
-        id: 'ORD-5521',
-        productName: 'PREMIUM BASMATI RICE',
-        status: 'IN_TRANSIT',
-        transporter: { name: 'RAJ CARGO EXPRESS' },
-        vehicleNumber: 'MH-43-BE-1234',
-        deliveryAddress: { name: 'GLOBAL FOODS LTD', address: 'PLOT 42, SECTOR 15, VASHI', city: 'NAVI MUMBAI', state: 'MAHARASHTRA' }
-      });
+      // Mock for high-fidelity demo using centralized dynamic lookups
+      const mockOrderData = getMockOrderById(id);
+      setOrder(mockOrderData);
     } finally {
       setLoading(false);
     }
   };
 
+  // Connect our highly optimized hybrid tracking hook
+  const trackingData = useOptimizedTracking(order, true, false);
+
   const getCurrentStep = () => {
-    const current = tracking?.currentStep || 'ordered';
+    const current = tracking?.currentStep || 'in-transit';
     return steps.findIndex(s => s.key === current);
   };
 
@@ -122,7 +125,7 @@ const OrderTrackingPage = () => {
           <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-secondary italic">
             <Activity size={16} /> <span>LIVE_TELEMETRY_PROTOCOL</span>
             <ChevronRight size={12} className="text-gray-200" />
-            <span className="text-gray-400">SHIPMENT_ID::{id?.substring(0, 12).toUpperCase()}</span>
+            <span className="text-gray-400">SHIPMENT_ID::{id?.substring(0, 12).toUpperCase() || 'ORD-5521'}</span>
           </div>
           <h1 className="text-6xl md:text-8xl font-black text-gray-950 tracking-tighter italic leading-none">
             Track <span className="not-italic text-secondary">Shipment.</span>
@@ -152,8 +155,8 @@ const OrderTrackingPage = () => {
                     <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.4em] italic leading-none">Real-time sourcing pipeline active</p>
                 </div>
             </div>
-            <div className="px-8 py-5 bg-secondary/10 text-secondary text-[11px] font-black uppercase tracking-[0.4em] italic rounded-2xl border border-secondary/20 shadow-2xl shadow-secondary/5 flex items-center gap-4 animate-pulse">
-              <Clock size={18} /> ESTIMATED_ARRIVAL: TOMORROW, 16:00
+            <div className="px-8 py-5 bg-secondary/10 text-secondary text-[11px] font-black uppercase tracking-[0.4em] italic rounded-2xl border border-secondary/20 shadow-2xl shadow-secondary/5 flex items-center gap-4">
+              <Clock size={18} /> ETA: {trackingData.timeRemainingMinutes > 0 ? `${Math.floor(trackingData.timeRemainingMinutes / 60)}h ${trackingData.timeRemainingMinutes % 60}m` : 'Arrived'} ({trackingData.distanceRemainingKm.toFixed(1)} km left)
             </div>
           </div>
 
@@ -222,71 +225,73 @@ const OrderTrackingPage = () => {
                 </div>
                 <div className="space-y-1">
                   <h3 className="text-2xl font-bold text-gray-950 italic tracking-tight uppercase leading-none">Geospatial Telemetry</h3>
-                  <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.4em] italic leading-none">Satellite node synchronization active</p>
+                  <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.4em] italic leading-none">Douglas-Peucker & Viewport optimized</p>
                 </div>
               </div>
-              <div className="px-6 py-3 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.4em] italic rounded-2xl flex items-center gap-4 border border-primary/20 shadow-2xl shadow-primary/5">
-                <div className="w-2 h-2 bg-primary rounded-full animate-ping"></div>
-                LIVE_NODE_UPLINK
+              <div className="flex flex-col items-end gap-1.5">
+                <div className="px-6 py-3 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.4em] italic rounded-2xl flex items-center gap-4 border border-primary/20 shadow-2xl shadow-primary/5">
+                  <div className="w-2 h-2 bg-primary rounded-full animate-ping"></div>
+                  HYBRID_POLYGON_UPLINK
+                </div>
+                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest italic">
+                  Live tracking will appear when transporter starts trip
+                </span>
               </div>
             </div>
             
             <div className="h-[550px] relative bg-gray-100 overflow-hidden">
-               {/* High-Fidelity Static Map Placeholder with Scanners */}
-               <div className="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/72.8777,19.0760,11/1200x600?access_token=YOUR_TOKEN')] bg-cover grayscale opacity-90 transition-transform duration-[10000ms] group-hover/map:scale-110">
-                  <div className="absolute inset-0 bg-secondary/5 mix-blend-overlay"></div>
-                  
-                  {/* Digital Grid Overlay */}
-                  <div className="absolute inset-0 bg-scanline opacity-[0.03]"></div>
-                  
-                  {/* Central Node Marker */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-                    <motion.div 
-                      animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
-                      transition={{ repeat: Infinity, duration: 3 }}
-                      className="w-48 h-48 bg-secondary/20 rounded-full flex items-center justify-center backdrop-blur-3xl"
-                    />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                        <div className="w-16 h-16 bg-gray-950 rounded-[2rem] flex items-center justify-center text-secondary shadow-[0_0_40px_rgba(59,130,246,0.6)] border border-white/10 group-hover/map:scale-110 transition-transform duration-700">
-                          <Truck size={32} />
-                        </div>
-                    </div>
-                    
-                    {/* Location Label Card */}
-                    <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="absolute top-full left-1/2 -translate-x-1/2 mt-10 px-8 py-5 bg-gray-950/90 backdrop-blur-3xl rounded-2xl shadow-2xl border border-white/10 whitespace-nowrap text-[11px] font-black uppercase tracking-[0.4em] text-white z-30 italic shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]"
-                    >
-                      CURRENT_POSITION::{tracking?.currentLocation?.address || 'CALCULATING...'}
-                    </motion.div>
-                  </div>
-                  
-                  {/* Compass / Orientation */}
-                  <div className="absolute top-12 left-12 p-4 bg-gray-950/50 backdrop-blur-3xl rounded-2xl border border-white/10 text-white/40">
-                      <Compass size={32} className="animate-spin-slow" />
-                  </div>
+               {/* High-Fidelity Interactive Leaflet Map */}
+               <div className="absolute inset-0 z-10">
+                 <LiveMap
+                   center={trackingData.origin}
+                   zoom={9}
+                   route={trackingData.optimizedRoute}
+                   waypoints={trackingData.visibleWaypoints}
+                   vehiclePos={trackingData.vehiclePos}
+                   bearing={trackingData.bearing}
+                   onBoundsChange={trackingData.setViewportBounds}
+                   onZoomChange={trackingData.setZoomLevel}
+                 />
+               </div>
+               
+               {/* Digital Grid Overlay */}
+               <div className="absolute inset-0 bg-scanline opacity-[0.03] pointer-events-none z-20"></div>
+               
+               {/* Overlay HUD Panel - Location Label Card */}
+               <div className="absolute top-6 left-6 z-20 pointer-events-none">
+                 <motion.div 
+                     initial={{ opacity: 0, y: -10 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     className="px-8 py-5 bg-gray-950/90 backdrop-blur-3xl rounded-2xl shadow-2xl border border-white/10 whitespace-nowrap text-[11px] font-black uppercase tracking-[0.4em] text-white italic shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]"
+                 >
+                   CURRENT_POSITION::{trackingData.vehiclePos[0].toFixed(4)}° N, {trackingData.vehiclePos[1].toFixed(4)}° E [ESTIMATED]
+                 </motion.div>
+               </div>
+               
+               {/* Compass / Orientation overlay */}
+               <div className="absolute top-6 right-6 p-4 bg-gray-950/70 backdrop-blur-3xl rounded-2xl border border-white/10 text-white/40 z-20 pointer-events-none">
+                   <Compass size={32} className="animate-spin-slow" />
                </div>
                
                {/* Telemetry Widgets Overlay */}
-               <div className="absolute bottom-12 left-12 right-12 flex flex-wrap gap-8 z-30">
-                  <div className="flex-1 min-w-[200px] bg-gray-950/80 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-white/10 text-white flex items-center gap-8 shadow-2xl group/widget hover:bg-gray-950 transition-all duration-500">
+               <div className="absolute bottom-12 left-12 right-12 flex flex-wrap gap-8 z-20">
+                  <div className="flex-1 min-w-[200px] bg-gray-950/90 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-white/10 text-white flex items-center gap-8 shadow-2xl group/widget hover:bg-gray-950 transition-all duration-500">
                     <div className="w-16 h-16 bg-white/5 rounded-[1.5rem] flex items-center justify-center text-secondary shadow-inner group-hover/widget:rotate-12 transition-transform">
                       <Navigation size={32} />
                     </div>
                     <div className="space-y-1.5">
                       <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] italic leading-none">NEXT_LOG_NODE</p>
-                      <p className="text-xl font-black tracking-tighter italic leading-none uppercase">JNPT PORT TERMINAL</p>
+                      <p className="text-xl font-black tracking-tighter italic leading-none uppercase">{trackingData.destinationName}</p>
                     </div>
                   </div>
                   
-                  <div className="flex-1 min-w-[200px] bg-gray-950/80 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-white/10 text-white flex items-center gap-8 shadow-2xl group/widget hover:bg-gray-950 transition-all duration-500">
+                  <div className="flex-1 min-w-[200px] bg-gray-950/90 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-white/10 text-white flex items-center gap-8 shadow-2xl group/widget hover:bg-gray-950 transition-all duration-500">
                     <div className="w-16 h-16 bg-white/5 rounded-[1.5rem] flex items-center justify-center text-secondary shadow-inner group-hover/widget:rotate-12 transition-transform">
                       <Activity size={32} />
                     </div>
                     <div className="space-y-1.5">
                       <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] italic leading-none">AVG_VELOCITY</p>
-                      <p className="text-xl font-black tracking-tighter italic leading-none uppercase">42 KM/H [NOMINAL]</p>
+                      <p className="text-xl font-black tracking-tighter italic leading-none uppercase">50 KM/H [NOMINAL]</p>
                     </div>
                   </div>
                </div>
@@ -304,21 +309,21 @@ const OrderTrackingPage = () => {
                 <div className="flex justify-between items-end border-b border-gray-50 pb-6 group/item">
                   <div className="space-y-1">
                     <p className="text-[9px] font-black text-gray-300 uppercase tracking-[0.4em] italic leading-none">CARRIER_ENTITY</p>
-                    <p className="text-2xl font-black text-gray-950 tracking-tighter italic leading-none uppercase group-hover/item:text-secondary transition-colors">{order.transporter?.name}</p>
+                    <p className="text-2xl font-black text-gray-950 tracking-tighter italic leading-none uppercase group-hover/item:text-secondary transition-colors">{order.transporter?.name || 'RAJ CARGO EXPRESS'}</p>
                   </div>
                   <ExternalLink size={18} className="text-gray-100 group-hover/item:text-secondary transition-colors" />
                 </div>
                 <div className="flex justify-between items-end border-b border-gray-50 pb-6 group/item">
                   <div className="space-y-1">
                     <p className="text-[9px] font-black text-gray-300 uppercase tracking-[0.4em] italic leading-none">ASSET_SIGNATURE</p>
-                    <p className="text-2xl font-black text-gray-950 tracking-tighter italic leading-none uppercase group-hover/item:text-secondary transition-colors">{order.vehicleNumber}</p>
+                    <p className="text-2xl font-black text-gray-950 tracking-tighter italic leading-none uppercase group-hover/item:text-secondary transition-colors">{order.vehicleNumber || 'MH-43-BE-1234'}</p>
                   </div>
                   <Cpu size={18} className="text-gray-100 group-hover/item:text-secondary transition-colors" />
                 </div>
                 <div className="flex justify-between items-end group/item">
                   <div className="space-y-1">
                     <p className="text-[9px] font-black text-gray-300 uppercase tracking-[0.4em] italic leading-none">TELEMETRY_SYNC</p>
-                    <p className="text-2xl font-black text-secondary tracking-tighter italic leading-none uppercase">{new Date(tracking?.lastUpdate).toLocaleTimeString().toUpperCase()}</p>
+                    <p className="text-2xl font-black text-secondary tracking-tighter italic leading-none uppercase">{new Date().toLocaleTimeString().toUpperCase()}</p>
                   </div>
                   <div className="w-2 h-2 bg-secondary rounded-full animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.6)]"></div>
                 </div>
@@ -332,12 +337,12 @@ const OrderTrackingPage = () => {
               </div>
               <div className="space-y-8">
                 <div className="space-y-2">
-                    <p className="text-3xl font-black text-gray-950 italic tracking-tighter leading-none uppercase group-hover/terminal:text-warning transition-colors">{order.deliveryAddress?.name}</p>
+                    <p className="text-3xl font-black text-gray-950 italic tracking-tighter leading-none uppercase group-hover/terminal:text-warning transition-colors">{order.deliveryAddress?.name || 'GLOBAL FOODS LTD'}</p>
                     <div className="w-10 h-1 bg-warning/20 rounded-full group-hover/terminal:w-20 transition-all duration-700"></div>
                 </div>
                 <div className="space-y-3 pl-6 border-l-2 border-gray-50 group-hover/terminal:border-warning transition-colors">
-                  <p className="text-lg font-bold text-gray-400 italic leading-relaxed uppercase">{order.deliveryAddress?.address}</p>
-                  <p className="text-lg font-bold text-gray-400 italic uppercase">{order.deliveryAddress?.city}, {order.deliveryAddress?.state}</p>
+                  <p className="text-lg font-bold text-gray-400 italic leading-relaxed uppercase">{order.deliveryAddress?.address || 'PLOT 42, SECTOR 15, VASHI'}</p>
+                  <p className="text-lg font-bold text-gray-400 italic uppercase">{order.deliveryAddress?.city || 'NAVI MUMBAI'}, {order.deliveryAddress?.state || 'MAHARASHTRA'}</p>
                 </div>
                 <div className="pt-6 flex items-center gap-4 text-warning font-black text-[11px] uppercase tracking-[0.4em] italic">
                   <ShieldCheck size={20} className="group-hover/terminal:rotate-12 transition-transform" /> VERIFIED_HUB_SIGNATURE
